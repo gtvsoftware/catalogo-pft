@@ -1,0 +1,1802 @@
+[
+  {
+    "id": "buque",
+    "produto_base": "buque",
+    "tipo_produto": "FLOR",
+    "descricao": "Buque",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.875Z",
+    "updated_at": "2025-11-01T15:45:18.876Z"
+  },
+  {
+    "id": "ficus",
+    "produto_base": "ficus",
+    "tipo_produto": "PLANTA",
+    "descricao": "Ficus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.879Z",
+    "updated_at": "2025-11-01T15:45:18.879Z"
+  },
+  {
+    "id": "hortensia",
+    "produto_base": "hortensia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Hortensia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.879Z",
+    "updated_at": "2025-11-01T15:45:18.879Z"
+  },
+  {
+    "id": "muehlenbeckia",
+    "produto_base": "muehlenbeckia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Muehlenbeckia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.880Z",
+    "updated_at": "2025-11-01T15:45:18.880Z"
+  },
+  {
+    "id": "rhaphidophora",
+    "produto_base": "rhaphidophora",
+    "tipo_produto": "PLANTA",
+    "descricao": "Rhaphidophora",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.880Z",
+    "updated_at": "2025-11-01T15:45:18.880Z"
+  },
+  {
+    "id": "geranio",
+    "produto_base": "geranio",
+    "tipo_produto": "PLANTA",
+    "descricao": "Geranio",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.881Z",
+    "updated_at": "2025-11-01T15:45:18.881Z"
+  },
+  {
+    "id": "maco",
+    "produto_base": "maco",
+    "tipo_produto": "FLOR",
+    "descricao": "Maco",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.881Z",
+    "updated_at": "2025-11-01T15:45:18.881Z"
+  },
+  {
+    "id": "zantedeschia",
+    "produto_base": "zantedeschia",
+    "tipo_produto": "FLOR",
+    "descricao": "Zantedeschia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.881Z",
+    "updated_at": "2025-11-01T15:45:18.881Z"
+  },
+  {
+    "id": "calla",
+    "produto_base": "calla",
+    "tipo_produto": "FLOR",
+    "descricao": "Calla",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.881Z",
+    "updated_at": "2025-11-01T15:45:18.881Z"
+  },
+  {
+    "id": "tuia",
+    "produto_base": "tuia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Tuia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.881Z",
+    "updated_at": "2025-11-01T15:45:18.881Z"
+  },
+  {
+    "id": "caladium",
+    "produto_base": "caladium",
+    "tipo_produto": "PLANTA",
+    "descricao": "Caladium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.883Z",
+    "updated_at": "2025-11-01T15:45:18.883Z"
+  },
+  {
+    "id": "oncidium",
+    "produto_base": "oncidium",
+    "tipo_produto": "FLOR",
+    "descricao": "Oncidium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.883Z",
+    "updated_at": "2025-11-01T15:45:18.883Z"
+  },
+  {
+    "id": "dahlia",
+    "produto_base": "dahlia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Dahlia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.883Z",
+    "updated_at": "2025-11-01T15:45:18.883Z"
+  },
+  {
+    "id": "maranta",
+    "produto_base": "maranta",
+    "tipo_produto": "PLANTA",
+    "descricao": "Maranta",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.883Z",
+    "updated_at": "2025-11-01T15:45:18.883Z"
+  },
+  {
+    "id": "peperomia",
+    "produto_base": "peperomia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Peperomia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.883Z",
+    "updated_at": "2025-11-01T15:45:18.883Z"
+  },
+  {
+    "id": "terrario",
+    "produto_base": "terrario",
+    "tipo_produto": "FLOR",
+    "descricao": "Terrario",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.883Z",
+    "updated_at": "2025-11-01T15:45:18.883Z"
+  },
+  {
+    "id": "calathea",
+    "produto_base": "calathea",
+    "tipo_produto": "PLANTA",
+    "descricao": "Calathea",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.883Z",
+    "updated_at": "2025-11-01T15:45:18.883Z"
+  },
+  {
+    "id": "anthurium",
+    "produto_base": "anthurium",
+    "tipo_produto": "PLANTA",
+    "descricao": "Anthurium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.883Z",
+    "updated_at": "2025-11-01T15:45:18.883Z"
+  },
+  {
+    "id": "folhagem",
+    "produto_base": "folhagem",
+    "tipo_produto": "FLOR",
+    "descricao": "Folhagem",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.884Z",
+    "updated_at": "2025-11-01T15:45:18.884Z"
+  },
+  {
+    "id": "phalaenopsis",
+    "produto_base": "phalaenopsis",
+    "tipo_produto": "FLOR",
+    "descricao": "Phalaenopsis",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.884Z",
+    "updated_at": "2025-11-01T15:45:18.884Z"
+  },
+  {
+    "id": "zamioculcas",
+    "produto_base": "zamioculcas",
+    "tipo_produto": "PLANTA",
+    "descricao": "Zamioculcas",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.884Z",
+    "updated_at": "2025-11-01T15:45:18.884Z"
+  },
+  {
+    "id": "aster",
+    "produto_base": "aster",
+    "tipo_produto": "FLOR",
+    "descricao": "Aster",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.884Z",
+    "updated_at": "2025-11-01T15:45:18.884Z"
+  },
+  {
+    "id": "lavandula",
+    "produto_base": "lavandula",
+    "tipo_produto": "PLANTA",
+    "descricao": "Lavandula",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.884Z",
+    "updated_at": "2025-11-01T15:45:18.884Z"
+  },
+  {
+    "id": "trigo",
+    "produto_base": "trigo",
+    "tipo_produto": "PLANTA",
+    "descricao": "Trigo",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.884Z",
+    "updated_at": "2025-11-01T15:45:18.884Z"
+  },
+  {
+    "id": "dianthus",
+    "produto_base": "dianthus",
+    "tipo_produto": "FLOR",
+    "descricao": "Dianthus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.884Z",
+    "updated_at": "2025-11-01T15:45:18.884Z"
+  },
+  {
+    "id": "philodendron",
+    "produto_base": "philodendron",
+    "tipo_produto": "PLANTA",
+    "descricao": "Philodendron",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.885Z",
+    "updated_at": "2025-11-01T15:45:18.885Z"
+  },
+  {
+    "id": "phal",
+    "produto_base": "phal",
+    "tipo_produto": "FLOR",
+    "descricao": "PHAL",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.885Z",
+    "updated_at": "2025-11-01T15:45:18.885Z"
+  },
+  {
+    "id": "orquidea",
+    "produto_base": "orquidea",
+    "tipo_produto": "FLOR",
+    "descricao": "Orquidea",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.885Z",
+    "updated_at": "2025-11-01T15:45:18.885Z"
+  },
+  {
+    "id": "monstera",
+    "produto_base": "monstera",
+    "tipo_produto": "PLANTA",
+    "descricao": "Monstera",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.885Z",
+    "updated_at": "2025-11-01T15:45:18.885Z"
+  },
+  {
+    "id": "celosia",
+    "produto_base": "celosia",
+    "tipo_produto": "FLOR",
+    "descricao": "Celosia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.885Z",
+    "updated_at": "2025-11-01T15:45:18.885Z"
+  },
+  {
+    "id": "perpetua",
+    "produto_base": "perpetua",
+    "tipo_produto": "FLOR",
+    "descricao": "Perpetua",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.885Z",
+    "updated_at": "2025-11-01T15:45:18.885Z"
+  },
+  {
+    "id": "anturio",
+    "produto_base": "anturio",
+    "tipo_produto": "PLANTA",
+    "descricao": "Anturio",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.886Z",
+    "updated_at": "2025-11-01T15:45:18.886Z"
+  },
+  {
+    "id": "narcissus",
+    "produto_base": "narcissus",
+    "tipo_produto": "PLANTA",
+    "descricao": "Narcissus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.886Z",
+    "updated_at": "2025-11-01T15:45:18.886Z"
+  },
+  {
+    "id": "kenzoi",
+    "produto_base": "kenzoi",
+    "tipo_produto": "PLANTA",
+    "descricao": "Kenzoi",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.886Z",
+    "updated_at": "2025-11-01T15:45:18.886Z"
+  },
+  {
+    "id": "bromelia",
+    "produto_base": "bromelia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Bromelia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.886Z",
+    "updated_at": "2025-11-01T15:45:18.886Z"
+  },
+  {
+    "id": "limonium",
+    "produto_base": "limonium",
+    "tipo_produto": "FLOR",
+    "descricao": "Limonium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.886Z",
+    "updated_at": "2025-11-01T15:45:18.886Z"
+  },
+  {
+    "id": "cymbidium",
+    "produto_base": "cymbidium",
+    "tipo_produto": "FLOR",
+    "descricao": "Cymbidium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.886Z",
+    "updated_at": "2025-11-01T15:45:18.886Z"
+  },
+  {
+    "id": "statice",
+    "produto_base": "statice",
+    "tipo_produto": "FLOR",
+    "descricao": "Statice",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.886Z",
+    "updated_at": "2025-11-01T15:45:18.886Z"
+  },
+  {
+    "id": "dipladenia",
+    "produto_base": "dipladenia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Dipladenia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.887Z",
+    "updated_at": "2025-11-01T15:45:18.887Z"
+  },
+  {
+    "id": "aspargo",
+    "produto_base": "aspargo",
+    "tipo_produto": "PLANTA",
+    "descricao": "Aspargo",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.887Z",
+    "updated_at": "2025-11-01T15:45:18.887Z"
+  },
+  {
+    "id": "boca",
+    "produto_base": "boca",
+    "tipo_produto": "FLOR",
+    "descricao": "Boca",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.887Z",
+    "updated_at": "2025-11-01T15:45:18.887Z"
+  },
+  {
+    "id": "dendrobium",
+    "produto_base": "dendrobium",
+    "tipo_produto": "FLOR",
+    "descricao": "Dendrobium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.888Z",
+    "updated_at": "2025-11-01T15:45:18.888Z"
+  },
+  {
+    "id": "amaryllis",
+    "produto_base": "amaryllis",
+    "tipo_produto": "FLOR",
+    "descricao": "Amaryllis",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.888Z",
+    "updated_at": "2025-11-01T15:45:18.888Z"
+  },
+  {
+    "id": "lirio",
+    "produto_base": "lirio",
+    "tipo_produto": "FLOR",
+    "descricao": "Lirio",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.888Z",
+    "updated_at": "2025-11-01T15:45:18.888Z"
+  },
+  {
+    "id": "rainha",
+    "produto_base": "rainha",
+    "tipo_produto": "PLANTA",
+    "descricao": "Rainha",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.888Z",
+    "updated_at": "2025-11-01T15:45:18.888Z"
+  },
+  {
+    "id": "cactus",
+    "produto_base": "cactus",
+    "tipo_produto": "PLANTA",
+    "descricao": "Cactus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.889Z",
+    "updated_at": "2025-11-01T15:45:18.889Z"
+  },
+  {
+    "id": "albuca",
+    "produto_base": "albuca",
+    "tipo_produto": "PLANTA",
+    "descricao": "Albuca",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.889Z",
+    "updated_at": "2025-11-01T15:45:18.889Z"
+  },
+  {
+    "id": "mandevilla",
+    "produto_base": "mandevilla",
+    "tipo_produto": "PLANTA",
+    "descricao": "Mandevilla",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.889Z",
+    "updated_at": "2025-11-01T15:45:18.889Z"
+  },
+  {
+    "id": "goivo",
+    "produto_base": "goivo",
+    "tipo_produto": "FLOR",
+    "descricao": "Goivo",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.889Z",
+    "updated_at": "2025-11-01T15:45:18.889Z"
+  },
+  {
+    "id": "girassol",
+    "produto_base": "girassol",
+    "tipo_produto": "FLOR",
+    "descricao": "Girassol",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.889Z",
+    "updated_at": "2025-11-01T15:45:18.889Z"
+  },
+  {
+    "id": "icms",
+    "produto_base": "icms",
+    "tipo_produto": "PLANTA",
+    "descricao": "Icms",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.889Z",
+    "updated_at": "2025-11-01T15:45:18.889Z"
+  },
+  {
+    "id": "gypso",
+    "produto_base": "gypso",
+    "tipo_produto": "FLOR",
+    "descricao": "GYPSO",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.889Z",
+    "updated_at": "2025-11-01T15:45:18.889Z"
+  },
+  {
+    "id": "bouvardia",
+    "produto_base": "bouvardia",
+    "tipo_produto": "FLOR",
+    "descricao": "Bouvardia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.890Z",
+    "updated_at": "2025-11-01T15:45:18.890Z"
+  },
+  {
+    "id": "spathiphyllum",
+    "produto_base": "spathiphyllum",
+    "tipo_produto": "PLANTA",
+    "descricao": "Spathiphyllum",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.890Z",
+    "updated_at": "2025-11-01T15:45:18.890Z"
+  },
+  {
+    "id": "cris",
+    "produto_base": "cris",
+    "tipo_produto": "FLOR",
+    "descricao": "CRIS",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.892Z",
+    "updated_at": "2025-11-01T15:45:18.892Z"
+  },
+  {
+    "id": "lisianthus",
+    "produto_base": "lisianthus",
+    "tipo_produto": "FLOR",
+    "descricao": "Lisianthus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.893Z",
+    "updated_at": "2025-11-01T15:45:18.893Z"
+  },
+  {
+    "id": "crisantemo",
+    "produto_base": "crisantemo",
+    "tipo_produto": "FLOR",
+    "descricao": "Crisantemo",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.893Z",
+    "updated_at": "2025-11-01T15:45:18.893Z"
+  },
+  {
+    "id": "gypsophila",
+    "produto_base": "gypsophila",
+    "tipo_produto": "FLOR",
+    "descricao": "Gypsophila",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.895Z",
+    "updated_at": "2025-11-01T15:45:18.895Z"
+  },
+  {
+    "id": "eryngium",
+    "produto_base": "eryngium",
+    "tipo_produto": "FLOR",
+    "descricao": "Eryngium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.895Z",
+    "updated_at": "2025-11-01T15:45:18.895Z"
+  },
+  {
+    "id": "veronica",
+    "produto_base": "veronica",
+    "tipo_produto": "FLOR",
+    "descricao": "Veronica",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.896Z",
+    "updated_at": "2025-11-01T15:45:18.896Z"
+  },
+  {
+    "id": "craspedia",
+    "produto_base": "craspedia",
+    "tipo_produto": "FLOR",
+    "descricao": "Craspedia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.897Z",
+    "updated_at": "2025-11-01T15:45:18.897Z"
+  },
+  {
+    "id": "rosa",
+    "produto_base": "rosa",
+    "tipo_produto": "FLOR",
+    "descricao": "Rosa",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.897Z",
+    "updated_at": "2025-11-01T15:45:18.897Z"
+  },
+  {
+    "id": "palmeira",
+    "produto_base": "palmeira",
+    "tipo_produto": "PLANTA",
+    "descricao": "Palmeira",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.898Z",
+    "updated_at": "2025-11-01T15:45:18.898Z"
+  },
+  {
+    "id": "kalanchoe",
+    "produto_base": "kalanchoe",
+    "tipo_produto": "FLOR",
+    "descricao": "Kalanchoe",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.898Z",
+    "updated_at": "2025-11-01T15:45:18.898Z"
+  },
+  {
+    "id": "anthurio",
+    "produto_base": "anthurio",
+    "tipo_produto": "PLANTA",
+    "descricao": "Anthurio",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.898Z",
+    "updated_at": "2025-11-01T15:45:18.898Z"
+  },
+  {
+    "id": "tagete",
+    "produto_base": "tagete",
+    "tipo_produto": "FLOR",
+    "descricao": "Tagete",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.899Z",
+    "updated_at": "2025-11-01T15:45:18.899Z"
+  },
+  {
+    "id": "flor",
+    "produto_base": "flor",
+    "tipo_produto": "FLOR",
+    "descricao": "Flor",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.899Z",
+    "updated_at": "2025-11-01T15:45:18.899Z"
+  },
+  {
+    "id": "planta",
+    "produto_base": "planta",
+    "tipo_produto": "PLANTA",
+    "descricao": "Planta",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.900Z",
+    "updated_at": "2025-11-01T15:45:18.900Z"
+  },
+  {
+    "id": "angelonia",
+    "produto_base": "angelonia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Angelonia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.901Z",
+    "updated_at": "2025-11-01T15:45:18.901Z"
+  },
+  {
+    "id": "salvia",
+    "produto_base": "salvia",
+    "tipo_produto": "FLOR",
+    "descricao": "Salvia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.902Z",
+    "updated_at": "2025-11-01T15:45:18.902Z"
+  },
+  {
+    "id": "caryopteris",
+    "produto_base": "caryopteris",
+    "tipo_produto": "FLOR",
+    "descricao": "Caryopteris",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.902Z",
+    "updated_at": "2025-11-01T15:45:18.902Z"
+  },
+  {
+    "id": "curcuma",
+    "produto_base": "curcuma",
+    "tipo_produto": "PLANTA",
+    "descricao": "Curcuma",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.903Z",
+    "updated_at": "2025-11-01T15:45:18.903Z"
+  },
+  {
+    "id": "hibiscus",
+    "produto_base": "hibiscus",
+    "tipo_produto": "PLANTA",
+    "descricao": "Hibiscus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.903Z",
+    "updated_at": "2025-11-01T15:45:18.903Z"
+  },
+  {
+    "id": "hibisqs",
+    "produto_base": "hibisqs",
+    "tipo_produto": "PLANTA",
+    "descricao": "Hibisqs",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.903Z",
+    "updated_at": "2025-11-01T15:45:18.903Z"
+  },
+  {
+    "id": "sant",
+    "produto_base": "sant",
+    "tipo_produto": "PLANTA",
+    "descricao": "Sant",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.904Z",
+    "updated_at": "2025-11-01T15:45:18.904Z"
+  },
+  {
+    "id": "denphalaen",
+    "produto_base": "denphalaen",
+    "tipo_produto": "FLOR",
+    "descricao": "Denphalaen",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.904Z",
+    "updated_at": "2025-11-01T15:45:18.904Z"
+  },
+  {
+    "id": "tango",
+    "produto_base": "tango",
+    "tipo_produto": "PLANTA",
+    "descricao": "Tango",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.905Z",
+    "updated_at": "2025-11-01T15:45:18.905Z"
+  },
+  {
+    "id": "loropetalum",
+    "produto_base": "loropetalum",
+    "tipo_produto": "FLOR",
+    "descricao": "Loropetalum",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.905Z",
+    "updated_at": "2025-11-01T15:45:18.905Z"
+  },
+  {
+    "id": "anth",
+    "produto_base": "anth",
+    "tipo_produto": "PLANTA",
+    "descricao": "Anth",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.905Z",
+    "updated_at": "2025-11-01T15:45:18.905Z"
+  },
+  {
+    "id": "firebush",
+    "produto_base": "firebush",
+    "tipo_produto": "PLANTA",
+    "descricao": "Firebush",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.907Z",
+    "updated_at": "2025-11-01T15:45:18.907Z"
+  },
+  {
+    "id": "pilea",
+    "produto_base": "pilea",
+    "tipo_produto": "PLANTA",
+    "descricao": "Pilea",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.907Z",
+    "updated_at": "2025-11-01T15:45:18.907Z"
+  },
+  {
+    "id": "coleus",
+    "produto_base": "coleus",
+    "tipo_produto": "PLANTA",
+    "descricao": "Coleus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.907Z",
+    "updated_at": "2025-11-01T15:45:18.907Z"
+  },
+  {
+    "id": "echeveria",
+    "produto_base": "echeveria",
+    "tipo_produto": "PLANTA",
+    "descricao": "Echeveria",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.907Z",
+    "updated_at": "2025-11-01T15:45:18.907Z"
+  },
+  {
+    "id": "alstroemeria",
+    "produto_base": "alstroemeria",
+    "tipo_produto": "FLOR",
+    "descricao": "Alstroemeria",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.907Z",
+    "updated_at": "2025-11-01T15:45:18.907Z"
+  },
+  {
+    "id": "suculentas",
+    "produto_base": "suculentas",
+    "tipo_produto": "FLOR",
+    "descricao": "Suculentas",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.909Z",
+    "updated_at": "2025-11-01T15:45:18.909Z"
+  },
+  {
+    "id": "santini",
+    "produto_base": "santini",
+    "tipo_produto": "FLOR",
+    "descricao": "Santini",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.909Z",
+    "updated_at": "2025-11-01T15:45:18.909Z"
+  },
+  {
+    "id": "tulipa",
+    "produto_base": "tulipa",
+    "tipo_produto": "PLANTA",
+    "descricao": "Tulipa",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.911Z",
+    "updated_at": "2025-11-01T15:45:18.911Z"
+  },
+  {
+    "id": "hyacintus",
+    "produto_base": "hyacintus",
+    "tipo_produto": "FLOR",
+    "descricao": "Hyacintus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.911Z",
+    "updated_at": "2025-11-01T15:45:18.911Z"
+  },
+  {
+    "id": "hyacinthus",
+    "produto_base": "hyacinthus",
+    "tipo_produto": "PLANTA",
+    "descricao": "Hyacinthus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.911Z",
+    "updated_at": "2025-11-01T15:45:18.911Z"
+  },
+  {
+    "id": "beaucarnea",
+    "produto_base": "beaucarnea",
+    "tipo_produto": "PLANTA",
+    "descricao": "Beaucarnea",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.913Z",
+    "updated_at": "2025-11-01T15:45:18.913Z"
+  },
+  {
+    "id": "trachelium",
+    "produto_base": "trachelium",
+    "tipo_produto": "FLOR",
+    "descricao": "Trachelium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.914Z",
+    "updated_at": "2025-11-01T15:45:18.914Z"
+  },
+  {
+    "id": "haste",
+    "produto_base": "haste",
+    "tipo_produto": "PLANTA",
+    "descricao": "Haste",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.916Z",
+    "updated_at": "2025-11-01T15:45:18.916Z"
+  },
+  {
+    "id": "ast",
+    "produto_base": "ast",
+    "tipo_produto": "FLOR",
+    "descricao": "Ast",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.917Z",
+    "updated_at": "2025-11-01T15:45:18.917Z"
+  },
+  {
+    "id": "folh",
+    "produto_base": "folh",
+    "tipo_produto": "PLANTA",
+    "descricao": "Folh",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.917Z",
+    "updated_at": "2025-11-01T15:45:18.917Z"
+  },
+  {
+    "id": "amarillis",
+    "produto_base": "amarillis",
+    "tipo_produto": "PLANTA",
+    "descricao": "Amarillis",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.918Z",
+    "updated_at": "2025-11-01T15:45:18.918Z"
+  },
+  {
+    "id": "phal-1",
+    "produto_base": "phal.",
+    "tipo_produto": "FLOR",
+    "descricao": "Phal.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.918Z",
+    "updated_at": "2025-11-01T15:45:18.918Z"
+  },
+  {
+    "id": "phalaenopis",
+    "produto_base": "phalaenopis",
+    "tipo_produto": "FLOR",
+    "descricao": "Phalaenopis",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.920Z",
+    "updated_at": "2025-11-01T15:45:18.920Z"
+  },
+  {
+    "id": "buquet",
+    "produto_base": "buquet",
+    "tipo_produto": "FLOR",
+    "descricao": "Buquet",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.923Z",
+    "updated_at": "2025-11-01T15:45:18.923Z"
+  },
+  {
+    "id": "phalp12",
+    "produto_base": "phalp12",
+    "tipo_produto": "FLOR",
+    "descricao": "Phalp12",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.929Z",
+    "updated_at": "2025-11-01T15:45:18.929Z"
+  },
+  {
+    "id": "mandevila",
+    "produto_base": "mandevila",
+    "tipo_produto": "PLANTA",
+    "descricao": "Mandevila",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.929Z",
+    "updated_at": "2025-11-01T15:45:18.929Z"
+  },
+  {
+    "id": "roseira",
+    "produto_base": "roseira",
+    "tipo_produto": "PLANTA",
+    "descricao": "Roseira",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.929Z",
+    "updated_at": "2025-11-01T15:45:18.929Z"
+  },
+  {
+    "id": "indian",
+    "produto_base": "indian",
+    "tipo_produto": "PLANTA",
+    "descricao": "Indian",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.929Z",
+    "updated_at": "2025-11-01T15:45:18.929Z"
+  },
+  {
+    "id": "rosasweet",
+    "produto_base": "rosasweet",
+    "tipo_produto": "FLOR",
+    "descricao": "Rosasweet",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.930Z",
+    "updated_at": "2025-11-01T15:45:18.930Z"
+  },
+  {
+    "id": "hoya",
+    "produto_base": "hoya",
+    "tipo_produto": "PLANTA",
+    "descricao": "Hoya",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.930Z",
+    "updated_at": "2025-11-01T15:45:18.930Z"
+  },
+  {
+    "id": "phale",
+    "produto_base": "phale",
+    "tipo_produto": "FLOR",
+    "descricao": "Phale",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.930Z",
+    "updated_at": "2025-11-01T15:45:18.930Z"
+  },
+  {
+    "id": "dracena",
+    "produto_base": "dracena",
+    "tipo_produto": "PLANTA",
+    "descricao": "Dracena",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.932Z",
+    "updated_at": "2025-11-01T15:45:18.932Z"
+  },
+  {
+    "id": "crisd",
+    "produto_base": "cris.d",
+    "tipo_produto": "FLOR",
+    "descricao": "Cris.d",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.932Z",
+    "updated_at": "2025-11-01T15:45:18.932Z"
+  },
+  {
+    "id": "pha",
+    "produto_base": "pha",
+    "tipo_produto": "PLANTA",
+    "descricao": "Pha",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.932Z",
+    "updated_at": "2025-11-01T15:45:18.932Z"
+  },
+  {
+    "id": "dischidia",
+    "produto_base": "dischidia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Dischidia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.936Z",
+    "updated_at": "2025-11-01T15:45:18.936Z"
+  },
+  {
+    "id": "scabiosa",
+    "produto_base": "scabiosa",
+    "tipo_produto": "PLANTA",
+    "descricao": "Scabiosa",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.936Z",
+    "updated_at": "2025-11-01T15:45:18.936Z"
+  },
+  {
+    "id": "bouquet",
+    "produto_base": "bouquet",
+    "tipo_produto": "PLANTA",
+    "descricao": "Bouquet",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.937Z",
+    "updated_at": "2025-11-01T15:45:18.937Z"
+  },
+  {
+    "id": "freesia",
+    "produto_base": "freesia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Freesia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.937Z",
+    "updated_at": "2025-11-01T15:45:18.937Z"
+  },
+  {
+    "id": "alst",
+    "produto_base": "alst.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Alst.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.937Z",
+    "updated_at": "2025-11-01T15:45:18.937Z"
+  },
+  {
+    "id": "garrafa",
+    "produto_base": "garrafa",
+    "tipo_produto": "PLANTA",
+    "descricao": "Garrafa",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.940Z",
+    "updated_at": "2025-11-01T15:45:18.940Z"
+  },
+  {
+    "id": "tropicalis",
+    "produto_base": "tropicalis",
+    "tipo_produto": "PLANTA",
+    "descricao": "Tropicalis",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.940Z",
+    "updated_at": "2025-11-01T15:45:18.940Z"
+  },
+  {
+    "id": "glad",
+    "produto_base": "glad",
+    "tipo_produto": "PLANTA",
+    "descricao": "Glad",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.940Z",
+    "updated_at": "2025-11-01T15:45:18.940Z"
+  },
+  {
+    "id": "cris-1",
+    "produto_base": "cris.",
+    "tipo_produto": "FLOR",
+    "descricao": "Cris.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.941Z",
+    "updated_at": "2025-11-01T15:45:18.941Z"
+  },
+  {
+    "id": "crystal",
+    "produto_base": "crystal",
+    "tipo_produto": "PLANTA",
+    "descricao": "Crystal",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.941Z",
+    "updated_at": "2025-11-01T15:45:18.941Z"
+  },
+  {
+    "id": "vriesea",
+    "produto_base": "vriesea",
+    "tipo_produto": "PLANTA",
+    "descricao": "Vriesea",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.942Z",
+    "updated_at": "2025-11-01T15:45:18.942Z"
+  },
+  {
+    "id": "ranunculus",
+    "produto_base": "ranunculus",
+    "tipo_produto": "PLANTA",
+    "descricao": "Ranunculus",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.942Z",
+    "updated_at": "2025-11-01T15:45:18.942Z"
+  },
+  {
+    "id": "mc",
+    "produto_base": "mc",
+    "tipo_produto": "FLOR",
+    "descricao": "Mc",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.943Z",
+    "updated_at": "2025-11-01T15:45:18.943Z"
+  },
+  {
+    "id": "guzm",
+    "produto_base": "guzm.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Guzm.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.946Z",
+    "updated_at": "2025-11-01T15:45:18.946Z"
+  },
+  {
+    "id": "spath",
+    "produto_base": "spath.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Spath.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.946Z",
+    "updated_at": "2025-11-01T15:45:18.946Z"
+  },
+  {
+    "id": "rhipsalis",
+    "produto_base": "rhipsalis",
+    "tipo_produto": "PLANTA",
+    "descricao": "Rhipsalis",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.947Z",
+    "updated_at": "2025-11-01T15:45:18.947Z"
+  },
+  {
+    "id": "anast",
+    "produto_base": "anast.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Anast.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.947Z",
+    "updated_at": "2025-11-01T15:45:18.947Z"
+  },
+  {
+    "id": "ranun",
+    "produto_base": "ranun.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Ranun.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.949Z",
+    "updated_at": "2025-11-01T15:45:18.949Z"
+  },
+  {
+    "id": "l",
+    "produto_base": "l.",
+    "tipo_produto": "PLANTA",
+    "descricao": "L.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.950Z",
+    "updated_at": "2025-11-01T15:45:18.950Z"
+  },
+  {
+    "id": "gerb",
+    "produto_base": "gerb",
+    "tipo_produto": "PLANTA",
+    "descricao": "GERB",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.956Z",
+    "updated_at": "2025-11-01T15:45:18.956Z"
+  },
+  {
+    "id": "platycerium",
+    "produto_base": "platycerium",
+    "tipo_produto": "PLANTA",
+    "descricao": "Platycerium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.957Z",
+    "updated_at": "2025-11-01T15:45:18.957Z"
+  },
+  {
+    "id": "anastasia",
+    "produto_base": "anastasia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Anastasia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.958Z",
+    "updated_at": "2025-11-01T15:45:18.958Z"
+  },
+  {
+    "id": "guzmania",
+    "produto_base": "guzmania",
+    "tipo_produto": "PLANTA",
+    "descricao": "Guzmania",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.963Z",
+    "updated_at": "2025-11-01T15:45:18.963Z"
+  },
+  {
+    "id": "alocasia",
+    "produto_base": "alocasia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Alocasia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.965Z",
+    "updated_at": "2025-11-01T15:45:18.965Z"
+  },
+  {
+    "id": "panda",
+    "produto_base": "panda",
+    "tipo_produto": "PLANTA",
+    "descricao": "Panda",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.965Z",
+    "updated_at": "2025-11-01T15:45:18.965Z"
+  },
+  {
+    "id": "barba",
+    "produto_base": "barba",
+    "tipo_produto": "PLANTA",
+    "descricao": "Barba",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.966Z",
+    "updated_at": "2025-11-01T15:45:18.966Z"
+  },
+  {
+    "id": "dief",
+    "produto_base": "dief.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Dief.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.966Z",
+    "updated_at": "2025-11-01T15:45:18.966Z"
+  },
+  {
+    "id": "fc",
+    "produto_base": "fc.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Fc.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.966Z",
+    "updated_at": "2025-11-01T15:45:18.966Z"
+  },
+  {
+    "id": "vibernum",
+    "produto_base": "vibernum",
+    "tipo_produto": "PLANTA",
+    "descricao": "Vibernum",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.968Z",
+    "updated_at": "2025-11-01T15:45:18.968Z"
+  },
+  {
+    "id": "astilbe",
+    "produto_base": "astilbe",
+    "tipo_produto": "PLANTA",
+    "descricao": "Astilbe",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.969Z",
+    "updated_at": "2025-11-01T15:45:18.969Z"
+  },
+  {
+    "id": "lumina",
+    "produto_base": "lumina",
+    "tipo_produto": "PLANTA",
+    "descricao": "Lumina",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.973Z",
+    "updated_at": "2025-11-01T15:45:18.973Z"
+  },
+  {
+    "id": "dorstenia",
+    "produto_base": "dorstenia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Dorstenia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.973Z",
+    "updated_at": "2025-11-01T15:45:18.973Z"
+  },
+  {
+    "id": "gerbera",
+    "produto_base": "gerbera",
+    "tipo_produto": "PLANTA",
+    "descricao": "GERBERA",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.973Z",
+    "updated_at": "2025-11-01T15:45:18.973Z"
+  },
+  {
+    "id": "violeta",
+    "produto_base": "violeta",
+    "tipo_produto": "PLANTA",
+    "descricao": "Violeta",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.973Z",
+    "updated_at": "2025-11-01T15:45:18.973Z"
+  },
+  {
+    "id": "arr",
+    "produto_base": "arr.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Arr.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.973Z",
+    "updated_at": "2025-11-01T15:45:18.973Z"
+  },
+  {
+    "id": "hawaii",
+    "produto_base": "hawaii",
+    "tipo_produto": "PLANTA",
+    "descricao": "Hawaii",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.974Z",
+    "updated_at": "2025-11-01T15:45:18.974Z"
+  },
+  {
+    "id": "adoro",
+    "produto_base": "adoro",
+    "tipo_produto": "PLANTA",
+    "descricao": "Adoro",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.978Z",
+    "updated_at": "2025-11-01T15:45:18.978Z"
+  },
+  {
+    "id": "thunbergia",
+    "produto_base": "thunbergia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Thunbergia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.980Z",
+    "updated_at": "2025-11-01T15:45:18.980Z"
+  },
+  {
+    "id": "erica",
+    "produto_base": "erica",
+    "tipo_produto": "PLANTA",
+    "descricao": "Erica",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.980Z",
+    "updated_at": "2025-11-01T15:45:18.980Z"
+  },
+  {
+    "id": "yucca",
+    "produto_base": "yucca",
+    "tipo_produto": "PLANTA",
+    "descricao": "Yucca",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.980Z",
+    "updated_at": "2025-11-01T15:45:18.980Z"
+  },
+  {
+    "id": "tostao",
+    "produto_base": "tostao",
+    "tipo_produto": "PLANTA",
+    "descricao": "Tostao",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.981Z",
+    "updated_at": "2025-11-01T15:45:18.981Z"
+  },
+  {
+    "id": "schef",
+    "produto_base": "schef.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Schef.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.981Z",
+    "updated_at": "2025-11-01T15:45:18.981Z"
+  },
+  {
+    "id": "samamb",
+    "produto_base": "samamb",
+    "tipo_produto": "PLANTA",
+    "descricao": "Samamb",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.981Z",
+    "updated_at": "2025-11-01T15:45:18.981Z"
+  },
+  {
+    "id": "philod",
+    "produto_base": "philod.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Philod.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.981Z",
+    "updated_at": "2025-11-01T15:45:18.981Z"
+  },
+  {
+    "id": "palm",
+    "produto_base": "palm",
+    "tipo_produto": "PLANTA",
+    "descricao": "Palm",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.981Z",
+    "updated_at": "2025-11-01T15:45:18.981Z"
+  },
+  {
+    "id": "jiboia",
+    "produto_base": "jiboia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Jiboia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.981Z",
+    "updated_at": "2025-11-01T15:45:18.981Z"
+  },
+  {
+    "id": "eugenia",
+    "produto_base": "eugenia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Eugenia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.981Z",
+    "updated_at": "2025-11-01T15:45:18.981Z"
+  },
+  {
+    "id": "cycas",
+    "produto_base": "cycas",
+    "tipo_produto": "PLANTA",
+    "descricao": "Cycas",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.981Z",
+    "updated_at": "2025-11-01T15:45:18.981Z"
+  },
+  {
+    "id": "vinca",
+    "produto_base": "vinca",
+    "tipo_produto": "PLANTA",
+    "descricao": "Vinca",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.984Z",
+    "updated_at": "2025-11-01T15:45:18.984Z"
+  },
+  {
+    "id": "stephanot",
+    "produto_base": "stephanot",
+    "tipo_produto": "PLANTA",
+    "descricao": "Stephanot",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.993Z",
+    "updated_at": "2025-11-01T15:45:18.993Z"
+  },
+  {
+    "id": "scutellaria",
+    "produto_base": "scutellaria",
+    "tipo_produto": "PLANTA",
+    "descricao": "Scutellaria",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.994Z",
+    "updated_at": "2025-11-01T15:45:18.994Z"
+  },
+  {
+    "id": "poinset",
+    "produto_base": "poinset.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Poinset.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.995Z",
+    "updated_at": "2025-11-01T15:45:18.995Z"
+  },
+  {
+    "id": "columnea",
+    "produto_base": "columnea",
+    "tipo_produto": "PLANTA",
+    "descricao": "Columnea",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.996Z",
+    "updated_at": "2025-11-01T15:45:18.996Z"
+  },
+  {
+    "id": "orthop",
+    "produto_base": "orthop.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Orthop.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.996Z",
+    "updated_at": "2025-11-01T15:45:18.996Z"
+  },
+  {
+    "id": "neodypsis",
+    "produto_base": "neodypsis",
+    "tipo_produto": "PLANTA",
+    "descricao": "Neodypsis",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:18.996Z",
+    "updated_at": "2025-11-01T15:45:18.996Z"
+  },
+  {
+    "id": "petunia",
+    "produto_base": "petunia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Petunia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.000Z",
+    "updated_at": "2025-11-01T15:45:19.000Z"
+  },
+  {
+    "id": "canna",
+    "produto_base": "canna",
+    "tipo_produto": "PLANTA",
+    "descricao": "Canna",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.000Z",
+    "updated_at": "2025-11-01T15:45:19.000Z"
+  },
+  {
+    "id": "bonsai",
+    "produto_base": "bonsai",
+    "tipo_produto": "PLANTA",
+    "descricao": "Bonsai",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.000Z",
+    "updated_at": "2025-11-01T15:45:19.000Z"
+  },
+  {
+    "id": "begonia",
+    "produto_base": "begonia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Begonia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.000Z",
+    "updated_at": "2025-11-01T15:45:19.000Z"
+  },
+  {
+    "id": "beauc",
+    "produto_base": "beauc.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Beauc.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.000Z",
+    "updated_at": "2025-11-01T15:45:19.000Z"
+  },
+  {
+    "id": "arruda",
+    "produto_base": "arruda",
+    "tipo_produto": "PLANTA",
+    "descricao": "Arruda",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.001Z",
+    "updated_at": "2025-11-01T15:45:19.001Z"
+  },
+  {
+    "id": "mussaenda",
+    "produto_base": "mussaenda",
+    "tipo_produto": "PLANTA",
+    "descricao": "Mussaenda",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.001Z",
+    "updated_at": "2025-11-01T15:45:19.001Z"
+  },
+  {
+    "id": "amor",
+    "produto_base": "amor",
+    "tipo_produto": "PLANTA",
+    "descricao": "Amor",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.002Z",
+    "updated_at": "2025-11-01T15:45:19.002Z"
+  },
+  {
+    "id": "manaca",
+    "produto_base": "manaca",
+    "tipo_produto": "PLANTA",
+    "descricao": "Manaca",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.002Z",
+    "updated_at": "2025-11-01T15:45:19.002Z"
+  },
+  {
+    "id": "allium",
+    "produto_base": "allium",
+    "tipo_produto": "PLANTA",
+    "descricao": "Allium",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.002Z",
+    "updated_at": "2025-11-01T15:45:19.002Z"
+  },
+  {
+    "id": "ludisia",
+    "produto_base": "ludisia",
+    "tipo_produto": "PLANTA",
+    "descricao": "Ludisia",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.002Z",
+    "updated_at": "2025-11-01T15:45:19.002Z"
+  },
+  {
+    "id": "ixora",
+    "produto_base": "ixora",
+    "tipo_produto": "PLANTA",
+    "descricao": "Ixora",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.002Z",
+    "updated_at": "2025-11-01T15:45:19.002Z"
+  },
+  {
+    "id": "zanted",
+    "produto_base": "zanted",
+    "tipo_produto": "PLANTA",
+    "descricao": "Zanted",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.003Z",
+    "updated_at": "2025-11-01T15:45:19.003Z"
+  },
+  {
+    "id": "lis",
+    "produto_base": "lis.",
+    "tipo_produto": "PLANTA",
+    "descricao": "Lis.",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.004Z",
+    "updated_at": "2025-11-01T15:45:19.004Z"
+  },
+  {
+    "id": "lis-1",
+    "produto_base": "lis",
+    "tipo_produto": "PLANTA",
+    "descricao": "Lis",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.004Z",
+    "updated_at": "2025-11-01T15:45:19.004Z"
+  },
+  {
+    "id": "liatris",
+    "produto_base": "liatris",
+    "tipo_produto": "PLANTA",
+    "descricao": "Liatris",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.006Z",
+    "updated_at": "2025-11-01T15:45:19.006Z"
+  },
+  {
+    "id": "hypericum",
+    "produto_base": "hypericum",
+    "tipo_produto": "PLANTA",
+    "descricao": "Hypericum",
+    "status": "ATIVO",
+    "galeria_principal": [],
+    "created_at": "2025-11-01T15:45:19.006Z",
+    "updated_at": "2025-11-01T15:45:19.006Z"
+  }
+]

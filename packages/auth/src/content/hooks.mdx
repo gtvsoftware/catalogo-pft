@@ -1,0 +1,165 @@
+# Hooks
+
+Hooks do React para gerenciamento do estado de autenticação.
+
+## useAuthSession
+
+Um hook poderoso para gerenciamento avançado de sessão, com atualização automática de token e validação.
+
+### Importação
+
+```tsx
+import { useAuthSession } from "@terraviva/auth"
+```
+
+### Uso
+
+```tsx
+function MeuComponente() {
+  const { 
+    data, 
+    status, 
+    refreshSession, 
+    isTokenExpired,
+    hasRefreshError,
+    isSessionHealthy,
+    isUpdating,
+    error,
+    lastUpdate
+  } = useAuthSession()
+
+  // Verifica se o usuário está autenticado
+  if (status === 'loading') {
+    return <div>Carregando...</div>
+  }
+
+  if (status === 'unauthenticated') {
+    return <div>Por favor, faça login</div>
+  }
+
+  // Verifica a validade do token
+  if (isTokenExpired()) {
+    refreshSession()
+  }
+
+  return (
+    <div>
+      <p>Bem-vindo, {data?.user?.email}</p>
+      <button onClick={refreshSession} disabled={isUpdating}>
+        {isUpdating ? 'Atualizando...' : 'Atualizar Sessão'}
+      </button>
+    </div>
+  )
+}
+```
+
+### Valores Retornados
+
+| Propriedade        | Tipo                                                | Descrição                                                         |
+| ------------------ | --------------------------------------------------- | ----------------------------------------------------------------- |
+| `data`             | `object \| null`                                    | Dados da sessão incluindo informações do usuário e tokens         |
+| `status`           | `'loading' \| 'authenticated' \| 'unauthenticated'` | Status atual da sessão                                            |
+| `isUpdating`       | `boolean`                                           | Indica se a sessão está sendo atualizada                          |
+| `error`            | `string \| null`                                    | Último erro ocorrido durante a atualização                        |
+| `lastUpdate`       | `number \| null`                                    | Timestamp da última atualização bem-sucedida                      |
+| `refreshSession`   | `() => Promise<any>`                                | Atualiza a sessão manualmente                                     |
+| `isTokenExpired`   | `() => boolean`                                     | Verifica se o token de acesso expirou                             |
+| `hasRefreshError`  | `() => boolean`                                     | Verifica se ocorreu erro com o refresh token                      |
+| `isSessionHealthy` | `() => boolean`                                     | Verifica se a sessão está saudável (autenticada + tokens válidos) |
+
+---
+
+### Recursos Avançados
+
+#### Validação Automática de Token
+
+O hook detecta automaticamente tokens expirados e fornece utilitários para tratá-los:
+
+```tsx
+const { isTokenExpired, refreshSession } = useAuthSession()
+
+// Verificar status do token
+if (isTokenExpired()) {
+  // Token expirado, atualizar
+  await refreshSession()
+}
+```
+
+---
+
+#### Verificação da Saúde da Sessão
+
+Use `isSessionHealthy()` para validar o estado completo da sessão:
+
+```tsx
+const { isSessionHealthy } = useAuthSession()
+
+if (!isSessionHealthy()) {
+  // Sessão com problemas - token expirado, erro no refresh, etc.
+  // Tratar conforme necessário
+}
+```
+
+---
+
+#### Tratamento de Erros
+
+O hook fornece informações detalhadas de erros e logging:
+
+```tsx
+const { error, hasRefreshError } = useAuthSession()
+
+if (hasRefreshError()) {
+  // Refresh token inválido – usuário precisa se autenticar novamente
+  signIn()
+}
+
+if (error) {
+  // Exibir erro ao usuário
+  console.error('Erro na sessão:', error)
+}
+```
+
+---
+
+#### Atualização Manual da Sessão
+
+Atualize a sessão manualmente com estado de carregamento:
+
+```tsx
+const { refreshSession, isUpdating } = useAuthSession()
+
+const handleRefresh = async () => {
+  try {
+    await refreshSession()
+    console.log('Sessão atualizada com sucesso')
+  } catch (error) {
+    console.error('Falha ao atualizar sessão:', error)
+  }
+}
+
+// Botão com estado de carregamento
+<button onClick={handleRefresh} disabled={isUpdating}>
+  {isUpdating ? 'Atualizando...' : 'Atualizar Sessão'}
+</button>
+```
+
+---
+
+### Estrutura dos Dados da Sessão
+
+O objeto `data` contém:
+
+```typescript
+{
+  user: {
+    email: string
+    name: string
+    // ... outras propriedades do usuário
+  },
+  access_token: string,
+  refresh_token: string,
+  expires: string, // timestamp ISO
+  error?: 'RefreshAccessTokenError' | string
+}
+```

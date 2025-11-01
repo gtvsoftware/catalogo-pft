@@ -1,0 +1,11 @@
+packages:
+  - apps/*
+  - packages/*
+  - '!**/test/**'
+
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - '@sentry-internal/node-cpu-profiler'
+  - core-js-pure
+  - esbuild
+  - sharp

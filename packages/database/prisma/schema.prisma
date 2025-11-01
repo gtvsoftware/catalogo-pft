@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model ProdutoBase {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  produtoBase      String   @map("produto_base")
+  tipoProduto      String   @map("tipo_produto") // PLANTA, FLOR
+  descricao        String?
+  status           String   @default("ATIVO") // ATIVO, INATIVO
+  galeriaPrincipal String?  @map("galeria_principal") @db.NVarChar(Max) // JSON string - Array
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  conjuntos ConjuntoComercial[]
+
+  @@index([produtoBase])
+  @@index([tipoProduto])
+  @@index([status])
+  @@map("produtos_base")
+}
+
+model ConjuntoComercial {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  produtoId          String   @map("produto_id")
+  variedade          String?
+  nivelComercial     String?  @map("nivel_comercial")
+  tipoProduto        String   @map("tipo_produto") // PLANTA, FLOR
+  tipoEmbalagem      String   @map("tipo_embalagem") // POTE, MACO, BANDEJA, TERRARIO
+  numeroPote         String?  @map("numero_pote")
+  numeroHashtes      String?  @map("numero_hastes")
+  numeroFlores       String?  @map("numero_flores")
+  alturaCm           String?  @map("altura_cm")
+  diametroFlorCm     String?  @map("diametro_flor_cm")
+  cor                String?
+  codigoVeiling      String?  @unique @map("codigo_veiling")
+  descricaoComercial String   @map("descricao_comercial")
+  descricaoOriginal  String   @map("descricao_original")
+  precoVendaSugerido Int      @default(0) @map("preco_venda_sugerido")
+  historicoPrecos    String?  @map("historico_precos") @db.NVarChar(Max) // JSON string
+  imagens            String?  @db.NVarChar(Max) // JSON string
+  ativo              Boolean  @default(true)
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  produtoBase ProdutoBase @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+
+  @@index([produtoId])
+  @@index([tipoProduto])
+  @@index([tipoEmbalagem])
+  @@index([numeroPote])
+  @@index([alturaCm])
+  @@index([cor])
+  @@index([codigoVeiling])
+  @@index([ativo])
+  @@index([descricaoComercial])
+  @@map("conjuntos_comerciais")
+}

@@ -1,0 +1,110 @@
+# Componentes
+
+A biblioteca fornece diversos componentes React para autenticação:
+
+## Páginas
+
+### SignInPage
+
+Um componente de página de login pronto para uso que gerencia o fluxo de autenticação.
+
+```tsx
+import { SignInPage } from "@terraviva/auth"
+
+export default SignInPage
+```
+
+**Uso:** Crie este arquivo em `src/app/auth/signin/page.tsx` para lidar com os redirecionamentos de login.
+
+---
+
+### SignOutPage
+
+Um componente de página de logout que gerencia o fluxo de saída.
+
+```tsx
+import { SignOutPage } from "@terraviva/auth"
+
+export default SignOutPage
+```
+
+**Uso:** Crie este arquivo em `src/app/auth/signout/page.tsx` para lidar com os redirecionamentos de logout.
+
+---
+
+### AuthErrorPage
+
+Um componente de página de erro para falhas de autenticação.
+
+```tsx
+import { AuthErrorPage } from "@terraviva/auth"
+
+export default function ErrorPage() {
+  return <AuthErrorPage />
+}
+```
+
+---
+
+## Providers
+
+### AuthProvider
+
+O provedor principal de autenticação que envolve sua aplicação.
+
+```tsx
+import { AuthProvider } from "@terraviva/auth"
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="pt-BR">
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+**Props:**
+
+* `children`: Nó React que será envolvido pelo provedor
+
+---
+
+### AuthJsProvider
+
+Provedor interno para integração com NextAuth.js (utilizado internamente pelo `AuthProvider`).
+
+```tsx
+import { AuthJsProvider } from "@terraviva/auth"
+
+// Normalmente não é usado diretamente – utilize AuthProvider em vez disso
+```
+
+---
+
+### SessionProvider
+
+Provedor de sessão no lado do cliente (utilizado internamente pelo `AuthProvider`).
+
+```tsx
+import { SessionProvider } from "@terraviva/auth"
+
+// Normalmente não é usado diretamente – utilize AuthProvider em vez disso
+```
+
+---
+
+## Tipos TypeScript
+
+Todos os componentes possuem suporte completo a TypeScript com tipos exportados:
+
+* `PageProps` – Propriedades para componentes de página
+* `AuthJsProviderProps` – Propriedades para o AuthJsProvider
+* `AuthProviderProps` – Propriedades para o AuthProvider
+* `SessionProviderProps` – Propriedades para o SessionProvider

@@ -1,0 +1,146 @@
+# Referência da API
+
+Referência completa da API para todas as exports de `@terraviva/auth`.
+
+## Exports Principais
+
+```tsx
+import {
+  // Componentes
+  AuthProvider,
+  AuthJsProvider, 
+  SessionProvider,
+  SignInPage,
+  SignOutPage,
+  AuthErrorPage,
+  
+  // Hooks
+  useAuthSession,
+  
+  // Utilitários
+  getDomainWithoutSubdomain,
+  getSessionStatus,
+  getTokenFromIssuer,
+  appUrlFromEnv,
+  authUrlFromEnv,
+  basePathFromEnv,
+  fullUrlFromEnv,
+  
+  // Funções de Autenticação
+  auth,
+  handlers,
+  signIn,
+  signOut,
+  generateMiddleware,
+  middlewareConfig,
+  
+  // Tipos
+  type PageProps,
+  type AuthJsProviderProps,
+  type AuthProviderProps,
+  type SessionProviderProps,
+  type GetTokenFromIssuerProps
+} from "@terraviva/auth"
+```
+
+## Exports do Pacote
+
+O pacote fornece múltiplos pontos de entrada:
+
+### Entrada Principal
+
+```tsx
+import { AuthProvider, useAuthSession } from "@terraviva/auth"
+```
+
+### Entrada de Componentes
+
+```tsx
+import { SignInPage, SignOutPage } from "@terraviva/auth/components"
+```
+
+### Entrada de Utilitários
+
+```tsx
+import { getDomainWithoutSubdomain, getSessionStatus } from "@terraviva/auth/utils"
+```
+
+### Entrada da Biblioteca
+
+```tsx
+import { auth, handlers, signIn, signOut } from "@terraviva/auth/lib"
+```
+
+### Entrada de Tipos
+
+```tsx
+import type { PageProps, AuthProviderProps } from "@terraviva/auth/types"
+```
+
+## Componentes Principais
+
+| Componente                                   | Descrição                          | Import            |
+| -------------------------------------------- | ---------------------------------- | ----------------- |
+| [`AuthProvider`](/components#authprovider)   | Provedor principal de autenticação | `@terraviva/auth` |
+| [`SignInPage`](/components#signinpage)       | Página de login pronta para uso    | `@terraviva/auth` |
+| [`SignOutPage`](/components#signoutpage)     | Página de logout pronta para uso   | `@terraviva/auth` |
+| [`AuthErrorPage`](/components#autherrorpage) | Página de erro de autenticação     | `@terraviva/auth` |
+
+## Hooks
+
+| Hook                                      | Descrição                        | Import            |
+| ----------------------------------------- | -------------------------------- | ----------------- |
+| [`useAuthSession`](/hooks#useauthsession) | Gerenciamento avançado de sessão | `@terraviva/auth` |
+
+## Utilitários
+
+| Função                                                          | Descrição                  | Import            |
+| --------------------------------------------------------------- | -------------------------- | ----------------- |
+| [`getDomainWithoutSubdomain`](/utils#getdomainwithoutsubdomain) | Extrai o domínio principal | `@terraviva/auth` |
+| [`getSessionStatus`](/utils#getsessionstatus)                   | Obtém o status da sessão   | `@terraviva/auth` |
+| [`getTokenFromIssuer`](/utils#gettokenfromissuer)               | Obtém tokens do Keycloak   | `@terraviva/auth` |
+
+## Funções de Autenticação
+
+| Função     | Descrição               | Uso                      |
+| ---------- | ----------------------- | ------------------------ |
+| `auth`     | Obtém a sessão atual    | Autenticação no servidor |
+| `handlers` | Handlers do NextAuth.js | Rotas de API             |
+| `signIn`   | Dispara o login         | Login programático       |
+| `signOut`  | Dispara o logout        | Logout programático      |
+
+## Middleware
+
+| Função               | Descrição                       | Uso                      |
+| -------------------- | ------------------------------- | ------------------------ |
+| `generateMiddleware` | Cria middleware de autenticação | Proteção de rotas        |
+| `middlewareConfig`   | Configuração do middleware      | Correspondência de rotas |
+
+## Tipos TypeScript
+
+Todos os componentes e funções incluem definições completas de tipos TypeScript. Consulte as páginas individuais para informações detalhadas de tipos:
+
+* [Tipos de Componentes](/components) – Props e interfaces para componentes React
+* [Tipos de Hooks](/hooks) – Tipos de retorno e parâmetros dos hooks
+* [Tipos de Utilitários](/utils) – Parâmetros e retornos das funções
+
+## Variáveis de Ambiente
+
+Variáveis de ambiente obrigatórias para a biblioteca:
+
+```env
+# URLs da aplicação
+NEXT_PUBLIC_APP_URL=seu-app-url
+NEXT_PUBLIC_BASE_PATH=base-path-opcional
+
+# NextAuth.js
+AUTH_URL=sua-auth-url
+AUTH_SECRET=seu-segredo
+
+# Keycloak
+AUTH_ISSUER_URL=sua-keycloak-url
+AUTH_CLIENT_ID=seu-client-id
+AUTH_CLIENT_SECRET=seu-client-secret
+```
+
+Consulte o [Guia de Configuração](/setup) para instruções detalhadas de configuração.

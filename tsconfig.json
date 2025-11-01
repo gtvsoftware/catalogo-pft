@@ -1,0 +1,3 @@
+{
+  "extends": "@terraviva/tsconfig/base.json"
+}

@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Get the commit message
+commit_msg=$(cat "$1")
+
+# Regex pattern for the commit message
+pattern="^(feat|fix|hotfix|chore|docs|style|refactor|test|perf|merge)\(MPM-[0-9]+\): .+$"
+
+# Validate the commit message against the pattern
+if echo "$commit_msg" | grep -Eq "$pattern"; then
+  # Commit message follows the expected pattern
+  exit 0
+fi
+
+# If invalid, print an error and block the commit
+echo "Erro: O commit message '$commit_msg' não segue o padrão esperado."
+echo "Padrão esperado: <type>(MPM-<número>): descrição — ex: feat(MPM-1234): criar tela de login"
+exit 1

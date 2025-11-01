@@ -1,0 +1,119 @@
+# @terraviva/auth
+
+Utilitário para integração de autenticação Terra Viva em aplicações front-end baseadas em Next.js.
+Este pacote faz parte do repositório [gtvsoftware/lib-auth](https://github.com/gtvsoftware/lib-auth) e deve ser instalado como **submódulo Git** e gerenciado com **pnpm workspaces**.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## 🚀 Início Rápido
+
+### Instalação
+
+Adicione o repositório como **submódulo** dentro do seu projeto:
+
+```bash
+git submodule add https://github.com/gtvsoftware/lib-auth.git packages/lib-auth
+```
+
+Depois configure o `pnpm-workspace.yaml` do seu monorepo para incluir o pacote:
+
+```yaml
+packages:
+  - "apps/*"
+  - "packages/*"
+```
+
+E rode a instalação:
+
+```bash
+pnpm install
+```
+
+Agora o pacote `@terraviva/auth` estará disponível para importação dentro do workspace.
+
+### Configuração Básica
+
+1. **Configure suas variáveis de ambiente:**
+
+```env
+NEXT_PUBLIC_APP_URL=http://local.dev.terraviva
+AUTH_URL=http://conta.dev.terraviva/api/auth
+AUTH_SECRET=sua-nextauth-secret
+AUTH_ISSUER_URL=http://10.0.0.28:8080/realms/terraviva
+AUTH_CLIENT_ID=seu-client-id
+AUTH_CLIENT_SECRET=seu-client-secret
+```
+
+2. **Crie a rota de autenticação:**
+
+Crie o arquivo `src/app/api/[...auth]/route.ts`:
+
+```typescript
+'use server'
+
+import { handler } from "@terraviva/auth";
+
+export { handler as GET, handler as POST };
+```
+
+3. **Adicione o AuthProvider ao seu layout:**
+
+```tsx
+import { AuthProvider } from "@terraviva/auth"
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="pt-BR">
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+## Funcionalidades
+
+* 🔐 **Integração com NextAuth.js** – Construído sobre o NextAuth.js v5
+* 🎯 **Suporte a Keycloak** – Provider pronto para uso com Keycloak
+* ⚛️ **Componentes React** – Páginas e providers de autenticação pré-construídos
+* � **Cliente HTTP Autenticado** – Instâncias Axios com auth automática e refresh de tokens
+* �🎨 **TypeScript** – Suporte completo a TypeScript
+* 🛡️ **Middleware** – Utilitários para proteger rotas e requisições
+* 🎣 **React Hooks** – Inclui `useAuthSession` e outros
+
+## Exemplo Rápido
+
+```tsx
+import { createAxiosInstance, useAuthSession } from "@terraviva/auth"
+
+// Criar cliente HTTP autenticado
+const api = createAxiosInstance({
+  baseURL: 'https://api.exemplo.com'
+})
+
+// Usar em componente
+function MyComponent() {
+  const { data: session } = useAuthSession()
+  
+  const fetchData = async () => {
+    // Requisição com auth automática
+    const response = await api.get('/dados')
+    return response.data
+  }
+  
+  return <div>Olá, {session?.user?.name}!</div>
+}
+```
+
+## Próximos Passos
+
+* [Guia de Configuração](/setup) – Instruções completas de configuração
+* [Componentes](/components) – Lista de componentes React disponíveis
+* [Hooks](/hooks) – Hooks React para autenticação
+* [Utilitários](/utils) – Cliente HTTP autenticado e outros utilitários
+* [Referência de API](/api) – Documentação completa da API
