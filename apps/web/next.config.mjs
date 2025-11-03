@@ -14,11 +14,12 @@ const nextConfig = {
   turbopack: {},
   images: {
     remotePatterns: [
-      new URL('https://planti.blob.core.windows.net/**'),
-      new URL('https://megtv2.blob.core.windows.net/**'),
-      new URL('https://apiweb.terraviva.agr.br/**'),
-    ]
-  }
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

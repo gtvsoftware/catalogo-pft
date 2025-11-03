@@ -1,4 +1,3 @@
-import { TerraVivaAuthProvider } from '@terraviva/auth'
 import { TerraVivaUiProvider } from '@terraviva/ui/providers'
 import type { Metadata } from 'next'
 
@@ -11,9 +10,9 @@ export default async function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <body className="font-sans">
         {/* <TerraVivaAuthProvider> */}
-          <TerraVivaUiProvider appConfig={APP_CONFIG}>
-            {children}
-          </TerraVivaUiProvider>
+        <TerraVivaUiProvider appConfig={APP_CONFIG}>
+          {children}
+        </TerraVivaUiProvider>
         {/* </TerraVivaAuthProvider> */}
       </body>
     </html>
