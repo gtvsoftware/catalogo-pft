@@ -1,12 +1,13 @@
+
 [submodule "packages/ui"]
 	path = packages/ui
 	url = https://github.com/gtvsoftware/lib-ui.git
 	branch = v2
-[submodule "packages/auth"]
-	path = packages/auth
-	url = https://github.com/gtvsoftware/lib-auth.git
-	branch = v2
 [submodule "packages/database"]
 	path = packages/database
 	url = https://github.com/gtvsoftware/lib-megtv-db.git
+	branch = main
+[submodule "packages/auth"]
+	path = packages/auth
+	url = https://github.com/gtvsoftware/lib-auth.git
 	branch = main
