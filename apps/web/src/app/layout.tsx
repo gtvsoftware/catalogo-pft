@@ -10,11 +10,11 @@ export default async function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className="font-sans">
-        <TerraVivaAuthProvider>
+        {/* <TerraVivaAuthProvider> */}
           <TerraVivaUiProvider appConfig={APP_CONFIG}>
             {children}
           </TerraVivaUiProvider>
-        </TerraVivaAuthProvider>
+        {/* </TerraVivaAuthProvider> */}
       </body>
     </html>
   )

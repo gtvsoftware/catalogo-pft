@@ -75,6 +75,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      typesense:
+        specifier: 3.0.0-2
+        version: 3.0.0-2(@babel/runtime@7.28.4)
       typesense-ts:
         specifier: ^0.2.4
         version: 0.2.4

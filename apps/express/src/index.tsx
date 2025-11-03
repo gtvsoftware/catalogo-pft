@@ -1,11 +1,16 @@
 import { randomUUID } from 'node:crypto'
-import { spawn } from 'child_process'
+
+import { spawn } from 'node:child_process'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { prisma } from '@terraviva/database-pft'
 import express from 'express'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
 import produtosBaseJson from './data/produtos-base.json'
-import { client, conjuntosComerciaisSchema } from './typesense'
-import { mapConjuntoToTypesense } from './typesense/typesense'
+// import { client, conjuntosComerciaisSchema } from './typesense'
+// import { mapConjuntoToTypesense } from './typesense/typesense'
 
 const app = express()
 
@@ -40,47 +45,79 @@ app.get('/seed/:data', async (req, res) => {
   }
 
   if (data === 'conjuntos') {
-    const child = spawn('tsx', ['./src/seed-conjuntos.ts'], { stdio: 'pipe' })
+    const scriptPath = path.join(__dirname, 'seed-conjuntos.ts')
+    const isWindows = process.platform === 'win32'
 
-    child.stdout.on('data', data => {
-      console.log('Seeding progress:', data.toString().trim())
+    // Use tsx directly with proper stdio piping
+    const command = isWindows ? 'tsx.cmd' : 'tsx'
+    const tsxPath = path.join(__dirname, '..', 'node_modules', '.bin', command)
+
+    const child = spawn(tsxPath, [scriptPath], {
+      stdio: ['ignore', 'pipe', 'pipe'], // Keep stdout and stderr piped
+      shell: isWindows,
+      windowsHide: true,
+      env: { ...process.env, FORCE_COLOR: '0' } // Disable colors for cleaner output
     })
 
-    child.stderr.on('data', data => {
-      console.error('Seeding error:', data.toString().trim())
+    console.log(`🚀 Background seeding process started with PID: ${child.pid}`)
+
+    // Capture stdout
+    child.stdout?.on('data', (data) => {
+      const output = data.toString().trim()
+      try {
+        const parsed = JSON.parse(output)
+        console.log(`[SEED ${parsed.type.toUpperCase()}]:`, parsed.message)
+      } catch {
+        console.log('[SEED]:', output)
+      }
     })
 
-    child.on('close', code => {
-      console.log('Seeding child exited with code', code)
+    // Capture stderr
+    child.stderr?.on('data', (data) => {
+      console.error('[SEED ERROR]:', data.toString().trim())
+    })
+
+    // Handle process completion
+    child.on('close', (code) => {
+      if (code === 0) {
+        console.log('✅ Seeding process completed successfully')
+      } else {
+        console.error(`❌ Seeding process exited with code ${code}`)
+      }
+    })
+
+    child.on('error', (error) => {
+      console.error('❌ Failed to start seeding process:', error.message)
     })
 
     return res.json({
-      message: 'Seeding conjuntos comerciais started in background'
+      message: 'Seeding conjuntos comerciais started in background',
+      pid: child.pid
     })
   }
 
-  if (data === 'typesense') {
-    const conjunto = await prisma.conjuntoComercial.findMany({
-      include: { produtoBase: true }
-    })
+  // if (data === 'typesense') {
+  //   const conjunto = await prisma.conjuntoComercial.findMany({
+  //     include: { produtoBase: true }
+  //   })
 
-    const parsedConjuntos = conjunto.map(mapConjuntoToTypesense)
+  //   const parsedConjuntos = conjunto.map(mapConjuntoToTypesense)
 
-    try {
-      await client.collections().create(conjuntosComerciaisSchema)
-    } catch (error) {
-      // Collection might already exist, ignore
-    }
+  //   try {
+  //     await client.collections().create(conjuntosComerciaisSchema)
+  //   } catch (error) {
+  //     // Collection might already exist, ignore
+  //   }
 
-    await client
-      .collections('conjuntos_comerciais')
-      .documents()
-      .import(parsedConjuntos, {
-        action: 'upsert'
-      })
+  //   await client
+  //     .collections('conjuntos_comerciais')
+  //     .documents()
+  //     .import(parsedConjuntos, {
+  //       action: 'upsert'
+  //     })
 
-    return res.json({ message: 'Seeded typesense comerciais' })
-  }
+  //   return res.json({ message: 'Seeded typesense comerciais' })
+  // }
 
   return res.json({ error: 'Invalid seed route', status: 404 })
 })

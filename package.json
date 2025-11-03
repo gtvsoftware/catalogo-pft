@@ -17,7 +17,10 @@
     "check:fix": "biome check --write apps/",
     "typecheck": "turbo typecheck",
     "test": "exit 0",
-    "prepare": "if [ -z \"$CI\" ] && [ -z \"$DOCKER_BUILDKIT\" ]; then husky install; fi"
+    "prepare": "if [ -z \"$CI\" ] && [ -z \"$DOCKER_BUILDKIT\" ]; then husky install; fi",
+    "index-typesense": "node src/index-typesense.js",
+    "test-typesense": "node src/test-typesense.js",
+    "upsert-typesense": "node src/upsert-typesense.js"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",

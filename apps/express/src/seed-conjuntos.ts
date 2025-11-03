@@ -31,7 +31,7 @@ async function seedConjuntos() {
           variedade: conjunto.variedade,
           nivelComercial: conjunto.nivel_comercial,
           tipoProduto: conjunto.tipo_produto,
-          tipoEmbalagem: conjunto.tipo_embalagem,
+          tipoEmbalagem: conjunto.tipo_embalagem || 'N/A',
           numeroPote: conjunto.numero_pote,
           numeroHashtes: conjunto.numero_hastes,
           alturaCm: conjunto.altura_cm,
@@ -45,13 +45,17 @@ async function seedConjuntos() {
           descricaoOriginal: conjunto.descricao_original,
           diametroFlorCm: conjunto.diametro_flor_cm,
           numeroFlores: conjunto.numero_flores,
-          produtoId: (
-            await prisma.produtoBase.findFirstOrThrow({
-              where: {
-                slug: conjunto.produto_id
-              }
-            })
-          ).id,
+          produtoBase: {
+            connect: {
+              id: (
+                await prisma.produtoBase.findFirstOrThrow({
+                  where: {
+                    slug: conjunto.produto_id
+                  }
+                })
+              ).id
+            }
+          },
           createdAt: new Date()
         }
       })
@@ -74,6 +78,7 @@ async function seedConjuntos() {
       })
     )
   } catch (error) {
+    console.log(error)
     console.log(
       JSON.stringify({
         type: 'error',
