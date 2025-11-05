@@ -5,7 +5,7 @@ export function assembleTypesenseServerConfig() {
       {
         host: process.env.NEXT_PUBLIC_TYPESENSE_HOST!,
         port: Number(process.env.NEXT_PUBLIC_TYPESENSE_PORT),
-        protocol: process.env.NEXT_PUBLIC_TYPESENSE_PROTOCOL!
+        protocol: 'https'
       }
     ],
     numRetries: 8,
