@@ -80,7 +80,6 @@ ENV NEXT_PUBLIC_TYPESENSE_PATH=${NEXT_PUBLIC_TYPESENSE_PATH}
 ENV NEXT_PUBLIC_TYPESENSE_SEARCH_KEY=${NEXT_PUBLIC_TYPESENSE_SEARCH_KEY}
 
 RUN NODE_OPTIONS="--max_old_space_size=4096" turbo build --env-mode=loose --filter=${PROJECT}...
-RUN NODE_OPTIONS="--max_old_space_size=4096" turbo build --env-mode=loose --filter=${PROJECT}...
 RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --prod --no-optional
 RUN rm -rf ./**/*/src
 

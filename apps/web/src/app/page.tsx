@@ -30,6 +30,7 @@ export default function FlowerCatalog() {
   return (
     <FormProvider {...formProps}>
       <InstantSearchNext
+        routing={true}
         indexName="variacoes"
         searchClient={typesenseInstantsearchAdapter.searchClient}
       >
