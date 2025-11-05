@@ -8,7 +8,7 @@ export default async function RootLayout({
 }: React.PropsWithChildren) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className="font-sans">
+      <body className="font-sans w-full">
         {/* <TerraVivaAuthProvider> */}
         <TerraVivaUiProvider appConfig={APP_CONFIG}>
           {children}
