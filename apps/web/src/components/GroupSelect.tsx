@@ -1,7 +1,7 @@
 import { ComboboxFormField } from '@terraviva/ui/form-fields'
 import { useEffect, useState } from 'react'
 
-import { typesenseClient } from '@/services/typesense'
+import { typesenseClient } from '@terraviva/typesense-catalogo-pft'
 import { useFormContext } from 'react-hook-form'
 
 export function GrupoSelect() {

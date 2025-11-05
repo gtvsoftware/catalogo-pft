@@ -3,22 +3,12 @@
 import { Icon } from '@terraviva/ui/icon'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Configure, Pagination, Hits } from 'react-instantsearch'
-import TypesenseInstantSearchAdapter from 'typesense-instantsearch-adapter'
-import { assembleTypesenseServerConfig } from '@/services/typesense/config'
+import { getTypesenseSearchAdapter } from '@terraviva/typesense-catalogo-pft'
 import { ProductCard } from '@/components/ProductCard'
 import { SerieSelect } from '@/components/SeriesSelect'
 import { GrupoSelect } from '@/components/GroupSelect'
 import { CustomSearch } from '@/components/CustomSearch'
 import { InstantSearchNext } from 'react-instantsearch-nextjs'
-
-const TYPESENSE_SERVER_CONFIG = assembleTypesenseServerConfig()
-const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
-  server: TYPESENSE_SERVER_CONFIG,
-  additionalSearchParameters: {
-    query_by: 'descricaoCompleta',
-    per_page: 12
-  }
-})
 
 export default function FlowerCatalog() {
   const formProps = useForm({
@@ -29,6 +19,13 @@ export default function FlowerCatalog() {
 
   const grupo = watch('grupo')
   const serie = watch('serie')
+
+  const typesenseInstantsearchAdapter = getTypesenseSearchAdapter({
+    additionalSearchParameters: {
+      query_by: 'descricaoCompleta',
+      per_page: 12
+    }
+  })
 
   return (
     <FormProvider {...formProps}>
