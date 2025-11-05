@@ -1,14 +1,14 @@
 'use client'
 
+import { getTypesenseSearchAdapter } from '@terraviva/typesense-catalogo-pft'
 import { Icon } from '@terraviva/ui/icon'
 import { FormProvider, useForm } from 'react-hook-form'
-import { Configure, Pagination, Hits } from 'react-instantsearch'
-import { getTypesenseSearchAdapter } from '@terraviva/typesense-catalogo-pft'
+import { Configure, Hits, InstantSearch, Pagination } from 'react-instantsearch'
+
+import { CustomSearch } from '@/components/CustomSearch'
+import { GrupoSelect } from '@/components/GroupSelect'
 import { ProductCard } from '@/components/ProductCard'
 import { SerieSelect } from '@/components/SeriesSelect'
-import { GrupoSelect } from '@/components/GroupSelect'
-import { CustomSearch } from '@/components/CustomSearch'
-import { InstantSearchNext } from 'react-instantsearch-nextjs'
 
 export default function FlowerCatalog() {
   const formProps = useForm({
@@ -29,8 +29,7 @@ export default function FlowerCatalog() {
 
   return (
     <FormProvider {...formProps}>
-      <InstantSearchNext
-        routing={true}
+      <InstantSearch
         indexName="variacoes"
         searchClient={typesenseInstantsearchAdapter.searchClient}
       >
@@ -108,7 +107,7 @@ export default function FlowerCatalog() {
             </main>
           </div>
         </div>
-      </InstantSearchNext>
+      </InstantSearch>
     </FormProvider>
   )
 }

@@ -1,7 +1,13 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
   "files": {
-    "includes": ["**/*.ts", "**/*.tsx", "**/*.mjs"]
+    "includes": [
+      "**/src/**/*.tsx",
+      "**/src/**/*.ts",
+      "**/src/**/*.js",
+      "**/src/**/*.json",
+      "**/prisma/**/*.ts"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -12,7 +18,33 @@
     "lineWidth": 80,
     "attributePosition": "auto"
   },
-  "assist": { "actions": { "source": { "organizeImports": "off" } } },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":BUN:",
+              ":NODE:",
+              ["npm:*", "npm:*/**"],
+              ":PACKAGE_WITH_PROTOCOL:",
+              ":URL:",
+              ":PACKAGE:",
+              ":BLANK_LINE:",
+              ["@*/*", "@*/*/**"],
+              ":BLANK_LINE:",
+              ["/**"],
+              ":BLANK_LINE:",
+              ["#*", "#*/**"],
+              ":BLANK_LINE:",
+              ":PATH:"
+            ]
+          }
+        }
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -22,7 +54,7 @@
         "noExtraBooleanCast": "error",
         "noUselessCatch": "error",
         "noUselessConstructor": "error",
-        "noUselessLoneBlockStatements": "info",
+        "noUselessLoneBlockStatements": "error",
         "noUselessRename": "error",
         "noUselessTernary": "error",
         "noVoid": "off",
@@ -33,6 +65,8 @@
         "noCommaOperator": "error"
       },
       "correctness": {
+        "noUnusedImports": "warn",
+        "noUnusedFunctionParameters": "warn",
         "noChildrenProp": "error",
         "noConstAssign": "error",
         "noConstantCondition": "error",
@@ -49,7 +83,6 @@
         "noUnreachableSuper": "error",
         "noUnsafeFinally": "error",
         "noUnusedVariables": "warn",
-        "noUnusedImports": "warn",
         "useExhaustiveDependencies": "off",
         "useIsNan": "error",
         "useJsxKeyInIterable": "error",
@@ -62,7 +95,6 @@
         "noBlankTarget": "error"
       },
       "style": {
-        "useBlockStatements": "off",
         "useConst": "error",
         "useSingleVarDeclarator": "error",
         "useArrayLiterals": "error"
@@ -83,7 +115,7 @@
         "noDuplicateJsxProps": "error",
         "noDuplicateObjectKeys": "error",
         "noDuplicateParameters": "error",
-        "noEmptyBlockStatements": "error",
+        "noEmptyBlockStatements": "off",
         "noFallthroughSwitchClause": "error",
         "noFunctionAssign": "error",
         "noGlobalAssign": "error",
@@ -110,6 +142,9 @@
     ]
   },
   "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    },
     "formatter": {
       "jsxQuoteStyle": "double",
       "quoteProperties": "asNeeded",

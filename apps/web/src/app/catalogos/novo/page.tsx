@@ -1,9 +1,5 @@
 'use client'
 
-import { useFieldArray, useFormContext } from 'react-hook-form'
-import { Banner } from './components/banner'
-import { Icon } from '@terraviva/ui/icon'
-import { DraggableSection } from './components/draggableSection'
 import {
   closestCenter,
   DndContext,
@@ -14,7 +10,12 @@ import {
 } from '@dnd-kit/core'
 import { restrictToParentElement } from '@dnd-kit/modifiers'
 import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
+import { Icon } from '@terraviva/ui/icon'
+import { useFieldArray, useFormContext } from 'react-hook-form'
 import { v4 as randomUUID } from 'uuid'
+
+import { Banner } from './components/banner'
+import { DraggableSection } from './components/draggableSection'
 
 export default function Page(): React.ReactElement {
   const { setValue, control, watch } = useFormContext<catalogoFormType>()
