@@ -11,31 +11,32 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@terraviva/ui/dialog'
-import { Icon } from '@terraviva/ui/icon'
 import { Button } from '@terraviva/ui/button'
 
-interface DeleteSectionModalProps {
+interface DeleteModalProps {
   removeFn: () => void
+  title: string
+  message: string
+  trigger: React.ReactElement
 }
 
-export function DeleteSectionModal({ removeFn }: DeleteSectionModalProps) {
+export function DeleteModal({
+  title,
+  message,
+  trigger,
+  removeFn
+}: DeleteModalProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <div className="w-8 h-8 border rounded-sm cursor-pointer flex items-center justify-center hover:bg-gray-100">
-          <Icon icon="trash-can" family="duotone" />
-        </div>
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
 
       <DialogContent className="max-h-[90%] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Excluir seção</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <p className="text-gray-500 text-sm">
-          Você tem certeza que deseja excluir a seção?
-        </p>
+        <p className="text-gray-500 text-sm">{message}</p>
         <DialogFooter>
           <DialogClose className="text-sm text-red-500 border-red-500 bg-white hover:bg-gray-100 border py-2 px-4 rounded-md">
             Cancelar

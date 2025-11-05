@@ -21,18 +21,17 @@ import { itemFormSchema } from '@/schemas/itemSchema'
 import Cropper, { Area, Point } from 'react-easy-crop'
 import { Slider } from '@terraviva/ui/slider'
 import { Button } from '@terraviva/ui/button'
+import { DeleteModal } from './deleteModal'
 
 interface DraggableItemProps {
   sectionIndex: number
   itemIndex: number
-  enableDragging: boolean
   removeFn: () => void
 }
 
 export function DraggableItem({
   sectionIndex,
   itemIndex,
-  enableDragging,
   removeFn
 }: DraggableItemProps) {
   const { watch, setValue } = useFormContext<catalogoFormType>()
@@ -118,13 +117,13 @@ export function DraggableItem({
         <DialogTrigger asChild>
           <div
             className={cn(
-              'flex flex-col w-full gap-2 rounded-md bg-white cursor-pointer hover:bg-gray-100 p-2',
-              enableDragging && 'cursor-grab',
+              'flex flex-col w-full gap-2 cursor-grab rounded-md bg-white hover:bg-gray-100 p-2',
               isDragging && 'cursor-grabbing'
             )}
             ref={setNodeRef}
             style={style}
-            {...(enableDragging && { ...listeners, ...attributes })}
+            {...listeners}
+            {...attributes}
           >
             <div className="relative w-full aspect-square">
               {item.image ? (
@@ -285,14 +284,20 @@ export function DraggableItem({
             </div>
 
             <div className="flex gap-2">
-              <Button
-                variant={'destructive'}
-                className="w-full"
-                leftIcon="trash-can"
-                onClick={removeFn}
-              >
-                Exluir item
-              </Button>
+              <DeleteModal
+                message="Você tem certeza que deja excluir o item?"
+                title="Excluir item"
+                trigger={
+                  <Button
+                    variant={'destructive'}
+                    className="w-full"
+                    leftIcon="trash-can"
+                  >
+                    Exluir item
+                  </Button>
+                }
+                removeFn={removeFn}
+              />
               <Button type="submit" className="w-full" leftIcon="save">
                 Atualizar item
               </Button>

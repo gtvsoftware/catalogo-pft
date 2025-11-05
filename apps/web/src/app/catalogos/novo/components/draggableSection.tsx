@@ -1,13 +1,11 @@
 'use client'
 
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
-import { DraggableItem } from './draggableItem'
 import { CreateItemFormModal } from './modals/createItemFormModal'
 import {
   closestCenter,
   DndContext,
-  MouseSensor,
-  TouchSensor,
+  PointerSensor,
   useSensor,
   useSensors
 } from '@dnd-kit/core'
@@ -21,8 +19,8 @@ import { CSS } from '@dnd-kit/utilities'
 import { cn } from '@terraviva/ui/cn'
 import { Icon } from '@terraviva/ui/icon'
 import { Button } from '@terraviva/ui/button'
-import { DeleteSectionModal } from './modals/deleteSectionModal'
-import { useState } from 'react'
+import { DeleteModal } from './modals/deleteModal'
+import { DraggableItem } from './modals/draggableItem'
 
 interface DraggableSectionProps {
   sectionIndex: number
@@ -32,8 +30,6 @@ export function DraggableSection({
   sectionIndex
 }: DraggableSectionProps): React.ReactElement {
   const { control, watch } = useFormContext<catalogoFormType>()
-
-  const [enableDragging, setEnableDragging] = useState(false)
 
   const {
     move,
@@ -69,7 +65,13 @@ export function DraggableSection({
     transition
   }
 
-  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5
+      }
+    })
+  )
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event
@@ -107,21 +109,14 @@ export function DraggableSection({
           />
 
           <div className="flex gap-2">
-            <Button
-              disabled={items.length < 2}
-              variant={'outline'}
-              onClick={() => setEnableDragging(!enableDragging)}
-              className={cn(
-                'p-0',
-                'w-8 h-8 border rounded-sm cursor-grab flex items-center justify-center hover:bg-gray-100',
-                enableDragging &&
-                  'bg-primary-500 hover:bg-primary-500 text-white hover:text-white'
-              )}
-            >
-              <Icon icon="up-down-left-right" />
-            </Button>
-
-            <DeleteSectionModal
+            <DeleteModal
+              trigger={
+                <div className="w-8 h-8 border rounded-sm cursor-pointer flex items-center justify-center hover:bg-gray-100">
+                  <Icon icon="trash-can" family="duotone" />
+                </div>
+              }
+              title="Excluir seção"
+              message="Você tem certeza que deseja excluir a seção?"
               removeFn={() => {
                 remove(sectionIndex)
               }}
@@ -153,7 +148,6 @@ export function DraggableSection({
             <div className="grid grid-cols-4 gap-4">
               {items.map((item, index) => (
                 <DraggableItem
-                  enableDragging={enableDragging}
                   key={item.id}
                   itemIndex={index}
                   sectionIndex={sectionIndex}
