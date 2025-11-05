@@ -8,6 +8,7 @@ import {
 } from '@terraviva/ui/card'
 import { Icon } from '@terraviva/ui/icon'
 import type { Hit } from 'instantsearch.js'
+import { Highlight } from 'react-instantsearch'
 
 interface ProductCardProps {
   item: Hit<any>
@@ -33,7 +34,7 @@ export function ProductCard({ item }: ProductCardProps) {
   return (
     <Card
       key={item.id}
-      className="overflow-hidden hover:shadow-lg transition-shadow"
+      className="overflow-hidden hover:shadow-lg transition-shadow pt-0"
     >
       {/* Placeholder Image */}
       <div className="aspect-square bg-gradient-to-br from-green-100 to-pink-100 flex items-center justify-center relative">
@@ -50,7 +51,11 @@ export function ProductCard({ item }: ProductCardProps) {
 
       <CardHeader className="pb-3">
         <CardTitle className="text-base line-clamp-2">
-          {item.descricaoCompleta}
+          <Highlight
+            hit={item}
+            attribute="descricaoCompleta"
+            highlightedTagName="mark"
+          />
         </CardTitle>
         {item.codigoVeiling && (
           <CardDescription className="text-xs font-mono">
