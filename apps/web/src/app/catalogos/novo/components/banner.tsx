@@ -9,13 +9,17 @@ import getCroppedImg from '../../../../utils/getCroppedImg'
 import pattern from '@/assets/pattern_green.png'
 import { Button } from '@terraviva/ui/button'
 import { cn } from '@terraviva/ui/cn'
+import { useFormContext } from 'react-hook-form'
 
 export function Banner(): React.ReactElement {
+  const { watch, setValue } = useFormContext<catalogoFormType>()
+
+  const { banner } = watch()
+
   const [imageSrc, setImageSrc] = useState<string | null>(null)
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
-  const [croppedImage, setCroppedImage] = useState<string | null>(null)
   const [showCropper, setShowCropper] = useState(false)
 
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -40,7 +44,7 @@ export function Banner(): React.ReactElement {
     try {
       const cropped = await getCroppedImg(imageSrc, croppedAreaPixels)
 
-      setCroppedImage(cropped)
+      setValue('banner', cropped)
       setShowCropper(false)
       setImageSrc(null)
     } catch (err) {
@@ -66,14 +70,14 @@ export function Banner(): React.ReactElement {
 
         {!showCropper && (
           <Image
-            src={croppedImage ?? pattern}
+            src={banner ?? pattern}
             alt="Banner"
             fill
             className="object-cover"
           />
         )}
 
-        {!croppedImage && !showCropper && (
+        {!banner && !showCropper && (
           <div className="absolute bg-gradient-to-t from-black/50 to-transparent duration-500 inset-0" />
         )}
 
