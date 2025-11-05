@@ -57,6 +57,12 @@ COPY --from=pruner /app/out/full/ .
 # Generate Prisma Client
 RUN pnpm --filter @terraviva/db-catalogo-pft run build
 
+ENV ENVIROMENT=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV TURBO_TELEMETRY_DISABLED=1
+ENV DO_NOT_TRACK=1
+ENV CI=1
+
 # Set only the specified environment variables for the build stage
 ENV DATABASE_URL=${DATABASE_URL}
 ENV AUTH_URL=${AUTH_URL:-"http://localhost:3000/auth"}
@@ -71,12 +77,6 @@ ENV NEXT_PUBLIC_TYPESENSE_HOST=${NEXT_PUBLIC_TYPESENSE_HOST}
 ENV NEXT_PUBLIC_TYPESENSE_PORT=${NEXT_PUBLIC_TYPESENSE_PORT}
 ENV NEXT_PUBLIC_TYPESENSE_PROTOCOL=${NEXT_PUBLIC_TYPESENSE_PROTOCOL}
 ENV NEXT_PUBLIC_TYPESENSE_SEARCH_KEY=${NEXT_PUBLIC_TYPESENSE_SEARCH_KEY}
-ENV TYPESENSE_PROTOCOL=${TYPESENSE_PROTOCOL}
-ENV TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
-# Set dummy values for auth variables during build to prevent validation errors
-ENV AUTH_CLIENT_ID=${AUTH_CLIENT_ID:-"dummy-client-id-for-build"}
-ENV AUTH_CLIENT_SECRET=${AUTH_CLIENT_SECRET:-"dummy-client-secret-for-build"}
-ENV AUTH_ISSUER_URL=${AUTH_ISSUER_URL:-"http://localhost:3000/auth"}
 
 RUN NODE_OPTIONS="--max_old_space_size=4096" turbo build --env-mode=loose --filter=${PROJECT}...
 RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --prod --no-optional
@@ -98,8 +98,6 @@ COPY --from=builder /app/apps/web/package.json .
 
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
-
 # Copy Prisma generated files and binaries
 COPY --from=builder --chown=nextjs:nodejs /app/packages/db-catalogo-pft/generated ./packages/db-catalogo-pft/generated
 
