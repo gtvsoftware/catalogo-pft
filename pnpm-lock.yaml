@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: 1.9.4
-        version: 1.9.4
+        specifier: 2.3.4
+        version: 2.3.4
       '@terraviva/tsconfig':
         specifier: ^0.0.1
         version: 0.0.1
@@ -44,9 +44,9 @@ importers:
       '@terraviva/auth':
         specifier: workspace:^
         version: link:../../packages/auth
-      '@terraviva/database-pft':
+      '@terraviva/db-catalogo-pft':
         specifier: workspace:^
-        version: link:../../packages/database
+        version: link:../../packages/db-catalogo-pft
       '@terraviva/ui':
         specifier: workspace:^
         version: link:../../packages/ui
@@ -77,9 +77,6 @@ importers:
       react-instantsearch:
         specifier: ^7.17.0
         version: 7.17.0(algoliasearch@5.42.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-instantsearch-hooks-web:
-        specifier: ^6.47.3
-        version: 6.47.3(algoliasearch@5.42.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-instantsearch-nextjs:
         specifier: ^1.0.3
         version: 1.0.3(next@16.0.1(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.93.2))(react-instantsearch@7.17.0(algoliasearch@5.42.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -179,7 +176,7 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
 
-  packages/database:
+  packages/db-catalogo-pft:
     dependencies:
       '@prisma/client':
         specifier: ^6.14.0
@@ -188,6 +185,19 @@ importers:
       prisma:
         specifier: ^6.14.0
         version: 6.18.0(typescript@5.9.3)
+
+  packages/typesense-catalogo-pft:
+    dependencies:
+      '@terraviva/db-catalogo-pft':
+        specifier: workspace:^
+        version: link:../db-catalogo-pft
+      typesense:
+        specifier: ^2.1.0
+        version: 2.1.0(@babel/runtime@7.28.4)
+    devDependencies:
+      tsx:
+        specifier: ^4.20.6
+        version: 4.20.6
 
   packages/ui:
     dependencies:
@@ -504,12 +514,6 @@ packages:
     resolution: {integrity: sha512-gkLNpU+b1pCIwk1hKTJz2NWQPT8gsfGhQasnZ5QVv4jd79fKRL/1ikd86P0AzuIQs9tbbhlMwxsSTyJmlq502w==}
     engines: {node: '>= 14.0.0'}
 
-  '@algolia/ui-components-highlight-vdom@1.2.3':
-    resolution: {integrity: sha512-gNlPkCwX2M7LnNhCSAjvQkOhdeYDu+FP0ISc0IY297Kw9EmGeUxpce8lvKGByYglz7ifW3qTWRxrtCV3is5+Ag==}
-
-  '@algolia/ui-components-shared@1.2.3':
-    resolution: {integrity: sha512-Nk4stv4FW9qIpvmdkJMf6oS49xA8Ns/IAAYNngpaFFQTErZupegXvyr8W+6NVvBSzHzeE4H8YO7spg3xWR8e8A==}
-
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
@@ -542,6 +546,11 @@ packages:
     engines: {node: '>=14.21.3'}
     hasBin: true
 
+  '@biomejs/biome@2.3.4':
+    resolution: {integrity: sha512-TU08LXjBHdy0mEY9APtEtZdNQQijXUDSXR7IK1i45wgoPD5R0muK7s61QcFir6FpOj/RP1+YkPx5QJlycXUU3w==}
+    engines: {node: '>=14.21.3'}
+    hasBin: true
+
   '@biomejs/cli-darwin-arm64@1.9.4':
     resolution: {integrity: sha512-bFBsPWrNvkdKrNCYeAp+xo2HecOGPAy9WyNyB/jKnnedgzl4W4Hb9ZMzYNbf8dMCGmUdSavlYHiR01QaYR58cw==}
     engines: {node: '>=14.21.3'}
@@ -550,6 +559,12 @@ packages:
 
   '@biomejs/cli-darwin-arm64@2.2.4':
     resolution: {integrity: sha512-RJe2uiyaloN4hne4d2+qVj3d3gFJFbmrr5PYtkkjei1O9c+BjGXgpUPVbi8Pl8syumhzJjFsSIYkcLt2VlVLMA==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@biomejs/cli-darwin-arm64@2.3.4':
+    resolution: {integrity: sha512-w40GvlNzLaqmuWYiDU6Ys9FNhJiclngKqcGld3iJIiy2bpJ0Q+8n3haiaC81uTPY/NA0d8Q/I3Z9+ajc14102Q==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
@@ -566,6 +581,12 @@ packages:
     cpu: [x64]
     os: [darwin]
 
+  '@biomejs/cli-darwin-x64@2.3.4':
+    resolution: {integrity: sha512-3s7TLVtjJ7ni1xADXsS7x7GMUrLBZXg8SemXc3T0XLslzvqKj/dq1xGeBQ+pOWQzng9MaozfacIHdK2UlJ3jGA==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [darwin]
+
   '@biomejs/cli-linux-arm64-musl@1.9.4':
     resolution: {integrity: sha512-v665Ct9WCRjGa8+kTr0CzApU0+XXtRgwmzIf1SeKSGAv+2scAlW6JR5PMFo6FzqqZ64Po79cKODKf3/AAmECqA==}
     engines: {node: '>=14.21.3'}
@@ -574,6 +595,12 @@ packages:
 
   '@biomejs/cli-linux-arm64-musl@2.2.4':
     resolution: {integrity: sha512-7TNPkMQEWfjvJDaZRSkDCPT/2r5ESFPKx+TEev+I2BXDGIjfCZk2+b88FOhnJNHtksbOZv8ZWnxrA5gyTYhSsQ==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@biomejs/cli-linux-arm64-musl@2.3.4':
+    resolution: {integrity: sha512-IruVGQRwMURivWazchiq7gKAqZSFs5so6gi0hJyxk7x6HR+iwZbO2IxNOqyLURBvL06qkIHs7Wffl6Bw30vCbQ==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
@@ -590,6 +617,12 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  '@biomejs/cli-linux-arm64@2.3.4':
+    resolution: {integrity: sha512-y7efHyyM2gYmHy/AdWEip+VgTMe9973aP7XYKPzu/j8JxnPHuSUXftzmPhkVw0lfm4ECGbdBdGD6+rLmTgNZaA==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [linux]
+
   '@biomejs/cli-linux-x64-musl@1.9.4':
     resolution: {integrity: sha512-gEhi/jSBhZ2m6wjV530Yy8+fNqG8PAinM3oV7CyO+6c3CEh16Eizm21uHVsyVBEB6RIM8JHIl6AGYCv6Q6Q9Tg==}
     engines: {node: '>=14.21.3'}
@@ -598,6 +631,12 @@ packages:
 
   '@biomejs/cli-linux-x64-musl@2.2.4':
     resolution: {integrity: sha512-m41nFDS0ksXK2gwXL6W6yZTYPMH0LughqbsxInSKetoH6morVj43szqKx79Iudkp8WRT5SxSh7qVb8KCUiewGg==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [linux]
+
+  '@biomejs/cli-linux-x64-musl@2.3.4':
+    resolution: {integrity: sha512-mzKFFv/w66e4/jCobFmD3kymCqG+FuWE7sVa4Yjqd9v7qt2UhXo67MSZKY9Ih18V2IwPzRKQPCw6KwdZs6AXSA==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
@@ -614,6 +653,12 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@biomejs/cli-linux-x64@2.3.4':
+    resolution: {integrity: sha512-gKfjWR/6/dfIxPJCw8REdEowiXCkIpl9jycpNVHux8aX2yhWPLjydOshkDL6Y/82PcQJHn95VCj7J+BRcE5o1Q==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [linux]
+
   '@biomejs/cli-win32-arm64@1.9.4':
     resolution: {integrity: sha512-tlbhLk+WXZmgwoIKwHIHEBZUwxml7bRJgk0X2sPyNR3S93cdRq6XulAZRQJ17FYGGzWne0fgrXBKpl7l4M87Hg==}
     engines: {node: '>=14.21.3'}
@@ -626,6 +671,12 @@ packages:
     cpu: [arm64]
     os: [win32]
 
+  '@biomejs/cli-win32-arm64@2.3.4':
+    resolution: {integrity: sha512-5TJ6JfVez+yyupJ/iGUici2wzKf0RrSAxJhghQXtAEsc67OIpdwSKAQboemILrwKfHDi5s6mu7mX+VTCTUydkw==}
+    engines: {node: '>=14.21.3'}
+    cpu: [arm64]
+    os: [win32]
+
   '@biomejs/cli-win32-x64@1.9.4':
     resolution: {integrity: sha512-8Y5wMhVIPaWe6jw2H+KlEm4wP/f7EW3810ZLmDlrEEy5KvBsb9ECEfu/kMWD484ijfQ8+nIi0giMgu9g1UAuuA==}
     engines: {node: '>=14.21.3'}
@@ -634,6 +685,12 @@ packages:
 
   '@biomejs/cli-win32-x64@2.2.4':
     resolution: {integrity: sha512-3Y4V4zVRarVh/B/eSHczR4LYoSVyv3Dfuvm3cWs5w/HScccS0+Wt/lHOcDTRYeHjQmMYVC3rIRWqyN2EI52+zg==}
+    engines: {node: '>=14.21.3'}
+    cpu: [x64]
+    os: [win32]
+
+  '@biomejs/cli-win32-x64@2.3.4':
+    resolution: {integrity: sha512-FGCijXecmC4IedQ0esdYNlMpx0Jxgf4zceCaMu6fkjWyjgn50ZQtMiqZZQ0Q/77yqPxvtkgZAvt5uGw0gAAjig==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -2213,11 +2270,6 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  algoliasearch-helper@3.14.0:
-    resolution: {integrity: sha512-gXDXzsSS0YANn5dHr71CUXOo84cN4azhHKUbg71vAWnH+1JBiR4jf7to3t3JHXknXkbV0F7f055vUSBKrltHLQ==}
-    peerDependencies:
-      algoliasearch: '>= 3.1 < 6'
-
   algoliasearch-helper@3.26.0:
     resolution: {integrity: sha512-Rv2x3GXleQ3ygwhkhJubhhYGsICmShLAiqtUuJTUkr9uOCOXyF2E71LVT4XDnVffbknv8XgScP4U0Oxtgm+hIw==}
     peerDependencies:
@@ -2679,11 +2731,6 @@ packages:
 
   instantsearch-ui-components@0.12.0:
     resolution: {integrity: sha512-WcyrNJ5sqeqAWLibztnssSKDhgFEdj4C1prZOHSCONxF+5RSfCsD0oqKiZrTMx3dlAL/Qx7eZxKhD56u5mxJMA==}
-
-  instantsearch.js@4.56.8:
-    resolution: {integrity: sha512-40DJ5l70ZzVzWPK3qrHTKlJLaHGq1PRZpzfL6281P2mz8G19WOHQHKAP4Zh6a4lOZaRtJQUiPjQwqCHSurXZ5g==}
-    peerDependencies:
-      algoliasearch: '>= 3.1 < 6'
 
   instantsearch.js@4.81.0:
     resolution: {integrity: sha512-zyIUSrikpst5eaBMrruGRGmRHOHQciDyJ8UW7i4xhPVNRwxr5Ls/NBez9AdNne+7OvALCOeaTI3t9LoBQakWhw==}
@@ -3236,21 +3283,6 @@ packages:
       algoliasearch: '>= 3.1 < 6'
       react: '>= 16.8.0 < 20'
 
-  react-instantsearch-hooks-web@6.47.3:
-    resolution: {integrity: sha512-JTkPm11xwCX9eO4FgeeJ4v4O98wz1L7cAa2LkspgzDD1MPjMLtmiRVzvGxuYnOayQTtfC5+0GOBwuJEN8TDI8A==}
-    deprecated: package has moved to react-instantsearch
-    peerDependencies:
-      algoliasearch: '>= 3.1 < 5'
-      react: '>= 16.8.0 < 19'
-      react-dom: '>= 16.8.0 < 19'
-
-  react-instantsearch-hooks@6.47.3:
-    resolution: {integrity: sha512-QuGSwZ664MHrzvndXGnsyPhpKHywGqyDgqOVorYpEE24Y063OPv5XtmJaZqn27MIvvByUormTb6dbPgbjqkd8w==}
-    deprecated: package has moved to react-instantsearch-core
-    peerDependencies:
-      algoliasearch: '>= 3.1 < 5'
-      react: '>= 16.8.0 < 19'
-
   react-instantsearch-nextjs@1.0.3:
     resolution: {integrity: sha512-KB9/cVgCIO+nu4dAp1KiiFuf2ycdNs+ALZclW+j/62jziuTLorF0YfI6nfRVOzjUBQAJJg2MFUBcpw4KgzYFig==}
     peerDependencies:
@@ -3738,13 +3770,6 @@ snapshots:
     dependencies:
       '@algolia/client-common': 5.42.0
 
-  '@algolia/ui-components-highlight-vdom@1.2.3':
-    dependencies:
-      '@algolia/ui-components-shared': 1.2.3
-      '@babel/runtime': 7.28.4
-
-  '@algolia/ui-components-shared@1.2.3': {}
-
   '@alloc/quick-lru@5.2.0': {}
 
   '@auth/core@0.40.0':
@@ -3779,10 +3804,24 @@ snapshots:
       '@biomejs/cli-win32-arm64': 2.2.4
       '@biomejs/cli-win32-x64': 2.2.4
 
+  '@biomejs/biome@2.3.4':
+    optionalDependencies:
+      '@biomejs/cli-darwin-arm64': 2.3.4
+      '@biomejs/cli-darwin-x64': 2.3.4
+      '@biomejs/cli-linux-arm64': 2.3.4
+      '@biomejs/cli-linux-arm64-musl': 2.3.4
+      '@biomejs/cli-linux-x64': 2.3.4
+      '@biomejs/cli-linux-x64-musl': 2.3.4
+      '@biomejs/cli-win32-arm64': 2.3.4
+      '@biomejs/cli-win32-x64': 2.3.4
+
   '@biomejs/cli-darwin-arm64@1.9.4':
     optional: true
 
   '@biomejs/cli-darwin-arm64@2.2.4':
+    optional: true
+
+  '@biomejs/cli-darwin-arm64@2.3.4':
     optional: true
 
   '@biomejs/cli-darwin-x64@1.9.4':
@@ -3791,10 +3830,16 @@ snapshots:
   '@biomejs/cli-darwin-x64@2.2.4':
     optional: true
 
+  '@biomejs/cli-darwin-x64@2.3.4':
+    optional: true
+
   '@biomejs/cli-linux-arm64-musl@1.9.4':
     optional: true
 
   '@biomejs/cli-linux-arm64-musl@2.2.4':
+    optional: true
+
+  '@biomejs/cli-linux-arm64-musl@2.3.4':
     optional: true
 
   '@biomejs/cli-linux-arm64@1.9.4':
@@ -3803,10 +3848,16 @@ snapshots:
   '@biomejs/cli-linux-arm64@2.2.4':
     optional: true
 
+  '@biomejs/cli-linux-arm64@2.3.4':
+    optional: true
+
   '@biomejs/cli-linux-x64-musl@1.9.4':
     optional: true
 
   '@biomejs/cli-linux-x64-musl@2.2.4':
+    optional: true
+
+  '@biomejs/cli-linux-x64-musl@2.3.4':
     optional: true
 
   '@biomejs/cli-linux-x64@1.9.4':
@@ -3815,16 +3866,25 @@ snapshots:
   '@biomejs/cli-linux-x64@2.2.4':
     optional: true
 
+  '@biomejs/cli-linux-x64@2.3.4':
+    optional: true
+
   '@biomejs/cli-win32-arm64@1.9.4':
     optional: true
 
   '@biomejs/cli-win32-arm64@2.2.4':
     optional: true
 
+  '@biomejs/cli-win32-arm64@2.3.4':
+    optional: true
+
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
   '@biomejs/cli-win32-x64@2.2.4':
+    optional: true
+
+  '@biomejs/cli-win32-x64@2.3.4':
     optional: true
 
   '@date-fns/tz@1.4.1': {}
@@ -5295,11 +5355,6 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       zod: 3.25.76
 
-  algoliasearch-helper@3.14.0(algoliasearch@5.42.0):
-    dependencies:
-      '@algolia/events': 4.0.1
-      algoliasearch: 5.42.0
-
   algoliasearch-helper@3.26.0(algoliasearch@5.42.0):
     dependencies:
       '@algolia/events': 4.0.1
@@ -5784,23 +5839,6 @@ snapshots:
       zod-to-json-schema: 3.24.6(zod@3.25.76)
     transitivePeerDependencies:
       - react
-
-  instantsearch.js@4.56.8(algoliasearch@5.42.0):
-    dependencies:
-      '@algolia/events': 4.0.1
-      '@algolia/ui-components-highlight-vdom': 1.2.3
-      '@algolia/ui-components-shared': 1.2.3
-      '@types/dom-speech-recognition': 0.0.1
-      '@types/google.maps': 3.58.1
-      '@types/hogan.js': 3.0.5
-      '@types/qs': 6.14.0
-      algoliasearch: 5.42.0
-      algoliasearch-helper: 3.14.0(algoliasearch@5.42.0)
-      hogan.js: 3.0.2
-      htm: 3.1.1
-      preact: 10.24.3
-      qs: 6.9.7
-      search-insights: 2.17.3
 
   instantsearch.js@4.81.0(algoliasearch@5.42.0):
     dependencies:
@@ -6327,24 +6365,6 @@ snapshots:
       use-sync-external-store: 1.6.0(react@18.3.1)
       zod: 3.25.76
       zod-to-json-schema: 3.24.6(zod@3.25.76)
-
-  react-instantsearch-hooks-web@6.47.3(algoliasearch@5.42.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@babel/runtime': 7.28.4
-      algoliasearch: 5.42.0
-      instantsearch.js: 4.56.8(algoliasearch@5.42.0)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-instantsearch-hooks: 6.47.3(algoliasearch@5.42.0)(react@18.3.1)
-
-  react-instantsearch-hooks@6.47.3(algoliasearch@5.42.0)(react@18.3.1):
-    dependencies:
-      '@babel/runtime': 7.28.4
-      algoliasearch: 5.42.0
-      algoliasearch-helper: 3.14.0(algoliasearch@5.42.0)
-      instantsearch.js: 4.56.8(algoliasearch@5.42.0)
-      react: 18.3.1
-      use-sync-external-store: 1.6.0(react@18.3.1)
 
   react-instantsearch-nextjs@1.0.3(next@16.0.1(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.93.2))(react-instantsearch@7.17.0(algoliasearch@5.42.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
     dependencies:

@@ -8,7 +8,7 @@ export function GrupoSelect() {
   const [grupos, setGrupos] = useState<{ value: string; label: string }[]>([])
   const [loading, setLoading] = useState(true)
 
-  const { control } = useFormContext()
+  const { control, setValue, watch } = useFormContext()
 
   async function fetchGrupos() {
     const res = await typesenseClient.collections('grupos').documents().search({
@@ -30,6 +30,12 @@ export function GrupoSelect() {
       setLoading(false)
     })
   }, [])
+
+  const grupo = watch('grupo')
+
+  useEffect(() => {
+    setValue('serie', null)
+  }, [grupo])
 
   return (
     <ComboboxFormField
