@@ -21,6 +21,7 @@ import { Input } from '@terraviva/ui/input'
 import { Slider } from '@terraviva/ui/slider'
 import { Button } from '@terraviva/ui/button'
 import { ProductsModal } from './ProductsModal'
+import { getColorBadgeClass } from '@/utils/getColorBadgeClass'
 
 interface CreateItemFormModalProps {
   append: (item: itemFormType) => void
@@ -56,7 +57,8 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
     formState: { errors }
   } = formValues
 
-  const { image, name } = localWatch()
+  const { image, name, color, commercialName, group, height, pot, serie } =
+    localWatch()
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -80,7 +82,16 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
   }, [imageSrc, croppedAreaPixels, localSetValue])
 
   const onSubmit = (data: itemFormType) => {
-    append({ ...data, id: randomUUID() })
+    append({
+      ...data,
+      id: randomUUID(),
+      color,
+      commercialName,
+      group,
+      height,
+      pot,
+      serie
+    })
     setOpen(false)
   }
 
@@ -91,6 +102,15 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
       setShowCropper(false)
     }
   }, [open])
+
+  const Field = (props: { label: string; value: string }) => (
+    <div className="space-y-1">
+      <p className="font-medium text-sm">{props.label}</p>
+      <div className="border rounded-md p-2 px-3 bg-gray-100 text-gray-500 cursor-not-allowed text-sm">
+        {props.value}
+      </div>
+    </div>
+  )
 
   return (
     <FormProvider {...formValues}>
@@ -198,6 +218,31 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
                   {errors.name.message}
                 </p>
               )}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {commercialName && (
+                <Field label="Nome comercial" value={commercialName} />
+              )}
+              <div className="grid grid-cols-2 gap-2">
+                {group && <Field label="Grupo" value={group} />}
+                {serie && <Field label="Série" value={serie} />}
+                {pot && <Field label="Pote" value={pot} />}
+                {height && <Field label="Altura" value={height} />}
+                {color && (
+                  <div className="space-y-1">
+                    <p className="font-medium text-sm">Cor</p>
+                    <div
+                      className={cn(
+                        getColorBadgeClass(color),
+                        'border rounded-md p-2 px-3 cursor-not-allowed text-sm'
+                      )}
+                    >
+                      {color}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">

@@ -14,6 +14,12 @@ declare type itemFormType = {
   id: string
   image: string
   name: string
+  commercialName?: string
+  group?: string
+  serie?: string
+  color?: string
+  pot?: string
+  height?: string
   price: string
   discountPrice?: string
 }

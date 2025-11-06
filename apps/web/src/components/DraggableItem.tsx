@@ -23,6 +23,8 @@ import { Slider } from '@terraviva/ui/slider'
 import { Button } from '@terraviva/ui/button'
 import { DeleteModal } from './DeleteModal'
 import { ProductsModal } from './ProductsModal'
+import { getColorBadgeClass } from '@/utils/getColorBadgeClass'
+import { Badge } from '@terraviva/ui/badge'
 
 interface DraggableItemProps {
   sectionIndex: number
@@ -50,7 +52,7 @@ export function DraggableItem({
 
   const localFormValues = useForm<itemFormType>({
     resolver: zodResolver(itemFormSchema),
-    defaultValues: item
+    defaultValues: { ...item }
   })
 
   const {
@@ -62,7 +64,8 @@ export function DraggableItem({
     formState: { errors }
   } = localFormValues
 
-  const { image, name } = localWatch()
+  const { image, name, color, commercialName, group, height, pot, serie } =
+    localWatch()
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -86,7 +89,15 @@ export function DraggableItem({
   }, [imageSrc, croppedAreaPixels, localSetValue])
 
   const onSubmit = (data: itemFormType) => {
-    setValue(`sections.${sectionIndex}.items.${itemIndex}`, data)
+    setValue(`sections.${sectionIndex}.items.${itemIndex}`, {
+      ...data,
+      commercialName,
+      group,
+      height,
+      pot,
+      serie,
+      color
+    })
     localReset(data)
     setOpen(false)
   }
@@ -97,6 +108,19 @@ export function DraggableItem({
       setShowCropper(false)
     }
   }, [open])
+
+  useEffect(() => {
+    if (item && open) localReset(item)
+  }, [open, item])
+
+  const Field = (props: { label: string; value: string }) => (
+    <div className="space-y-1">
+      <p className="font-medium text-sm">{props.label}</p>
+      <div className="border rounded-md p-2 px-3 bg-gray-100 text-gray-500 cursor-not-allowed text-sm">
+        {props.value}
+      </div>
+    </div>
+  )
 
   const {
     attributes,
@@ -120,36 +144,54 @@ export function DraggableItem({
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <div
-              className={cn(
-                'flex flex-col w-full cursor-grab rounded-md bg-white hover:bg-gray-100',
-                isDragging && 'cursor-grabbing'
-              )}
               ref={setNodeRef}
               style={style}
               {...listeners}
               {...attributes}
+              className={cn(
+                'group flex flex-col w-full cursor-pointer rounded-xl bg-white border border-gray-200 overflow-hidden shadow-sm transition hover:shadow-md hover:border-gray-300 active:scale-[0.98]',
+                isDragging && 'cursor-grabbing opacity-70'
+              )}
             >
-              <div className="relative w-full aspect-square">
+              <div className="relative w-full aspect-square bg-gray-50">
                 {item.image ? (
                   <Image
                     src={item.image}
-                    alt="Image"
+                    alt={item.name}
                     fill
-                    className="object-cover rounded-t-md"
+                    className="object-cover"
                   />
                 ) : (
-                  <div className="border-2 border-dashed flex items-center justify-center aspect-square rounded-md bg-gray-100">
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
                     <Icon
                       icon="image-stack"
                       family="duotone"
-                      className="text-4xl"
+                      className="text-gray-400 text-4xl"
                     />
                   </div>
                 )}
               </div>
-              <div className="flex flex-col gap-2 p-2">
-                <p className="font-medium">{item.name}</p>
-                <div className="flex items-center gap-2">
+
+              <div className="flex flex-col flex-1 justify-between gap-3 p-3">
+                <p className="text-sm font-medium text-slate-800 line-clamp-2">
+                  {item.name}
+                </p>
+
+                <div className="flex flex-col gap-1 items-end text-gray-500 text-xs">
+                  {item.color && (
+                    <Badge
+                      variant="outline"
+                      className={getColorBadgeClass(item.color)}
+                    >
+                      {item.color}
+                    </Badge>
+                  )}
+                  {item.pot && <span className="text-right">{item.pot}</span>}
+                  {item.height && (
+                    <span className="text-right">{item.height} cm</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-sm">
                   {item.discountPrice ? (
                     <>
                       <p className="font-medium text-primary-500">{`R$${item.discountPrice}`}</p>
@@ -261,6 +303,30 @@ export function DraggableItem({
                     {errors.name.message}
                   </p>
                 )}
+              </div>
+              <div className="flex flex-col gap-2">
+                {commercialName && (
+                  <Field label="Nome comercial" value={commercialName} />
+                )}
+                <div className="grid grid-cols-2 gap-2">
+                  {group && <Field label="Grupo" value={group} />}
+                  {serie && <Field label="Série" value={serie} />}
+                  {pot && <Field label="Pote" value={pot} />}
+                  {height && <Field label="Altura" value={height} />}
+                  {color && (
+                    <div className="space-y-1">
+                      <p className="font-medium text-sm">Cor</p>
+                      <div
+                        className={cn(
+                          getColorBadgeClass(color),
+                          'border rounded-md p-2 px-3 cursor-not-allowed text-sm'
+                        )}
+                      >
+                        {color}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
