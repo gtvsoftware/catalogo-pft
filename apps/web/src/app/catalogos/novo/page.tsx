@@ -14,8 +14,8 @@ import { Icon } from '@terraviva/ui/icon'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { v4 as randomUUID } from 'uuid'
 
-import { Banner } from './components/banner'
-import { DraggableSection } from './components/draggableSection'
+import { Banner } from '../../../components/Banner'
+import { DraggableSection } from '../../../components/DraggableSection'
 
 export default function Page(): React.ReactElement {
   const { setValue, control, watch } = useFormContext<catalogoFormType>()

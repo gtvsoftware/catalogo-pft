@@ -20,7 +20,7 @@ import { Icon } from '@terraviva/ui/icon'
 import { Input } from '@terraviva/ui/input'
 import { Slider } from '@terraviva/ui/slider'
 import { Button } from '@terraviva/ui/button'
-import { ProductsModal } from './productsModal'
+import { ProductsModal } from './ProductsModal'
 
 interface CreateItemFormModalProps {
   append: (item: itemFormType) => void

@@ -21,8 +21,8 @@ import { itemFormSchema } from '@/schemas/itemSchema'
 import Cropper, { Area, Point } from 'react-easy-crop'
 import { Slider } from '@terraviva/ui/slider'
 import { Button } from '@terraviva/ui/button'
-import { DeleteModal } from './deleteModal'
-import { ProductsModal } from './productsModal'
+import { DeleteModal } from './DeleteModal'
+import { ProductsModal } from './ProductsModal'
 
 interface DraggableItemProps {
   sectionIndex: number

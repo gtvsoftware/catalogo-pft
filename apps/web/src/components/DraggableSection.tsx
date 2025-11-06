@@ -1,7 +1,7 @@
 'use client'
 
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
-import { CreateItemFormModal } from './modals/createItemFormModal'
+import { CreateItemFormModal } from './CreateItemFormModal'
 import {
   closestCenter,
   DndContext,
@@ -19,8 +19,8 @@ import { CSS } from '@dnd-kit/utilities'
 import { cn } from '@terraviva/ui/cn'
 import { Icon } from '@terraviva/ui/icon'
 import { Button } from '@terraviva/ui/button'
-import { DeleteModal } from './modals/deleteModal'
-import { DraggableItem } from './modals/draggableItem'
+import { DeleteModal } from './DeleteModal'
+import { DraggableItem } from './DraggableItem'
 
 interface DraggableSectionProps {
   sectionIndex: number
