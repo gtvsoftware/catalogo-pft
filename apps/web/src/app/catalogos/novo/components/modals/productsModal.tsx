@@ -22,8 +22,8 @@ import { GrupoSelect } from '@/components/GroupSelect'
 import { InstantSearchNext } from 'react-instantsearch-nextjs'
 import { ProductCardTeste } from '@/components/ProductCardTeste'
 import TypesenseInstantsearchAdapter from 'typesense-instantsearch-adapter'
-import { assembleTypesenseServerConfig } from '@/services/typesense/config'
 import { cn } from '@terraviva/ui/cn'
+import { assembleTypesenseServerConfig } from '@terraviva/typesense-catalogo-pft'
 
 interface ProductsModalProps {
   label?: string
