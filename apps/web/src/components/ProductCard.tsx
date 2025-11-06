@@ -8,6 +8,7 @@ import {
 } from '@terraviva/ui/card'
 import { Icon } from '@terraviva/ui/icon'
 import type { Hit } from 'instantsearch.js'
+import Image from 'next/image'
 import { Highlight } from 'react-instantsearch'
 
 interface ProductCardProps {
@@ -31,14 +32,25 @@ export function ProductCard({ item }: ProductCardProps) {
     return colorMap[cor] || 'bg-gray-100 text-gray-800 border-gray-300'
   }
 
+  console.log(item)
+
   return (
     <Card
       key={item.id}
       className="overflow-hidden hover:shadow-lg transition-shadow pt-0"
     >
-      {/* Placeholder Image */}
-      <div className="aspect-square bg-gradient-to-br from-green-100 to-pink-100 flex items-center justify-center relative">
-        <Icon icon="flower" className="w-20 h-20 text-green-300" />
+      {/* Product Image */}
+      <div className="aspect-square bg-gradient-to-br from-green-100 to-pink-100 flex items-center justify-center relative overflow-hidden">
+        {item.imagem ? (
+          <Image
+            fill
+            src={item.imagem}
+            alt={item.descricaoCompleta || 'Produto'}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <Icon icon="flower" className="w-20 h-20 text-green-300" />
+        )}
         {item.tingida && (
           <Badge className="absolute top-2 right-2 bg-purple-500">
             Tingida
