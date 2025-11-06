@@ -1,14 +1,9 @@
 import { Badge } from '@terraviva/ui/badge'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@terraviva/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@terraviva/ui/card'
 import { Icon } from '@terraviva/ui/icon'
 import type { Hit } from 'instantsearch.js'
 import Image from 'next/image'
+import { useState } from 'react'
 import { Highlight } from 'react-instantsearch'
 
 interface ProductCardProps {
@@ -16,6 +11,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ item }: ProductCardProps) {
+  const [imageError, setImageError] = useState(false)
+
   const getColorBadgeClass = (cor: string | null): string => {
     if (!cor) return 'bg-gray-100 text-gray-800 border-gray-300'
 
@@ -40,17 +37,23 @@ export function ProductCard({ item }: ProductCardProps) {
       className="overflow-hidden hover:shadow-lg transition-shadow pt-0"
     >
       {/* Product Image */}
-      <div className="aspect-square bg-gradient-to-br from-green-100 to-pink-100 flex items-center justify-center relative overflow-hidden">
-        {item.imagem ? (
+      <div className="aspect-square bg-gradient-to-br bg-gray-50 flex items-center justify-center relative overflow-hidden">
+        {item.imagem && !imageError ? (
           <Image
-            fill
             preload
+            fill
             src={item.imagem}
             alt={item.descricaoCompleta || 'Produto'}
             className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
           />
         ) : (
-          <Icon icon="flower" className="w-20 h-20 text-green-300" />
+          <div className="flex flex-col items-center justify-center gap-3 text-gray-400">
+            <Icon icon="image-slash" className="w-16 h-16" />
+            <span className="text-sm font-medium">
+              {imageError ? 'Imagem não encontrada' : 'Sem imagem'}
+            </span>
+          </div>
         )}
         {item.tingida && (
           <Badge className="absolute top-2 right-2 bg-purple-500">
@@ -61,7 +64,6 @@ export function ProductCard({ item }: ProductCardProps) {
           <Badge className="absolute top-2 left-2 bg-gray-500">Inativo</Badge>
         )}
       </div>
-
       <CardHeader className="pb-3">
         <CardTitle className="text-base line-clamp-2">
           <Highlight
@@ -70,11 +72,11 @@ export function ProductCard({ item }: ProductCardProps) {
             highlightedTagName="mark"
           />
         </CardTitle>
-        {item.codigoVeiling && (
+        {/* {item.codigoVeiling && (
           <CardDescription className="text-xs font-mono">
             {item.codigoVeiling}
           </CardDescription>
-        )}
+        )} */}
       </CardHeader>
 
       <CardContent className="space-y-3">

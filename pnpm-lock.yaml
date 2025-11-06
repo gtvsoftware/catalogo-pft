@@ -62,6 +62,9 @@ importers:
       axios:
         specifier: ^1.11.0
         version: 1.13.1
+      instantsearch.css:
+        specifier: ^8.6.0
+        version: 8.6.0
       instantsearch.js:
         specifier: ^4.81.0
         version: 4.81.0(algoliasearch@5.42.0)
@@ -193,10 +196,16 @@ importers:
       bson:
         specifier: ^7.0.0
         version: 7.0.0
+      papaparse:
+        specifier: ^5.5.3
+        version: 5.5.3
       tsx:
         specifier: ^4.20.6
         version: 4.20.6
     devDependencies:
+      '@types/papaparse':
+        specifier: ^5.5.0
+        version: 5.5.0
       prisma:
         specifier: ^6.14.0
         version: 6.18.0(typescript@5.9.3)
@@ -2302,6 +2311,9 @@ packages:
   '@types/node@22.15.3':
     resolution: {integrity: sha512-lX7HFZeHf4QG/J7tBZqrCAXwz9J5RD56Y6MpP0eJkka8p+K0RY/yBTW7CYFJ4VGCclxqOLKmiGP5juQc6MKgcw==}
 
+  '@types/papaparse@5.5.0':
+    resolution: {integrity: sha512-GVs5iMQmUr54BAZYYkByv8zPofFxmyxUpISPb2oh8sayR3+1zbxasrOvoKiHJ/nnoq/uULuPsu1Lze1EkagVFg==}
+
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
 
@@ -2839,6 +2851,9 @@ packages:
   instantsearch-ui-components@0.12.0:
     resolution: {integrity: sha512-WcyrNJ5sqeqAWLibztnssSKDhgFEdj4C1prZOHSCONxF+5RSfCsD0oqKiZrTMx3dlAL/Qx7eZxKhD56u5mxJMA==}
 
+  instantsearch.css@8.6.0:
+    resolution: {integrity: sha512-YweaPxsvaITBgKPxEZnuTX0XLfa4JeLBGkhrlcN2glCH1Ipk9XU1M9X+clcAEottTe8K1/q5COePW0Ozr2+0MA==}
+
   instantsearch.js@4.81.0:
     resolution: {integrity: sha512-zyIUSrikpst5eaBMrruGRGmRHOHQciDyJ8UW7i4xhPVNRwxr5Ls/NBez9AdNne+7OvALCOeaTI3t9LoBQakWhw==}
     peerDependencies:
@@ -3161,6 +3176,9 @@ packages:
 
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
+
+  papaparse@5.5.3:
+    resolution: {integrity: sha512-5QvjGxYVjxO59MGU2lHVYpRWBBtKHnlIAcSe1uNFCkkptUh63NFRj0FJQm7nR67puEruUci/ZkjmEFrjCAyP4A==}
 
   path-key@3.1.1:
     resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
@@ -5546,6 +5564,10 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
+  '@types/papaparse@5.5.0':
+    dependencies:
+      '@types/node': 22.15.3
+
   '@types/prop-types@15.7.15': {}
 
   '@types/qs@6.14.0': {}
@@ -6101,6 +6123,8 @@ snapshots:
     transitivePeerDependencies:
       - react
 
+  instantsearch.css@8.6.0: {}
+
   instantsearch.js@4.81.0(algoliasearch@5.42.0):
     dependencies:
       '@algolia/events': 4.0.1
@@ -6364,6 +6388,8 @@ snapshots:
   orderedmap@2.1.1: {}
 
   package-json-from-dist@1.0.1: {}
+
+  papaparse@5.5.3: {}
 
   path-key@3.1.1: {}
 

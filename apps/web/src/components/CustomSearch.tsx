@@ -1,5 +1,6 @@
 import { Input } from '@terraviva/ui/input'
 import { useSearchBox } from 'react-instantsearch'
+
 export function CustomSearch() {
   const { query, refine } = useSearchBox()
 
