@@ -29,7 +29,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { GroupSelect } from '@/components/GroupSelect'
+// import { GroupSelect } from '@/components/GroupSelect'
 import { SerieSelectSimple } from '@/components/SeriesSelect'
 
 const variacaoFormSchema = z.object({
@@ -255,7 +255,7 @@ export default function EditVariacaoPage() {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Relacionamentos</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="grupoId"
                     render={({ field }) => (
@@ -271,7 +271,7 @@ export default function EditVariacaoPage() {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
 
                   <FormField
                     control={form.control}

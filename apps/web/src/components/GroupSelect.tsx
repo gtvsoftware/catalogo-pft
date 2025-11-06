@@ -18,7 +18,7 @@ export function GrupoSelect() {
     })
 
     return res.hits?.map((h: any) => ({
-      value: h.document.slug,
+      value: h.document.id,
       label: h.document.nome
     }))
   }

@@ -27,7 +27,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { GroupSelect } from '@/components/GroupSelect'
+// import { GrupoSelect } from '@/components/GroupSelect'
 import { ImageUpload } from '@/components/ImageUpload'
 
 const serieFormSchema = z.object({
@@ -217,16 +217,14 @@ export default function EditSeriePage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="grupoId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Grupo</FormLabel>
                     <FormControl>
-                      <GroupSelect
-                        value={field.value}
-                        onValueChange={field.onChange}
+                      <GrupoSelect
                         disabled={submitting}
                       />
                     </FormControl>
@@ -236,7 +234,7 @@ export default function EditSeriePage() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
