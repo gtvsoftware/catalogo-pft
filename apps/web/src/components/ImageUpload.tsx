@@ -6,7 +6,7 @@ import { toast } from '@terraviva/ui/sonner'
 import { useCallback, useState } from 'react'
 
 interface ImageUploadProps {
-  id: string
+  slug: string
   value?: string
   onChange: (url: string) => void
   onRemove?: () => void
@@ -16,7 +16,7 @@ interface ImageUploadProps {
 }
 
 export function ImageUpload({
-  id,
+  slug,
   value,
   onChange,
   onRemove,
@@ -53,7 +53,7 @@ export function ImageUpload({
       try {
         const formData = new FormData()
         formData.append('file', file)
-        formData.append('id', id)
+        formData.append('slug', slug)
 
         const response = await fetch('/api/upload', {
           method: 'POST',

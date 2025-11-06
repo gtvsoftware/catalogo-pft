@@ -323,7 +323,7 @@ export default function EditGrupoPage() {
                     <FormLabel>Imagem do Grupo</FormLabel>
                     <FormControl>
                       <ImageUpload
-                        id={params.id as string}
+                        slug={watch('slug')}
                         value={field.value}
                         onChange={field.onChange}
                         onRemove={() => field.onChange('')}

@@ -13,14 +13,14 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File
-    const id = formData.get('id') as string
+    const slug = formData.get('slug') as string
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    if (!id) {
-      return NextResponse.json({ error: 'No id provided' }, { status: 400 })
+    if (!slug) {
+      return NextResponse.json({ error: 'No slug provided' }, { status: 400 })
     }
 
     // Validate file type
@@ -54,9 +54,9 @@ export async function POST(request: NextRequest) {
       access: 'blob' // Public access for blobs
     })
 
-    // Generate filename using id and file extension
+    // Generate filename using slug and file extension
     const extension = file.name.split('.').pop()
-    const blobName = `${id}.${extension}`
+    const blobName = `${slug}.${extension}`
 
     // Upload to Azure Blob Storage
     const blockBlobClient = containerClient.getBlockBlobClient(blobName)
