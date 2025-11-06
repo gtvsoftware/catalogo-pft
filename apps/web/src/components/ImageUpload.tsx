@@ -78,7 +78,7 @@ export function ImageUpload({
         setUploading(false)
       }
     },
-    [accept, disabled, maxSize, onChange, id]
+    [accept, disabled, maxSize, onChange, slug]
   )
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
