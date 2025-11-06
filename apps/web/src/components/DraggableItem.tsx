@@ -149,7 +149,7 @@ export function DraggableItem({
               {...listeners}
               {...attributes}
               className={cn(
-                'group flex flex-col w-full cursor-pointer rounded-xl bg-white border border-gray-200 overflow-hidden shadow-sm transition hover:shadow-md hover:border-gray-300 active:scale-[0.98]',
+                'group flex flex-col w-full cursor-pointer rounded-xl bg-white overflow-hidden  hover:scale-[1.1] hover:bg-gray-5',
                 isDragging && 'cursor-grabbing opacity-70'
               )}
             >
