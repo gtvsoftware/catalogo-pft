@@ -44,6 +44,7 @@ export function ProductCard({ item }: ProductCardProps) {
         {item.imagem ? (
           <Image
             fill
+            preload
             src={item.imagem}
             alt={item.descricaoCompleta || 'Produto'}
             className="w-full h-full object-cover"
