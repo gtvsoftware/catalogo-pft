@@ -29,3 +29,18 @@ export default async function getCroppedImg(
 
   return canvas.toDataURL('image/jpeg')
 }
+export const onSelectFile = (
+  e: React.ChangeEvent<HTMLInputElement>,
+  setImageSrc: any,
+  setShowCropper: any
+) => {
+  if (e.target.files && e.target.files.length > 0) {
+    const reader = new FileReader()
+
+    reader.addEventListener('load', () => setImageSrc(reader.result as string))
+
+    reader.readAsDataURL(e.target.files[0] as Blob)
+
+    setShowCropper(true)
+  }
+}

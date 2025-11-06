@@ -15,7 +15,7 @@ import {
 } from '@terraviva/ui/dialog'
 import { Input } from '@terraviva/ui/input'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import getCroppedImg from '@/utils/getCroppedImg'
+import getCroppedImg from '@/utils/image'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { itemFormSchema } from '@/schemas/itemSchema'
 import Cropper, { Area, Point } from 'react-easy-crop'
@@ -23,9 +23,6 @@ import { Slider } from '@terraviva/ui/slider'
 import { Button } from '@terraviva/ui/button'
 import { DeleteModal } from './DeleteModal'
 import { ProductsModal } from './ProductsModal'
-import { getColorBadgeClass } from '@/utils/getColorBadgeClass'
-import { Badge } from '@terraviva/ui/badge'
-
 interface DraggableItemProps {
   sectionIndex: number
   itemIndex: number
@@ -64,8 +61,7 @@ export function DraggableItem({
     formState: { errors }
   } = localFormValues
 
-  const { image, name, color, commercialName, group, height, pot, serie } =
-    localWatch()
+  const { image, name, commercialName } = localWatch()
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -91,12 +87,7 @@ export function DraggableItem({
   const onSubmit = (data: itemFormType) => {
     setValue(`sections.${sectionIndex}.items.${itemIndex}`, {
       ...data,
-      commercialName,
-      group,
-      height,
-      pot,
-      serie,
-      color
+      commercialName
     })
     localReset(data)
     setOpen(false)
@@ -149,7 +140,7 @@ export function DraggableItem({
               {...listeners}
               {...attributes}
               className={cn(
-                'group flex flex-col w-full cursor-pointer rounded-xl bg-white overflow-hidden  hover:scale-[1.1] hover:bg-gray-5',
+                'group flex flex-col w-full cursor-pointer rounded-xl bg-white overflow-hidden  hover:scale-[1.02] hover:bg-gray-5',
                 isDragging && 'cursor-grabbing opacity-70'
               )}
             >
@@ -176,21 +167,6 @@ export function DraggableItem({
                 <p className="text-sm font-medium text-slate-800 line-clamp-2">
                   {item.name}
                 </p>
-
-                <div className="flex flex-col gap-1 items-end text-gray-500 text-xs">
-                  {item.color && (
-                    <Badge
-                      variant="outline"
-                      className={getColorBadgeClass(item.color)}
-                    >
-                      {item.color}
-                    </Badge>
-                  )}
-                  {item.pot && <span className="text-right">{item.pot}</span>}
-                  {item.height && (
-                    <span className="text-right">{item.height} cm</span>
-                  )}
-                </div>
                 <div className="flex items-center gap-2 text-sm">
                   {item.discountPrice ? (
                     <>
@@ -308,25 +284,6 @@ export function DraggableItem({
                 {commercialName && (
                   <Field label="Nome comercial" value={commercialName} />
                 )}
-                <div className="grid grid-cols-2 gap-2">
-                  {group && <Field label="Grupo" value={group} />}
-                  {serie && <Field label="Série" value={serie} />}
-                  {pot && <Field label="Pote" value={pot} />}
-                  {height && <Field label="Altura" value={height} />}
-                  {color && (
-                    <div className="space-y-1">
-                      <p className="font-medium text-sm">Cor</p>
-                      <div
-                        className={cn(
-                          getColorBadgeClass(color),
-                          'border rounded-md p-2 px-3 cursor-not-allowed text-sm'
-                        )}
-                      >
-                        {color}
-                      </div>
-                    </div>
-                  )}
-                </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">

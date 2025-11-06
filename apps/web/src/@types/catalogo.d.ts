@@ -1,6 +1,7 @@
 declare type catalogoFormType = {
   banner?: string
   title: string
+  caption?: string
   sections: sectionFormType[]
 }
 

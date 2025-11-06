@@ -113,9 +113,6 @@ export function ProductsModal({ buttonClassName, label }: ProductsModalProps) {
                       onClick={() => {
                         setValue(`name`, hit.descricaoCompleta)
                         setValue(`image`, hit.imagem)
-                        setValue(`commercialName`, hit.descricaoComercial)
-                        setValue(`color`, hit.cor)
-                        setValue(`height`, hit.alturaCm)
                         setOpen(false)
                       }}
                     />

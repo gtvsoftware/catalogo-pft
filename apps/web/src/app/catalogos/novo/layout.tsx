@@ -8,7 +8,8 @@ export default function Layout({
 }: PropsWithChildren): React.ReactElement {
   const formValues = useForm<catalogoFormType>({
     defaultValues: {
-      title: 'Novo catálogo',
+      title: 'Título',
+      caption: 'Subtítulo',
       sections: []
     }
   })

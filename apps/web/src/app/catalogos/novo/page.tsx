@@ -14,18 +14,18 @@ import { Icon } from '@terraviva/ui/icon'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { v4 as randomUUID } from 'uuid'
 
-import { Banner } from '../../../components/Banner'
+import { Banner } from '../../../components/banner/Banner'
 import { DraggableSection } from '../../../components/DraggableSection'
 
 export default function Page(): React.ReactElement {
-  const { setValue, control, watch } = useFormContext<catalogoFormType>()
+  const { control, watch } = useFormContext<catalogoFormType>()
 
   const { append, move } = useFieldArray({
     name: 'sections',
     control
   })
 
-  const { sections, title } = watch()
+  const { sections } = watch()
 
   const handleSection = () => {
     const section: sectionFormType = {
@@ -64,15 +64,9 @@ export default function Page(): React.ReactElement {
 
   return (
     <div className="w-screen flex justify-center">
-      <div className="flex flex-col items-center gap-8 w-[800px]">
+      <div className="flex flex-col items-center gap-8 max-w-[800px] w-full">
         <Banner />
-        <input
-          className="text-2xl font-medium outline-none"
-          style={{ width: `${Math.max(title.length, 5)}ch` }}
-          placeholder="Título"
-          value={title}
-          onChange={e => setValue('title', e.target.value)}
-        />
+
         <div className="flex flex-col gap-8 w-full">
           <DndContext
             sensors={sensors}
