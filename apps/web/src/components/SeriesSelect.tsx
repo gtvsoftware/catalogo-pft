@@ -58,9 +58,10 @@ export function SerieSelect() {
       name="serie"
       control={control}
       comboboxProps={{
+        className: 'w-full flex items-center justify-between pr-0',
         options: series,
         placeholder: !grupoSlug
-          ? 'Selecione um grupo primeiro'
+          ? 'Selecione um grupo'
           : loading
             ? 'Carregando séries...'
             : 'Selecione uma série',

@@ -46,14 +46,17 @@ export function GrupoSelect() {
   }, [grupo])
 
   return (
-    <ComboboxFormField
-      name="grupo"
-      control={control}
-      comboboxProps={{
-        options: grupos,
-        placeholder: loading ? 'Carregando...' : 'Selecione um grupo'
-      }}
-    />
+    <div className="w-full">
+      <ComboboxFormField
+        name="grupo"
+        control={control}
+        comboboxProps={{
+          className: 'w-full flex items-center justify-between pr-0',
+          options: grupos,
+          placeholder: loading ? 'Carregando...' : 'Selecione um grupo'
+        }}
+      />
+    </div>
   )
 }
 
