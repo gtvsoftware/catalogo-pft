@@ -1,6 +1,15 @@
-import { useEffect, useState } from 'react'
+'use client'
+
 import { typesenseClient } from '@terraviva/typesense-catalogo-pft'
 import { ComboboxFormField } from '@terraviva/ui/form-fields'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@terraviva/ui/select'
+import { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 
 export function SerieSelect() {
@@ -58,5 +67,82 @@ export function SerieSelect() {
         disabled: !grupoSlug || loading
       }}
     />
+  )
+}
+
+interface Serie {
+  id: string
+  nome: string
+  slug: string
+}
+
+interface SerieSelectProps {
+  grupoId?: string
+  value: string
+  onValueChange: (value: string) => void
+  disabled?: boolean
+}
+
+export function SerieSelectSimple({
+  grupoId,
+  value,
+  onValueChange,
+  disabled = false
+}: SerieSelectProps) {
+  const [series, setSeries] = useState<Serie[]>([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (!grupoId) {
+      setSeries([])
+      return
+    }
+
+    const fetchSeries = async () => {
+      setLoading(true)
+      try {
+        const response = await fetch(
+          `/api/series?grupoId=${grupoId}&limit=1000`
+        )
+        if (!response.ok) {
+          throw new Error('Erro ao carregar séries')
+        }
+        const data = await response.json()
+        setSeries(data.series || [])
+      } catch (error) {
+        console.error('Erro ao carregar séries:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSeries()
+  }, [grupoId])
+
+  return (
+    <Select
+      value={value}
+      onValueChange={onValueChange}
+      disabled={disabled || !grupoId}
+    >
+      <SelectTrigger>
+        <SelectValue
+          placeholder={
+            !grupoId
+              ? 'Selecione um grupo primeiro'
+              : loading
+                ? 'Carregando...'
+                : 'Selecione uma série'
+          }
+        />
+      </SelectTrigger>
+      <SelectContent>
+        {series.map(serie => (
+          <SelectItem key={serie.id} value={serie.id}>
+            {serie.nome}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 }
