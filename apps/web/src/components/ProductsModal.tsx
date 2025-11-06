@@ -13,17 +13,16 @@ import { Button } from '@terraviva/ui/button'
 import {
   Configure,
   Hits,
+  InstantSearch,
   Pagination,
   useInstantSearch
 } from 'react-instantsearch'
 import { SerieSelect } from '@/components/SeriesSelect'
 import { CustomSearch } from '@/components/CustomSearch'
 import { GrupoSelect } from '@/components/GroupSelect'
-import { InstantSearchNext } from 'react-instantsearch-nextjs'
 import { ProductCardTeste } from '@/components/ProductCardTeste'
-import TypesenseInstantsearchAdapter from 'typesense-instantsearch-adapter'
+import { getTypesenseSearchAdapter } from '@terraviva/typesense-catalogo-pft'
 import { cn } from '@terraviva/ui/cn'
-import { assembleTypesenseServerConfig } from '@terraviva/typesense-catalogo-pft'
 
 interface ProductsModalProps {
   label?: string
@@ -37,14 +36,11 @@ export function ProductsModal({ buttonClassName, label }: ProductsModalProps) {
     defaultValues: { grupo: null, serie: null }
   })
 
-  const TYPESENSE_SERVER_CONFIG = assembleTypesenseServerConfig()
-
-  const typesenseInstantsearchAdapter = new TypesenseInstantsearchAdapter({
-    server: TYPESENSE_SERVER_CONFIG,
-
+  const typesenseInstantsearchAdapter = getTypesenseSearchAdapter({
     additionalSearchParameters: {
       query_by: 'descricaoCompleta',
-      per_page: 12
+      per_page: 12,
+      sort_by: 'descricaoCompleta:asc'
     }
   })
 
@@ -70,9 +66,17 @@ export function ProductsModal({ buttonClassName, label }: ProductsModalProps) {
               <DialogTitle>Selecionar produto</DialogTitle>
             </DialogHeader>
 
-            <InstantSearchNext
+            <InstantSearch
+              routing
               indexName="variacoes"
               searchClient={typesenseInstantsearchAdapter.searchClient}
+              initialUiState={{
+                variacoes: {
+                  toggle: {
+                    has_image: true
+                  }
+                }
+              }}
             >
               <SearchRefresher open={open} />
               <div className="space-y-2 w-full">
@@ -108,6 +112,7 @@ export function ProductsModal({ buttonClassName, label }: ProductsModalProps) {
                       item={hit}
                       onClick={() => {
                         setValue(`name`, hit.descricaoCompleta)
+                        setValue(`image`, hit.imagem)
                         setValue(`commercialName`, hit.descricaoComercial)
                         setValue(`color`, hit.cor)
                         setValue(`height`, hit.alturaCm)
@@ -120,14 +125,25 @@ export function ProductsModal({ buttonClassName, label }: ProductsModalProps) {
                 <Pagination
                   padding={2}
                   classNames={{
-                    list: 'flex gap-2',
-                    disabledItem: 'text-gray-300',
-                    item: 'border rounded-md flex justify-center items-center text-sm font-medium w-10 h-10',
-                    selectedItem: 'bg-primary-500 text-white '
+                    root: 'flex items-center justify-center',
+                    noRefinementRoot:
+                      'flex items-center justify-center opacity-50 cursor-not-allowed',
+                    list: 'flex items-center gap-1',
+                    item: 'inline-flex items-center justify-center',
+                    firstPageItem: 'inline-flex items-center justify-center',
+                    previousPageItem: 'inline-flex items-center justify-center',
+                    pageItem: 'inline-flex items-center justify-center',
+                    selectedItem:
+                      'inline-flex items-center justify-center text-primary-500',
+                    disabledItem:
+                      'inline-flex items-center justify-center opacity-50 cursor-not-allowed pointer-events-none',
+                    nextPageItem: 'inline-flex items-center justify-center',
+                    lastPageItem: 'inline-flex items-center justify-center',
+                    link: 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground data-[selected=true]:hover:bg-primary data-[selected=true]:hover:text-primary-foreground'
                   }}
                 />
               </div>
-            </InstantSearchNext>
+            </InstantSearch>
           </div>
         </DialogContent>
       </Dialog>

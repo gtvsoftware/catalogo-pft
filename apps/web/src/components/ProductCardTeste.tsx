@@ -10,6 +10,8 @@ import {
 import { cn } from '@terraviva/ui/cn'
 import { Icon } from '@terraviva/ui/icon'
 import type { Hit } from 'instantsearch.js'
+import Image from 'next/image'
+import { useState } from 'react'
 import { Highlight } from 'react-instantsearch'
 
 interface ProductCardProps {
@@ -18,14 +20,32 @@ interface ProductCardProps {
 }
 
 export function ProductCardTeste({ item, onClick }: ProductCardProps) {
+  const [imageError, setImageError] = useState(false)
+
   return (
     <Card
       key={item.id}
       className="overflow-hidden p-0 h-full cursor-pointer gap-2"
       onClick={onClick}
     >
-      <div className="aspect-square bg-gradient-to-br from-green-100 to-pink-100 flex items-center justify-center relative">
-        <Icon icon="flower" className="w-20 h-20 text-green-300" />
+      <div className="aspect-square bg-gradient-to-br bg-gray-50 flex items-center justify-center relative overflow-hidden">
+        {item.imagem && !imageError ? (
+          <Image
+            preload
+            fill
+            src={item.imagem}
+            alt={item.descricaoCompleta || 'Produto'}
+            className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-2  text-gray-400">
+            <Icon icon="image-slash" className="" />
+            <span className="text-xs font-medium text-center">
+              {!imageError && 'Sem imagem'}
+            </span>
+          </div>
+        )}
         {item.tingida && (
           <Badge className="absolute top-2 right-2 bg-purple-500">
             Tingida
