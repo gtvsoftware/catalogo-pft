@@ -193,8 +193,10 @@ export default function SeriesListPage() {
                 Gerencie as séries de flores e plantas
               </CardDescription>
             </div>
-            <Button onClick={() => router.push('/cadastros/series/novo')}>
-              <Icon icon="plus" className="mr-2" />
+            <Button
+              leftIcon="plus"
+              onClick={() => router.push('/cadastros/series/novo')}
+            >
               Nova Série
             </Button>
           </div>

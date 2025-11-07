@@ -197,8 +197,10 @@ export default function CatalogosListPage() {
                 Gerencie os catálogos personalizados de produtos
               </CardDescription>
             </div>
-            <Button onClick={() => router.push('/cadastros/catalogos/novo')}>
-              <Icon icon="plus" className="mr-2" />
+            <Button
+              leftIcon="plus"
+              onClick={() => router.push('/cadastros/catalogos/novo')}
+            >
               Novo Catálogo
             </Button>
           </div>

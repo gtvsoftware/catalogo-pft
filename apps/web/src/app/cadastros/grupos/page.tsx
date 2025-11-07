@@ -193,8 +193,10 @@ export default function GruposListPage() {
                 Gerencie os grupos de flores e plantas
               </CardDescription>
             </div>
-            <Button onClick={() => router.push('/cadastros/grupos/novo')}>
-              <Icon icon="plus" className="mr-2" />
+            <Button
+              leftIcon="plus"
+              onClick={() => router.push('/cadastros/grupos/novo')}
+            >
               Novo Grupo
             </Button>
           </div>
