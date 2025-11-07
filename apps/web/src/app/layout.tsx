@@ -1,4 +1,4 @@
-import { TerraVivaUiProvider, ThemeProvider } from '@terraviva/ui/providers'
+import { ThemeProvider } from '@terraviva/ui/providers'
 import type { Metadata } from 'next'
 
 import { APP_CONFIG } from '@/config/app.config'

@@ -28,7 +28,7 @@ export function NewSectionButton() {
 
   return (
     <div
-      className="w-full border-2 border-dashed min-h-64 flex flex-col items-center justify-center  bg-gray-100 rounded-md cursor-pointer gap-2"
+      className="w-full border-2 mb-8 border-dashed min-h-64 flex flex-col items-center justify-center  bg-gray-100 rounded-md cursor-pointer gap-2"
       onClick={handleSection}
     >
       <Icon icon="plus-circle" className="text-primary-500 text-2xl" />

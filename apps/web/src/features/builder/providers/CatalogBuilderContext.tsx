@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState } from 'react'
-import { UseFormReturn, useForm } from 'react-hook-form'
+import { FormProvider, UseFormReturn, useForm } from 'react-hook-form'
 import { v4 as randomUUID } from 'uuid'
 
 // Types
@@ -159,7 +159,7 @@ export function CatalogBuilderProvider({
 
   return (
     <CatalogBuilderContext.Provider value={value}>
-      {children}
+      <FormProvider {...formValues}>{children}</FormProvider>
     </CatalogBuilderContext.Provider>
   )
 }

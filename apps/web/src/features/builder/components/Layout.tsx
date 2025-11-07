@@ -149,7 +149,7 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
               </div>
 
               {/* Content Area */}
-              {children}
+              <div className="flex flex-col mx-8">{children}</div>
             </div>
           </div>
         </div>

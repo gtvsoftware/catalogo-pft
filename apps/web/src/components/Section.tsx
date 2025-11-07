@@ -24,6 +24,8 @@ interface SectionProps {
 export function Section({ sectionIndex }: SectionProps): React.ReactElement {
   const { control, watch } = useFormContext<catalogoFormType>()
 
+  console.log('control', control)
+
   const {
     move,
     append,

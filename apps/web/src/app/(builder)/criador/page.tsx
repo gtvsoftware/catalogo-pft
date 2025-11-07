@@ -1,5 +1,6 @@
 'use client'
 
+import { NewSectionButton } from '@/components/NewSectionButton'
 import { CatalogBuilderLayout } from '@/features/builder/components/Layout'
 import { Sections } from '@/features/builder/components/Sections'
 import { CatalogBuilderProvider } from '@/features/builder/providers/CatalogBuilderContext'
@@ -8,6 +9,7 @@ function FlowerCatalogBuilderContent() {
   return (
     <CatalogBuilderLayout>
       <Sections />
+      <NewSectionButton />
     </CatalogBuilderLayout>
   )
 }
