@@ -1,14 +1,8 @@
 'use client'
 
-import { useState, useCallback, useRef, useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import Cropper, { Area, Point } from 'react-easy-crop'
-import Image from 'next/image'
-import { v4 as randomUUID } from 'uuid'
-import { cn } from '@terraviva/ui/cn'
-import { itemFormSchema } from '@/schemas/itemSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import getCroppedImg from '@/utils/image'
+import { Button } from '@terraviva/ui/button'
+import { cn } from '@terraviva/ui/cn'
 import {
   Dialog,
   DialogContent,
@@ -19,7 +13,15 @@ import {
 import { Icon } from '@terraviva/ui/icon'
 import { Input } from '@terraviva/ui/input'
 import { Slider } from '@terraviva/ui/slider'
-import { Button } from '@terraviva/ui/button'
+import Image from 'next/image'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import Cropper, { Area, Point } from 'react-easy-crop'
+import { FormProvider, useForm } from 'react-hook-form'
+import { v4 as randomUUID } from 'uuid'
+
+import { itemFormSchema } from '@/schemas/itemSchema'
+import getCroppedImg from '@/utils/image'
+
 import { ProductsModal } from './ProductsModal'
 
 interface CreateItemFormModalProps {

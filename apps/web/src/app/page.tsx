@@ -2,19 +2,41 @@
 
 import { getTypesenseSearchAdapter } from '@terraviva/typesense-catalogo-pft'
 import { Icon } from '@terraviva/ui/icon'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import {
   Configure,
   Hits,
   InstantSearch,
   Pagination,
-  ToggleRefinement
+  RefinementList,
+  ToggleRefinement,
+  useInstantSearch
 } from 'react-instantsearch'
 
 import { CustomSearch } from '@/components/CustomSearch'
 import { GrupoSelect } from '@/components/GroupSelect'
 import { ProductCard } from '@/components/ProductCard'
 import { SerieSelect } from '@/components/SeriesSelect'
+
+function ResetPageOnFilterChange({
+  grupo,
+  serie
+}: {
+  grupo: string | null
+  serie: string | null
+}) {
+  const { setIndexUiState } = useInstantSearch()
+
+  useEffect(() => {
+    setIndexUiState(prevState => ({
+      ...prevState,
+      page: 1
+    }))
+  }, [grupo, serie, setIndexUiState])
+
+  return null
+}
 
 export default function FlowerCatalog() {
   const formProps = useForm({
@@ -84,7 +106,7 @@ export default function FlowerCatalog() {
                   <SerieSelect />
                 </div>
 
-                <div className="pt-1">
+                <div>
                   <ToggleRefinement
                     classNames={{
                       root: 'flex items-center gap-2',
@@ -99,6 +121,43 @@ export default function FlowerCatalog() {
                     label="Apenas produtos com imagem"
                   />
                 </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-gray-700 uppercase tracking-wide">
+                    Cor
+                  </label>
+                  <RefinementList
+                    classNames={{
+                      root: 'space-y-4',
+                      noRefinementRoot: 'text-sm text-muted-foreground p-4',
+                      searchBox: 'mb-3 hidden',
+                      noResults: 'text-sm text-muted-foreground py-2 px-1',
+                      list: 'space-y-2',
+                      item: 'flex items-center space-x-2 py-1.5 px-1 rounded-md hover:bg-accent/50 transition-colors',
+                      selectedItem: 'bg-accent',
+                      label:
+                        'flex items-center flex-1 cursor-pointer select-none',
+                      checkbox:
+                        'h-4 w-4 rounded border-input border ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
+                      labelText:
+                        'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ml-2 flex-1',
+                      count:
+                        'ml-auto text-xs text-muted-foreground font-normal bg-muted px-2 py-0.5 rounded-full',
+                      showMore:
+                        'w-full mt-3 text-sm font-medium text-primary hover:text-primary/80 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md px-4 py-2 transition-colors',
+                      disabledShowMore:
+                        'opacity-50 cursor-not-allowed hover:bg-background hover:text-primary'
+                    }}
+                    className="mt-3"
+                    attribute="cor"
+                    limit={10}
+                    showMore={true}
+                    showMoreLimit={50}
+                    searchable={true}
+                    sortBy={['name:asc']}
+                    // transformItems={transformItems}
+                  />
+                </div>
               </div>
 
               <Configure
@@ -110,6 +169,7 @@ export default function FlowerCatalog() {
                       : ''
                 }
               />
+              <ResetPageOnFilterChange grupo={grupo} serie={serie} />
             </div>
           </aside>
 

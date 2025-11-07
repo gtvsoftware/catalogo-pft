@@ -1,7 +1,5 @@
 'use client'
 
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
-import { CreateItemFormModal } from './CreateItemFormModal'
 import {
   closestCenter,
   DndContext,
@@ -9,12 +7,16 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core'
-import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { restrictToParentElement } from '@dnd-kit/modifiers'
-import { Icon } from '@terraviva/ui/icon'
+import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { Button } from '@terraviva/ui/button'
+import { Icon } from '@terraviva/ui/icon'
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
+
+import { CreateItemFormModal } from './CreateItemFormModal'
 import { DeleteModal } from './DeleteModal'
 import { DraggableItem } from './DraggableItem'
+
 interface SectionProps {
   sectionIndex: number
 }
@@ -121,7 +123,7 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
           onDragEnd={handleDragEnd}
         >
           <SortableContext items={items} strategy={rectSortingStrategy}>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
               {items.map((item, index) => (
                 <DraggableItem
                   key={item.id}

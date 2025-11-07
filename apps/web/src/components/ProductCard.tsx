@@ -13,20 +13,27 @@ interface ProductCardProps {
 export function ProductCard({ item }: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
 
-  const getColorBadgeClass = (cor: string | null): string => {
-    if (!cor) return 'bg-gray-100 text-gray-800 border-gray-300'
+  const getActualColor = (cor: string | null): string => {
+    if (!cor) return '#9CA3AF'
 
     const colorMap: Record<string, string> = {
-      Amarelo: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      Laranja: 'bg-orange-100 text-orange-800 border-orange-300',
-      Vermelho: 'bg-red-100 text-red-800 border-red-300',
-      Rosa: 'bg-pink-100 text-pink-800 border-pink-300',
-      Roxo: 'bg-purple-100 text-purple-800 border-purple-300',
-      Azul: 'bg-blue-100 text-blue-800 border-blue-300',
-      Branco: 'bg-gray-100 text-gray-800 border-gray-300',
-      Verde: 'bg-green-100 text-green-800 border-green-300'
+      Amarelo: '#FCD34D',
+      Laranja: '#FB923C',
+      Vermelho: '#EF4444',
+      Rosa: '#EC4899',
+      Roxo: '#A855F7',
+      Azul: '#3B82F6',
+      Branco: '#FFFFFF',
+      Verde: '#10B981',
+      Preto: '#000000',
+      Salmao: '#FFA07A',
+      Champanhe: '#FAD6A5'
     }
-    return colorMap[cor] || 'bg-gray-100 text-gray-800 border-gray-300'
+    return colorMap[cor] || '#9CA3AF'
+  }
+
+  const isVariada = (cor: string | null): boolean => {
+    return cor?.toLowerCase() === 'variada'
   }
 
   console.log(item)
@@ -55,16 +62,11 @@ export function ProductCard({ item }: ProductCardProps) {
             </span>
           </div>
         )}
-        {item.tingida && (
-          <Badge className="absolute top-2 right-2 bg-purple-500">
-            Tingida
-          </Badge>
-        )}
         {!item.ativo && (
           <Badge className="absolute top-2 left-2 bg-gray-500">Inativo</Badge>
         )}
       </div>
-      <CardHeader className="pb-3">
+      <CardHeader>
         <CardTitle className="text-base line-clamp-2">
           <Highlight
             hit={item}
@@ -72,48 +74,35 @@ export function ProductCard({ item }: ProductCardProps) {
             highlightedTagName="mark"
           />
         </CardTitle>
-        {/* {item.codigoVeiling && (
-          <CardDescription className="text-xs font-mono">
-            {item.codigoVeiling}
-          </CardDescription>
-        )} */}
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {/* Color Badge */}
+        {/* Color Circle with Label */}
         {item.cor && (
-          <Badge variant="outline" className={getColorBadgeClass(item.cor)}>
-            {item.cor}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <div
+              className="w-4 h-4 rounded-full border border-border flex items-center justify-center"
+              style={
+                isVariada(item.cor)
+                  ? {
+                      background:
+                        'linear-gradient(135deg, #EF4444 0%, #FB923C 20%, #FCD34D 40%, #10B981 60%, #3B82F6 80%, #A855F7 100%)'
+                    }
+                  : { backgroundColor: getActualColor(item.cor) }
+              }
+            >
+              {item.tingida && (
+                <Icon
+                  icon="eye-dropper"
+                  className="w-4 h-4 text-white drop-shadow text-[8px]"
+                />
+              )}
+            </div>
+            <span className="text-sm font-medium text-gray-700">
+              {item.tingida ? 'Tingida' : ''} {item.cor}
+            </span>
+          </div>
         )}
-
-        {/* Details */}
-        <div className="space-y-1 text-xs text-gray-600">
-          {item.numeroPote && (
-            <div className="flex justify-between">
-              <span className="font-medium">Pote:</span>
-              <span>{item.numeroPote}</span>
-            </div>
-          )}
-          {item.alturaCm && (
-            <div className="flex justify-between">
-              <span className="font-medium">Altura:</span>
-              <span>{item.alturaCm} cm</span>
-            </div>
-          )}
-          {item.diametroFlorCm && (
-            <div className="flex justify-between">
-              <span className="font-medium">Diâmetro:</span>
-              <span>{item.diametroFlorCm} cm</span>
-            </div>
-          )}
-          {item.numeroHashtes && (
-            <div className="flex justify-between">
-              <span className="font-medium">Hastes:</span>
-              <span>{item.numeroHashtes}</span>
-            </div>
-          )}
-        </div>
 
         {/* Price */}
         {item.precoVendaSugerido > 0 && (
