@@ -42,6 +42,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
       id: '',
       image: '',
       name: '',
+      description: '',
       price: undefined,
       discountPrice: undefined
     }
@@ -56,7 +57,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
     formState: { errors }
   } = formValues
 
-  const { image, name, commercialName } = localWatch()
+  const { image } = localWatch()
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -94,15 +95,6 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
       setShowCropper(false)
     }
   }, [open])
-
-  const Field = (props: { label: string; value: string }) => (
-    <div className="space-y-1">
-      <p className="font-medium text-sm">{props.label}</p>
-      <div className="border rounded-md p-2 px-3 bg-gray-100 text-gray-500 cursor-not-allowed text-sm">
-        {props.value}
-      </div>
-    </div>
-  )
 
   return (
     <FormProvider {...formValues}>
@@ -200,21 +192,33 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
             )}
             <div className="space-y-1">
               <p className="font-medium text-sm">Nome</p>
-              <ProductsModal
-                label={name}
-                buttonClassName={cn(errors.name && 'border-red-500')}
-              />
-
+              <div className="flex w-full items-center gap-2">
+                <Input
+                  {...localRegister('name')}
+                  placeholder="Nome"
+                  className={cn(errors.name && 'border-red-500')}
+                />
+                <ProductsModal
+                  buttonClassName={cn(errors.name && 'border-red-500')}
+                />
+              </div>
               {errors.name && (
                 <p className="text-red-500 text-xs mt-1">
                   {errors.name.message}
                 </p>
               )}
             </div>
-
-            <div className="flex flex-col gap-2">
-              {commercialName && (
-                <Field label="Nome comercial" value={commercialName} />
+            <div className="space-y-1">
+              <p className="font-medium text-sm">Descrição</p>
+              <Input
+                {...localRegister('description')}
+                placeholder="Descrição (opcional)"
+                className={cn(errors.description && 'border-red-500')}
+              />
+              {errors.description && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.description.message}
+                </p>
               )}
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -222,7 +226,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
                 <p className="font-medium text-sm">Preço</p>
                 <Input
                   {...localRegister('price')}
-                  placeholder="Preço (ex: 29,90)"
+                  placeholder="Preço (opcional)"
                   className={cn(errors.price && 'border-red-500')}
                 />
                 {errors.price && (

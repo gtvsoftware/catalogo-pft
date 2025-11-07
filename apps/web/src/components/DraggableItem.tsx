@@ -61,7 +61,7 @@ export function DraggableItem({
     formState: { errors }
   } = localFormValues
 
-  const { image, name, commercialName } = localWatch()
+  const { image } = localWatch()
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -86,8 +86,7 @@ export function DraggableItem({
 
   const onSubmit = (data: itemFormType) => {
     setValue(`sections.${sectionIndex}.items.${itemIndex}`, {
-      ...data,
-      commercialName
+      ...data
     })
     localReset(data)
     setOpen(false)
@@ -103,15 +102,6 @@ export function DraggableItem({
   useEffect(() => {
     if (item && open) localReset(item)
   }, [open, item])
-
-  const Field = (props: { label: string; value: string }) => (
-    <div className="space-y-1">
-      <p className="font-medium text-sm">{props.label}</p>
-      <div className="border rounded-md p-2 px-3 bg-gray-100 text-gray-500 cursor-not-allowed text-sm">
-        {props.value}
-      </div>
-    </div>
-  )
 
   const {
     attributes,
@@ -164,17 +154,20 @@ export function DraggableItem({
               </div>
 
               <div className="flex flex-col flex-1 justify-between gap-3 p-3">
-                <p className="text-sm font-medium text-slate-800 line-clamp-2">
-                  {item.name}
-                </p>
-                <div className="flex items-center gap-2 text-sm">
-                  {item.discountPrice ? (
+                <p className="font-medium  line-clamp-2">{item.name}</p>
+                {item.description && (
+                  <p className="text-gray-500 text-sm">{item.description}</p>
+                )}
+                <div className="flex items-center gap-2 ">
+                  {item.price && item.discountPrice ? (
                     <>
                       <p className="font-medium text-primary-500">{`R$${item.discountPrice}`}</p>
                       <p className="text-gray-500 text-sm line-through">{`R$${item.price}`}</p>
                     </>
                   ) : (
-                    <p className="font-medium text-primary-500">{`R$${item.price}`}</p>
+                    (item.price || item.discountPrice) && (
+                      <p className="font-medium text-primary-500">{`R$${item.price || item.discountPrice}`}</p>
+                    )
                   )}
                 </div>
               </div>
@@ -269,20 +262,33 @@ export function DraggableItem({
               )}
               <div className="space-y-1">
                 <p className="font-medium text-sm">Nome</p>
-                <ProductsModal
-                  label={name}
-                  buttonClassName={cn(errors.name && 'border-red-500')}
-                />
-
+                <div className="flex w-full items-center gap-2">
+                  <Input
+                    {...localRegister('name')}
+                    placeholder="Nome"
+                    className={cn(errors.name && 'border-red-500')}
+                  />
+                  <ProductsModal
+                    buttonClassName={cn(errors.name && 'border-red-500')}
+                  />
+                </div>
                 {errors.name && (
                   <p className="text-red-500 text-xs mt-1">
                     {errors.name.message}
                   </p>
                 )}
               </div>
-              <div className="flex flex-col gap-2">
-                {commercialName && (
-                  <Field label="Nome comercial" value={commercialName} />
+              <div className="space-y-1">
+                <p className="font-medium text-sm">Descrição</p>
+                <Input
+                  {...localRegister('description')}
+                  placeholder="Descrição (opcional)"
+                  className={cn(errors.description && 'border-red-500')}
+                />
+                {errors.description && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.description.message}
+                  </p>
                 )}
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -290,7 +296,7 @@ export function DraggableItem({
                   <p className="font-medium text-sm">Preço</p>
                   <Input
                     {...localRegister('price')}
-                    placeholder="Preço (ex: 29,90)"
+                    placeholder="Preço (opcional)"
                     className={cn(errors.price && 'border-red-500')}
                   />
                   {errors.price && (

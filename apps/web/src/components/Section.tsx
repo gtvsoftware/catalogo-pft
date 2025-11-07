@@ -9,26 +9,17 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core'
-import {
-  rectSortingStrategy,
-  SortableContext,
-  useSortable
-} from '@dnd-kit/sortable'
+import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { restrictToParentElement } from '@dnd-kit/modifiers'
-import { CSS } from '@dnd-kit/utilities'
-import { cn } from '@terraviva/ui/cn'
 import { Icon } from '@terraviva/ui/icon'
 import { Button } from '@terraviva/ui/button'
 import { DeleteModal } from './DeleteModal'
 import { DraggableItem } from './DraggableItem'
-
-interface DraggableSectionProps {
+interface SectionProps {
   sectionIndex: number
 }
 
-export function DraggableSection({
-  sectionIndex
-}: DraggableSectionProps): React.ReactElement {
+export function Section({ sectionIndex }: SectionProps): React.ReactElement {
   const { control, watch } = useFormContext<catalogoFormType>()
 
   const {
@@ -40,7 +31,7 @@ export function DraggableSection({
     control
   })
 
-  const { remove } = useFieldArray({
+  const { remove, swap } = useFieldArray({
     name: `sections`,
     control
   })
@@ -48,22 +39,6 @@ export function DraggableSection({
   const { sections } = watch()
   const section = watch(`sections.${sectionIndex}`)
   const items = watch(`sections.${sectionIndex}.items`)
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({
-    id: section?.id
-  })
-
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    transition
-  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -89,11 +64,7 @@ export function DraggableSection({
 
   return (
     section && (
-      <div
-        className="w-full flex flex-col gap-4 bg-white"
-        ref={setNodeRef}
-        style={style}
-      >
+      <div className="w-full flex flex-col gap-4 bg-white">
         <div className="flex items-center justify-between">
           <Controller
             name={`sections.${sectionIndex}.title`}
@@ -123,17 +94,22 @@ export function DraggableSection({
             />
 
             <Button
-              {...attributes}
-              {...listeners}
-              disabled={sections.length === 1}
+              disabled={
+                sections.length === 1 || sectionIndex === sections.length - 1
+              }
+              onClick={() => swap(sectionIndex, sectionIndex + 1)}
               variant={'outline'}
-              className={cn(
-                'p-0',
-                'w-8 h-8 border rounded-sm cursor-grab flex items-center justify-center hover:bg-gray-100',
-                isDragging && 'cursor-grabbing'
-              )}
+              className="p-0 w-8 h-8 border rounded-sm flex items-center justify-center hover:bg-gray-100"
             >
-              <Icon icon="grip-vertical" family="duotone" />
+              <Icon icon="caret-down" />
+            </Button>
+            <Button
+              disabled={sections.length === 1 || sectionIndex === 0}
+              onClick={() => swap(sectionIndex, sectionIndex - 1)}
+              variant={'outline'}
+              className="p-0 w-8 h-8 border rounded-sm flex items-center justify-center hover:bg-gray-100"
+            >
+              <Icon icon="caret-up" />
             </Button>
           </div>
         </div>

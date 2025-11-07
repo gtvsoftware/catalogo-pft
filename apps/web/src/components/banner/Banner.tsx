@@ -20,14 +20,14 @@ export function Banner(): React.ReactElement {
         className="object-cover"
       />
       <p
-        className="z-10 text-4xl font-bold text-white"
+        className="z-10 text-6xl font-bold text-white"
         style={{ mixBlendMode: 'difference' }}
       >
         {title}
       </p>
       {caption && (
         <p
-          className="z-10 text-xl font-bold text-white"
+          className="z-10 text-2xl font-bold text-white"
           style={{ mixBlendMode: 'difference' }}
         >
           {caption}

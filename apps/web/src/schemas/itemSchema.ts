@@ -18,14 +18,6 @@ const normalizePrice = (val: string) => {
 
 const priceSchema = z
   .string()
-  .min(1, 'Campo obrigatório')
-  .transform(normalizePrice)
-  .refine(val => priceRegex.test(val) && Number(val.replace(',', '.')) > 0, {
-    message: 'Preço inválido'
-  })
-
-const optionalPriceSchema = z
-  .string()
   .optional()
   .transform(val => (val ? normalizePrice(val) : val))
   .refine(
@@ -40,8 +32,9 @@ export const itemFormSchema = z.object({
   id: z.string(),
   image: z.string().min(1, 'Imagem é obrigatória'),
   name: z.string().min(1, 'Nome é obrigatório'),
+  description: z.string().optional(),
   price: priceSchema,
-  discountPrice: optionalPriceSchema
+  discountPrice: priceSchema
 })
 
 export type itemFormType = z.infer<typeof itemFormSchema>

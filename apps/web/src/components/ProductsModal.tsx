@@ -9,7 +9,6 @@ import {
   DialogTrigger
 } from '@terraviva/ui/dialog'
 import { useEffect, useState } from 'react'
-import { Button } from '@terraviva/ui/button'
 import {
   Configure,
   Hits,
@@ -23,13 +22,13 @@ import { GrupoSelect } from '@/components/GroupSelect'
 import { ProductCardTeste } from '@/components/ProductCardTeste'
 import { getTypesenseSearchAdapter } from '@terraviva/typesense-catalogo-pft'
 import { cn } from '@terraviva/ui/cn'
+import { Icon } from '@terraviva/ui/icon'
 
 interface ProductsModalProps {
-  label?: string
   buttonClassName?: string
 }
 
-export function ProductsModal({ buttonClassName, label }: ProductsModalProps) {
+export function ProductsModal({ buttonClassName }: ProductsModalProps) {
   const { setValue } = useFormContext()
 
   const formProps = useForm({
@@ -52,13 +51,14 @@ export function ProductsModal({ buttonClassName, label }: ProductsModalProps) {
     <FormProvider {...formProps}>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button
-            variant={'outline'}
-            leftIcon="magnifying-glass"
-            className={cn('w-full justify-start items-center', buttonClassName)}
+          <button
+            className={cn(
+              'h-9 w-9 aspect-square justify-start items-center border rounded-md hover:bg-gray-100',
+              buttonClassName
+            )}
           >
-            {label || 'Selecionar produto'}
-          </Button>
+            <Icon icon="magnifying-glass" className="text-sm" />
+          </button>
         </DialogTrigger>
         <DialogContent className="min-h-[90%] max-h-[90%] overflow-y-auto">
           <div className="flex flex-col gap-4 justify-start h-full">

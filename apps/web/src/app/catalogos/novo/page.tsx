@@ -1,26 +1,16 @@
 'use client'
 
-import {
-  closestCenter,
-  DndContext,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors
-} from '@dnd-kit/core'
-import { restrictToParentElement } from '@dnd-kit/modifiers'
-import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { Icon } from '@terraviva/ui/icon'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { v4 as randomUUID } from 'uuid'
 
 import { Banner } from '../../../components/banner/Banner'
-import { DraggableSection } from '../../../components/DraggableSection'
+import { Section } from '@/components/Section'
 
 export default function Page(): React.ReactElement {
   const { control, watch } = useFormContext<catalogoFormType>()
 
-  const { append, move } = useFieldArray({
+  const { append } = useFieldArray({
     name: 'sections',
     control
   })
@@ -35,21 +25,6 @@ export default function Page(): React.ReactElement {
     }
 
     append(section)
-  }
-  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
-
-  const handleDragEnd = (event: any) => {
-    const { active, over } = event
-    if (over && active.id !== over?.id) {
-      if (
-        active.data.current?.sortable?.index !== undefined &&
-        over.data.current?.sortable?.index !== undefined
-      )
-        move(
-          active.data.current?.sortable?.index,
-          over.data.current?.sortable?.index
-        )
-    }
   }
 
   const NewSectionButton = () => (
@@ -68,18 +43,9 @@ export default function Page(): React.ReactElement {
         <Banner />
 
         <div className="flex flex-col gap-8 w-full">
-          <DndContext
-            sensors={sensors}
-            modifiers={[restrictToParentElement]}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext items={sections} strategy={rectSortingStrategy}>
-              {sections.map((section, index) => (
-                <DraggableSection key={section.id} sectionIndex={index} />
-              ))}
-            </SortableContext>
-          </DndContext>
+          {sections.map((section, index) => (
+            <Section key={section.id} sectionIndex={index} />
+          ))}
         </div>
         <NewSectionButton />
       </div>
