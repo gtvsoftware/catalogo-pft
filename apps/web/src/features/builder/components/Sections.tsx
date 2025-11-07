@@ -9,8 +9,14 @@ export function Sections() {
 
   const { sections } = watch()
 
+  const hasSections = sections && sections.length > 0
+
+  if (!hasSections) {
+    return null
+  }
+
   return (
-    <div className="flex flex-col py-4 sm:py-6 md:py-8 gap-8">
+    <div className="flex flex-col gap-8">
       {!!sections.length && (
         <div className="flex flex-col gap-8 w-full">
           {sections.map((section, index) => (

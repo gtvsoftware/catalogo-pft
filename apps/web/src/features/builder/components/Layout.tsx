@@ -17,7 +17,6 @@ import { CatalogBuilderTopBar } from './Topbar'
 
 export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
   const {
-    formValues,
     coverSettings,
     updateCoverSettings,
     catalogInfo,
@@ -40,8 +39,6 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
     { name: 'Teal', value: '#14b8a6' },
     { name: 'Indigo', value: '#6366f1' }
   ]
-
-  const { sections } = formValues.watch()
 
   return (
     <div className="w-full h-screen flex flex-col bg-gray-50">
@@ -109,7 +106,7 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
               ) : null}
 
               {/* Catalog Info Bar */}
-              <div className="bg-gray-50 border-b p-4 sm:p-6">
+              {/* <div className="bg-gray-50 border-b p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm">
                   {catalogInfo.vendorName && (
                     <div className="flex items-center gap-2">
@@ -146,10 +143,12 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
                     </div>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               {/* Content Area */}
-              <div className="flex flex-col mx-8">{children}</div>
+              <div className="flex flex-col mx-8 py-4 sm:py-6 md:py-8">
+                {children}
+              </div>
             </div>
           </div>
         </div>

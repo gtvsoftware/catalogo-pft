@@ -94,7 +94,13 @@ export function CatalogBuilderProvider({
       id: randomUUID(),
       title: 'Título',
       caption: 'Subtítulo',
-      sections: []
+      sections: [
+        {
+          id: randomUUID(),
+          title: `Seção 1`,
+          items: []
+        }
+      ]
     }
   })
 

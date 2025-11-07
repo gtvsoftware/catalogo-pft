@@ -124,8 +124,11 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
     <FormProvider {...formValues}>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <div className="border-2 cursor-pointer border-dashed h-full w-full aspect-square flex flex-col items-center justify-center bg-gray-100 rounded-md">
-            <Icon icon="plus-circle" className="text-primary-500 text-2xl" />
+          <div className="border-2 cursor-pointer border-dashed gap-4 h-full w-full aspect-square flex flex-col items-center justify-center bg-gray-100 rounded-md">
+            <Icon icon="plus" className="text-gray-500 text-xl" />
+            <p className="font-medium text-gray-500 text-sm text-center max-w-36">
+              Clique para adicionar um novo item
+            </p>
           </div>
         </DialogTrigger>
 
