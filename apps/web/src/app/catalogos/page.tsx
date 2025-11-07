@@ -140,43 +140,13 @@ export default function CatalogosListPage() {
       id: 'actions',
       header: 'Ações',
       cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              router.push(`/cadastros/catalogos/${row.original.id}`)
-            }
-          >
-            <Icon icon="pencil" className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={async () => {
-              const confirmed = confirm('Deseja excluir este catálogo?')
-              if (!confirmed) return
-              try {
-                const response = await fetch(
-                  `/api/catalogos/${row.original.id}`,
-                  {
-                    method: 'DELETE'
-                  }
-                )
-                if (!response.ok) throw new Error('Erro ao excluir catálogo')
-                toast.success('Catálogo excluído com sucesso')
-                fetchCatalogos()
-              } catch (err) {
-                toast.error('Erro ao excluir catálogo', {
-                  description:
-                    err instanceof Error ? err.message : 'Erro desconhecido'
-                })
-              }
-            }}
-          >
-            <Icon icon="trash" className="h-4 w-4 text-destructive" />
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push(`/catalogos/${row.original.id}`)}
+        >
+          <Icon icon="eye" className="h-4 w-4" />
+        </Button>
       )
     }
   ]
