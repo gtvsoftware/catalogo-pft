@@ -4,11 +4,16 @@ import { Icon } from '@terraviva/ui/icon'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { v4 as randomUUID } from 'uuid'
 
-import { Banner } from '../../../components/banner/Banner'
+import { Banner } from '../../../../components/banner/Banner'
 import { Section } from '@/components/Section'
-import { Button } from '@terraviva/ui/button'
+import { Button, LoadingSpinner } from '@terraviva/ui/button'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function Page(): React.ReactElement {
+  const { id } = useParams()
+  const [loading, setLoading] = useState(true)
+
   const formValues = useForm<catalogoFormType>({
     defaultValues: {
       id: randomUUID(),
@@ -18,7 +23,7 @@ export default function Page(): React.ReactElement {
     }
   })
 
-  const { control, watch, handleSubmit, formState } = formValues
+  const { control, watch, handleSubmit, formState, reset } = formValues
 
   const { append } = useFieldArray({
     name: 'sections',
@@ -47,11 +52,56 @@ export default function Page(): React.ReactElement {
     </div>
   )
 
-  const onSubmit = async (data: catalogoFormType) => {
-    console.log(data)
-  }
+  useEffect(() => {
+    if (id && id !== 'novo') {
+      const fetchCatalogo = async () => {
+        const res = await fetch(`/api/catalogos/${id}`)
+        if (res.ok) {
+          const catalogo = await res.json()
+          reset(catalogo)
+          setLoading(false)
+        }
+      }
+      fetchCatalogo()
+    } else {
+      setLoading(false)
+    }
+  }, [id])
 
-  return (
+  const onSubmit = async (data: catalogoFormType) => {
+    try {
+      const formData = new FormData()
+      formData.append('data', JSON.stringify(data))
+
+      const isEdit = id && id !== 'novo'
+      const url = isEdit ? `/api/catalogos/${id}` : '/api/catalogos'
+      const method = isEdit ? 'PUT' : 'POST'
+
+      const response = await fetch(url, {
+        method,
+        body: formData
+      })
+
+      if (!response.ok) {
+        throw new Error(
+          isEdit ? 'Erro ao atualizar catálogo' : 'Erro ao criar catálogo'
+        )
+      }
+
+      const result = await response.json()
+      console.log(
+        `Catálogo ${isEdit ? 'atualizado' : 'criado'} com sucesso:`,
+        result
+      )
+    } catch (error) {
+      console.error('Erro ao enviar catálogo:', error)
+    }
+  }
+  return loading ? (
+    <div className="w-screen h-full">
+      <LoadingSpinner />
+    </div>
+  ) : (
     <FormProvider {...formValues}>
       <div className="w-screen flex justify-center">
         <div className="flex flex-col items-center gap-8 max-w-[800px] w-full">
@@ -71,7 +121,7 @@ export default function Page(): React.ReactElement {
             leftIcon="save"
             onClick={handleSubmit(onSubmit)}
           >
-            Criar catálogo
+            {id && id !== 'novo' ? 'Editar' : 'Criar'} catálogo
           </Button>
         </div>
       </div>

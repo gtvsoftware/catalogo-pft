@@ -44,3 +44,20 @@ export const onSelectFile = (
     setShowCropper(true)
   }
 }
+
+export const base64ToFile = (base64String: string, filename: string): File => {
+  // separa o prefixo do conteúdo
+  const [metadata, data] = base64String.split(',')
+  const mime = metadata.match(/:(.*?);/)?.[1] || 'image/jpeg'
+
+  // decodifica a base64 em binário
+  const byteString = atob(data)
+  const arrayBuffer = new ArrayBuffer(byteString.length)
+  const uint8Array = new Uint8Array(arrayBuffer)
+  for (let i = 0; i < byteString.length; i++) {
+    uint8Array[i] = byteString.charCodeAt(i)
+  }
+
+  // cria um File a partir do conteúdo
+  return new File([uint8Array], filename, { type: mime })
+}

@@ -37,7 +37,8 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const formValues = useForm<itemFormType>({
-    resolver: zodResolver(itemFormSchema)
+    resolver: zodResolver(itemFormSchema),
+    defaultValues: { id: randomUUID() }
   })
 
   const {
@@ -48,7 +49,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
     reset: localReset,
     formState: { errors }
   } = formValues
-
+  console.log(errors)
   const { image } = localWatch()
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,8 +75,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
 
   const onSubmit = (data: itemFormType) => {
     append({
-      ...data,
-      id: randomUUID()
+      ...data
     })
     setOpen(false)
   }

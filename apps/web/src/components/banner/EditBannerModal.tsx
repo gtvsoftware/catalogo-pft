@@ -12,13 +12,13 @@ import {
 import { Button } from '@terraviva/ui/button'
 import { Icon } from '@terraviva/ui/icon'
 import { useForm, useFormContext } from 'react-hook-form'
-import pattern from '@/assets/pattern_green.png'
 import Cropper, { Area, Point } from 'react-easy-crop'
-import getCroppedImg, { onSelectFile } from '@/utils/image'
+import getCroppedImg, { base64ToFile, onSelectFile } from '@/utils/image'
 import Image from 'next/image'
 import { Slider } from '@terraviva/ui/slider'
 import { Input } from '@terraviva/ui/input'
 import { cn } from '@terraviva/ui/cn'
+import { v4 as randomUUID } from 'uuid'
 
 export function EditBannerModal() {
   const { watch, setValue } = useFormContext<catalogoFormType>()
@@ -30,7 +30,8 @@ export function EditBannerModal() {
     register: localResgister,
     setValue: localSetvalue,
     watch: localWatch,
-    reset: localReset
+    reset: localReset,
+    formState: localFormState
   } = useForm()
 
   const { banner: localBanner } = localWatch()
@@ -58,13 +59,44 @@ export function EditBannerModal() {
     }
   }, [imageSrc, croppedAreaPixels])
 
-  const onSubmit = (data: {
+  const onSubmit = async (data: {
     banner?: string
     title?: string
     caption?: string
   }) => {
-    const { banner, title, caption } = data
-    setValue('banner', banner)
+    const { banner: localBanner, title, caption } = data
+
+    if (localBanner) {
+      if (banner) {
+        const filename = banner.split('/').at(-1)
+
+        if (filename) {
+          await fetch(`/api/upload?filename=${filename}`, {
+            method: 'DELETE'
+          })
+        }
+      }
+
+      const form = new FormData()
+      const file = base64ToFile(localBanner, 'banner.jpg')
+
+      form.append('file', file)
+      form.append('slug', randomUUID())
+
+      const response = await fetch(`/api/upload`, {
+        method: 'POST',
+        body: form
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Erro ao fazer upload')
+      }
+
+      const responseJSON: any = await response.json()
+      console.log(responseJSON)
+      setValue('banner', responseJSON.url)
+    }
     setValue('caption', caption)
     setValue('title', title || 'Título')
     setOpen(false)
@@ -110,13 +142,15 @@ export function EditBannerModal() {
                 className="hidden"
               />
 
-              {!showCropper && (
+              {!showCropper && localBanner ? (
                 <Image
-                  src={localBanner ?? pattern}
+                  src={localBanner}
                   alt="Banner"
                   fill
                   className="object-cover"
                 />
+              ) : (
+                <div className="w-full h-full bg-primary-500 absolute rounded-md" />
               )}
 
               {showCropper && (
@@ -169,7 +203,11 @@ export function EditBannerModal() {
             <DialogClose className="text-sm text-red-500 border-red-500 bg-white hover:bg-gray-100 border py-2 px-4 rounded-md">
               Cancelar
             </DialogClose>
-            <Button type="submit" className="rounded-md">
+            <Button
+              type="submit"
+              disabled={!localFormState.isDirty}
+              className="rounded-md"
+            >
               Confirmar
             </Button>
           </div>

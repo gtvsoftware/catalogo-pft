@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import { useFormContext } from 'react-hook-form'
 
-import pattern from '@/assets/pattern_green.png'
 import { EditBannerModal } from './EditBannerModal'
 
 export function Banner(): React.ReactElement {
@@ -13,12 +12,16 @@ export function Banner(): React.ReactElement {
 
   return (
     <div className="flex flex-col items-center justify-center w-full aspect-[3/1] relative">
-      <Image
-        src={banner ?? pattern}
-        alt="Banner"
-        fill
-        className="object-cover rounded-md"
-      />
+      {banner ? (
+        <Image
+          src={banner}
+          alt="Banner"
+          fill
+          className="object-cover rounded-md"
+        />
+      ) : (
+        <div className="w-full h-full bg-primary-500 absolute rounded-md" />
+      )}
       <p
         className="z-10 text-6xl font-bold text-white"
         style={{ mixBlendMode: 'difference' }}
