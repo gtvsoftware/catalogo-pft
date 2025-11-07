@@ -47,7 +47,7 @@ export default function Page(): React.ReactElement {
     </div>
   )
 
-  const onSubmit = (data: catalogoFormType) => {
+  const onSubmit = async (data: catalogoFormType) => {
     console.log(data)
   }
 
@@ -56,11 +56,13 @@ export default function Page(): React.ReactElement {
       <div className="w-screen flex justify-center">
         <div className="flex flex-col items-center gap-8 max-w-[800px] w-full">
           <Banner />
-          <div className="flex flex-col gap-8 w-full">
-            {sections.map((section, index) => (
-              <Section key={section.id} sectionIndex={index} />
-            ))}
-          </div>
+          {!!sections.length && (
+            <div className="flex flex-col gap-8 w-full">
+              {sections.map((section, index) => (
+                <Section key={section.id} sectionIndex={index} />
+              ))}
+            </div>
+          )}
           <NewSectionButton />
           <Button
             disabled={!formState.isDirty}
