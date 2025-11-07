@@ -183,8 +183,6 @@ export default function CatalogosListPage() {
 
   const pageCount = Math.ceil(totalCount / pageSize)
 
-  console.log(catalogos)
-
   return (
     <div className="container mx-auto py-8 px-4">
       <Card>

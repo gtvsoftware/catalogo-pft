@@ -20,7 +20,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { v4 as randomUUID } from 'uuid'
 
 import { itemFormSchema } from '@/schemas/itemSchema'
-import getCroppedImg from '@/utils/image'
+import getCroppedImg, { base64ToFile } from '@/utils/image'
 
 import { ProductsModal } from './ProductsModal'
 
@@ -51,8 +51,8 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
     reset: localReset,
     formState: { errors }
   } = formValues
-  console.log(errors)
-  const { image } = localWatch()
+
+  const { image: localImage } = localWatch()
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -67,7 +67,37 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
     if (!imageSrc || !croppedAreaPixels) return
     try {
       const cropped = await getCroppedImg(imageSrc, croppedAreaPixels)
-      localSetValue('image', cropped, { shouldValidate: true })
+
+      if (localImage) {
+        const filename = localImage.split('/').at(-1)
+
+        if (filename) {
+          await fetch(`/api/upload?filename=${filename}`, {
+            method: 'DELETE'
+          })
+        }
+      }
+
+      const form = new FormData()
+      const file = base64ToFile(cropped, 'image.jpg')
+
+      form.append('file', file)
+      form.append('slug', randomUUID())
+
+      const response = await fetch(`/api/upload`, {
+        method: 'POST',
+        body: form
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Erro ao fazer upload')
+      }
+
+      const responseJSON: any = await response.json()
+
+      localSetValue('image', responseJSON.url, { shouldValidate: true })
+
       setShowCropper(false)
       setImageSrc(null)
     } catch (err) {
@@ -121,16 +151,16 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
                   className="hidden"
                 />
 
-                {image && !showCropper && (
+                {localImage && !showCropper && (
                   <Image
-                    src={image}
+                    src={localImage}
                     alt="Banner"
                     fill
                     className="object-cover"
                   />
                 )}
 
-                {!image && !showCropper && (
+                {!localImage && !showCropper && (
                   <div className="w-full h-full bg-white flex items-center justify-center">
                     <Icon
                       icon="image-stack"

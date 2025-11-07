@@ -153,27 +153,17 @@ export default function CatalogosListPage() {
 
   const pageCount = Math.ceil(totalCount / pageSize)
 
-  console.log(catalogos)
-
   return (
     <div className="container mx-auto py-8 px-4">
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Icon icon="book" className="text-primary-500" />
-                Catálogos Criados
-              </CardTitle>
-              <CardDescription>
-                Gerencie os catálogos personalizados de produtos
-              </CardDescription>
-            </div>
-            <Button onClick={() => router.push('/cadastros/catalogos/novo')}>
-              <Icon icon="plus" className="mr-2" />
-              Novo Catálogo
-            </Button>
-          </div>
+          <CardTitle className="flex items-center gap-2">
+            <Icon icon="book" className="text-primary-500" />
+            Catálogos Criados
+          </CardTitle>
+          <CardDescription>
+            Gerencie os catálogos personalizados de produtos
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <DataTable
