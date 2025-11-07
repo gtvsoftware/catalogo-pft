@@ -25,7 +25,7 @@ export function ProductCardTeste({ item, onClick }: ProductCardProps) {
   return (
     <Card
       key={item.id}
-      className="overflow-hidden p-0 h-full cursor-pointer gap-2"
+      className="overflow-hidden p-0 h-full w-full cursor-pointer gap-2"
       onClick={onClick}
     >
       <div className="aspect-square bg-gradient-to-br bg-gray-50 flex items-center justify-center relative overflow-hidden">

@@ -1,4 +1,5 @@
 declare type catalogoFormType = {
+  id: string
   banner?: string
   title: string
   caption?: string

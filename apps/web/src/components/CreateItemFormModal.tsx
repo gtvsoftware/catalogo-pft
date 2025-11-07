@@ -37,15 +37,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const formValues = useForm<itemFormType>({
-    resolver: zodResolver(itemFormSchema),
-    defaultValues: {
-      id: '',
-      image: '',
-      name: '',
-      description: '',
-      price: undefined,
-      discountPrice: undefined
-    }
+    resolver: zodResolver(itemFormSchema)
   })
 
   const {
@@ -251,7 +243,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" leftIcon="plus">
               Adicionar item
             </Button>
           </form>

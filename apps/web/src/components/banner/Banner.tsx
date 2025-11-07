@@ -17,7 +17,7 @@ export function Banner(): React.ReactElement {
         src={banner ?? pattern}
         alt="Banner"
         fill
-        className="object-cover"
+        className="object-cover rounded-md"
       />
       <p
         className="z-10 text-6xl font-bold text-white"

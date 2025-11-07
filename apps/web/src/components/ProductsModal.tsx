@@ -16,13 +16,14 @@ import {
   Pagination,
   useInstantSearch
 } from 'react-instantsearch'
-import { SerieSelect } from '@/components/SeriesSelect'
-import { CustomSearch } from '@/components/CustomSearch'
-import { GrupoSelect } from '@/components/GroupSelect'
+
 import { ProductCardTeste } from '@/components/ProductCardTeste'
 import { getTypesenseSearchAdapter } from '@terraviva/typesense-catalogo-pft'
 import { cn } from '@terraviva/ui/cn'
 import { Icon } from '@terraviva/ui/icon'
+import { CustomSearch } from './CustomSearch'
+import { GrupoSelect } from './GroupSelect'
+import { SerieSelect } from './SeriesSelect'
 
 interface ProductsModalProps {
   buttonClassName?: string
@@ -38,7 +39,7 @@ export function ProductsModal({ buttonClassName }: ProductsModalProps) {
   const typesenseInstantsearchAdapter = getTypesenseSearchAdapter({
     additionalSearchParameters: {
       query_by: 'descricaoCompleta',
-      per_page: 12,
+      per_page: 6,
       sort_by: 'descricaoCompleta:asc'
     }
   })
@@ -105,7 +106,7 @@ export function ProductsModal({ buttonClassName }: ProductsModalProps) {
                 />
               </div>
 
-              <div className="flex flex-col gap-2 items-center h-full">
+              <div className="flex flex-col gap-2 h-full">
                 <CustomHits
                   hitComponent={({ hit }: any) => (
                     <ProductCardTeste
@@ -120,7 +121,7 @@ export function ProductsModal({ buttonClassName }: ProductsModalProps) {
                 />
 
                 <Pagination
-                  padding={2}
+                  padding={1}
                   classNames={{
                     root: 'flex items-center justify-center',
                     noRefinementRoot:
@@ -172,7 +173,7 @@ const CustomHits = ({ hitComponent }: { hitComponent: any }) => {
   }
   return (
     <Hits
-      classNames={{ list: 'grid grid-cols-3 gap-2' }}
+      classNames={{ list: 'grid grid-cols-2 gap-2' }}
       hitComponent={hitComponent}
     />
   )

@@ -121,7 +121,7 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
           onDragEnd={handleDragEnd}
         >
           <SortableContext items={items} strategy={rectSortingStrategy}>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {items.map((item, index) => (
                 <DraggableItem
                   key={item.id}

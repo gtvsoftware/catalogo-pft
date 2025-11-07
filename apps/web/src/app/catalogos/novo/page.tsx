@@ -1,14 +1,24 @@
 'use client'
 
 import { Icon } from '@terraviva/ui/icon'
-import { useFieldArray, useFormContext } from 'react-hook-form'
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { v4 as randomUUID } from 'uuid'
 
 import { Banner } from '../../../components/banner/Banner'
 import { Section } from '@/components/Section'
+import { Button } from '@terraviva/ui/button'
 
 export default function Page(): React.ReactElement {
-  const { control, watch } = useFormContext<catalogoFormType>()
+  const formValues = useForm<catalogoFormType>({
+    defaultValues: {
+      id: randomUUID(),
+      title: 'Título',
+      caption: 'Subtítulo',
+      sections: []
+    }
+  })
+
+  const { control, watch, handleSubmit, formState } = formValues
 
   const { append } = useFieldArray({
     name: 'sections',
@@ -37,18 +47,32 @@ export default function Page(): React.ReactElement {
     </div>
   )
 
-  return (
-    <div className="w-screen flex justify-center">
-      <div className="flex flex-col items-center gap-8 max-w-[800px] w-full">
-        <Banner />
+  const onSubmit = (data: catalogoFormType) => {
+    console.log(data)
+  }
 
-        <div className="flex flex-col gap-8 w-full">
-          {sections.map((section, index) => (
-            <Section key={section.id} sectionIndex={index} />
-          ))}
+  return (
+    <FormProvider {...formValues}>
+      <div className="w-screen flex justify-center">
+        <div className="flex flex-col items-center gap-8 max-w-[800px] w-full">
+          <Banner />
+          <div className="flex flex-col gap-8 w-full">
+            {sections.map((section, index) => (
+              <Section key={section.id} sectionIndex={index} />
+            ))}
+          </div>
+          <NewSectionButton />
+          <Button
+            disabled={!formState.isDirty}
+            className="w-full"
+            type="button"
+            leftIcon="save"
+            onClick={handleSubmit(onSubmit)}
+          >
+            Criar catálogo
+          </Button>
         </div>
-        <NewSectionButton />
       </div>
-    </div>
+    </FormProvider>
   )
 }

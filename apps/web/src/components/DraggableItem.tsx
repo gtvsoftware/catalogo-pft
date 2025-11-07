@@ -152,12 +152,13 @@ export function DraggableItem({
                   </div>
                 )}
               </div>
-
-              <div className="flex flex-col flex-1 justify-between gap-3 p-3">
-                <p className="font-medium  line-clamp-2">{item.name}</p>
-                {item.description && (
-                  <p className="text-gray-500 text-sm">{item.description}</p>
-                )}
+              <div className="flex flex-col flex-1 justify-between gap-4 p-2">
+                <div className="space-y-1">
+                  <p className="font-medium  line-clamp-2">{item.name}</p>
+                  {item.description && (
+                    <p className="text-gray-500 text-sm">{item.description}</p>
+                  )}
+                </div>
                 <div className="flex items-center gap-2 ">
                   {item.price && item.discountPrice ? (
                     <>
