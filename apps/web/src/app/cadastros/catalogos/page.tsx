@@ -205,6 +205,7 @@ export default function CatalogosListPage() {
         </CardHeader>
         <CardContent>
           <DataTable
+            hideColumnsButton
             data={catalogos}
             columns={columns}
             totalCount={totalCount}

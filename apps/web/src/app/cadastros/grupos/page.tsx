@@ -201,6 +201,7 @@ export default function GruposListPage() {
         </CardHeader>
         <CardContent>
           <DataTable
+            hideColumnsButton
             data={grupos}
             columns={columns}
             totalCount={totalCount}

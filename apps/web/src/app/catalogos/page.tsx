@@ -68,26 +68,6 @@ export default function CatalogosListPage() {
 
   const columns: ColumnDef<Catalogo>[] = [
     {
-      accessorKey: 'banner',
-      header: 'Banner',
-      cell: ({ row }) => {
-        const banner = row.getValue('banner') as string | undefined
-        return (
-          <div className="w-16 h-16 rounded-md overflow-hidden bg-muted flex items-center justify-center">
-            {banner ? (
-              <img
-                src={banner}
-                alt={row.getValue('title')}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <Icon icon="image" className="text-muted-foreground" />
-            )}
-          </div>
-        )
-      }
-    },
-    {
       accessorKey: 'title',
       header: ({ column }) => (
         <HeaderColumnSorting column={column} content="Título" />
@@ -174,6 +154,7 @@ export default function CatalogosListPage() {
             pageSizeValue={pageSize}
             pageCountValue={pageCount}
             globalFilterValue={globalFilter}
+            hideColumnsButton
             isLoading={loading}
             manualPagination={true}
             manualFiltering={true}

@@ -201,6 +201,7 @@ export default function SeriesListPage() {
         </CardHeader>
         <CardContent>
           <DataTable
+            hideColumnsButton
             data={series}
             columns={columns}
             totalCount={totalCount}
