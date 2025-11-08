@@ -19,14 +19,12 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
   const {
     coverSettings,
     updateCoverSettings,
-    catalogInfo,
     viewMode,
     sidebarOpen,
     setSidebarOpen,
     getCoverStyle,
     coverModalOpen,
-    setCoverModalOpen,
-    formatDateRange
+    setCoverModalOpen
   } = useCatalogBuilder()
 
   const colorOptions = [

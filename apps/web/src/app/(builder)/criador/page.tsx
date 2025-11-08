@@ -3,13 +3,18 @@
 import { CatalogBuilderLayout } from '@/features/builder/components/Layout'
 import { NewSectionButton } from '@/features/builder/components/NewSectionButton'
 import { Sections } from '@/features/builder/components/Sections'
-import { CatalogBuilderProvider } from '@/features/builder/providers/CatalogBuilderContext'
+import {
+  CatalogBuilderProvider,
+  useCatalogBuilder
+} from '@/features/builder/providers/CatalogBuilderContext'
 
 function FlowerCatalogBuilderContent() {
+  const { viewMode } = useCatalogBuilder()
+
   return (
     <CatalogBuilderLayout>
       <Sections />
-      <NewSectionButton />
+      {viewMode !== 'preview' && <NewSectionButton />}
     </CatalogBuilderLayout>
   )
 }

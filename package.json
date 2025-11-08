@@ -18,9 +18,8 @@
     "typecheck": "turbo typecheck",
     "test": "exit 0",
     "prepare": "if [ -z \"$CI\" ] && [ -z \"$DOCKER_BUILDKIT\" ]; then husky install; fi",
-    "index-typesense": "node src/index-typesense.js",
-    "test-typesense": "node src/test-typesense.js",
-    "upsert-typesense": "node src/upsert-typesense.js"
+    "db:seed": "cd packages/db-catalogo-pft && pnpm run db:seed && cd ../..",
+    "typesense:seed": "cd packages/typesense-catalogo-pft && pnpm run typesense:seed && cd ../.."
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.4",

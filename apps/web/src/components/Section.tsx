@@ -13,6 +13,8 @@ import { Button } from '@terraviva/ui/button'
 import { Icon } from '@terraviva/ui/icon'
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 
+import { useCatalogBuilder } from '@/features/builder/providers/CatalogBuilderContext'
+
 import { CreateItemFormModal } from './CreateItemFormModal'
 import { DeleteModal } from './DeleteModal'
 import { DraggableItem } from './DraggableItem'
@@ -52,6 +54,8 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
     })
   )
 
+  const { viewMode } = useCatalogBuilder()
+
   const handleDragEnd = (event: any) => {
     const { active, over } = event
     if (over && active.id !== over?.id) {
@@ -73,49 +77,59 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
           <Controller
             name={`sections.${sectionIndex}.title`}
             control={control}
-            render={({ field }) => (
-              <input
-                {...field}
-                className="text-xl font-medium outline-none"
-                style={{ width: `${Math.max(field.value?.length ?? 5, 5)}ch` }}
-                placeholder="Seção"
-              />
-            )}
+            render={({ field }) =>
+              viewMode === 'preview' ? (
+                <h2 className="text-xl font-medium">
+                  {field.value || 'Seção'}
+                </h2>
+              ) : (
+                <input
+                  {...field}
+                  className="text-xl font-medium outline-none"
+                  style={{
+                    width: `${Math.max(field.value?.length ?? 5, 5)}ch`
+                  }}
+                  placeholder="Seção"
+                />
+              )
+            }
           />
 
-          <div className="flex gap-2">
-            <DeleteModal
-              trigger={
-                <div className="w-8 h-8 border rounded-sm cursor-pointer flex items-center justify-center hover:bg-gray-100">
-                  <Icon icon="trash-can" family="duotone" />
-                </div>
-              }
-              title="Excluir seção"
-              message="Você tem certeza que deseja excluir a seção?"
-              removeFn={() => {
-                remove(sectionIndex)
-              }}
-            />
+          {viewMode !== 'preview' && (
+            <div className="flex gap-2">
+              <DeleteModal
+                trigger={
+                  <div className="w-8 h-8 border rounded-sm cursor-pointer flex items-center justify-center hover:bg-gray-100">
+                    <Icon icon="trash-can" family="duotone" />
+                  </div>
+                }
+                title="Excluir seção"
+                message="Você tem certeza que deseja excluir a seção?"
+                removeFn={() => {
+                  remove(sectionIndex)
+                }}
+              />
 
-            <Button
-              disabled={
-                sections.length === 1 || sectionIndex === sections.length - 1
-              }
-              onClick={() => swap(sectionIndex, sectionIndex + 1)}
-              variant={'outline'}
-              className="p-0 w-8 h-8 border rounded-sm flex items-center justify-center hover:bg-gray-100"
-            >
-              <Icon icon="caret-down" />
-            </Button>
-            <Button
-              disabled={sections.length === 1 || sectionIndex === 0}
-              onClick={() => swap(sectionIndex, sectionIndex - 1)}
-              variant={'outline'}
-              className="p-0 w-8 h-8 border rounded-sm flex items-center justify-center hover:bg-gray-100"
-            >
-              <Icon icon="caret-up" />
-            </Button>
-          </div>
+              <Button
+                disabled={
+                  sections.length === 1 || sectionIndex === sections.length - 1
+                }
+                onClick={() => swap(sectionIndex, sectionIndex + 1)}
+                variant={'outline'}
+                className="p-0 w-8 h-8 border rounded-sm flex items-center justify-center hover:bg-gray-100"
+              >
+                <Icon icon="caret-down" />
+              </Button>
+              <Button
+                disabled={sections.length === 1 || sectionIndex === 0}
+                onClick={() => swap(sectionIndex, sectionIndex - 1)}
+                variant={'outline'}
+                className="p-0 w-8 h-8 border rounded-sm flex items-center justify-center hover:bg-gray-100"
+              >
+                <Icon icon="caret-up" />
+              </Button>
+            </div>
+          )}
         </div>
 
         <DndContext
@@ -134,7 +148,9 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
                   removeFn={() => removeItem(index)}
                 />
               ))}
-              <CreateItemFormModal append={append} />
+              {viewMode !== 'preview' && (
+                <CreateItemFormModal append={append} />
+              )}
             </div>
           </SortableContext>
         </DndContext>
