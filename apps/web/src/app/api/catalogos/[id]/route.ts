@@ -40,34 +40,64 @@ export async function PUT(
     const { id } = await context.params
     console.log('ID recebido:', id)
 
-    // 🔹 Corrigido: agora lida com FormData em vez de JSON
-    const formData = await request.formData()
-    const dataString = formData.get('data') as string
-    const data = JSON.parse(dataString)
+    const data = await request.json()
 
-    const { title, caption, banner, sections } = data
+    const {
+      slug,
+      title,
+      caption,
+      banner,
+      cover,
+      sellerName,
+      phoneContact,
+      availabilityStart,
+      availabilityEnd,
+      sections
+    } = data
+
     console.log('Dados recebidos:', data)
 
     const catalogoExistente = await prisma.catalogo.findUnique({
       where: { id }
     })
 
-    if (!catalogoExistente) {
-      return NextResponse.json(
-        { message: 'Catálogo não encontrado' },
-        { status: 404 }
-      )
-    }
+    let catalogoAtualizado
 
-    const catalogoAtualizado = await prisma.catalogo.update({
-      where: { id },
-      data: {
-        title,
-        caption: caption || null,
-        banner: banner || null,
-        sections: sections || []
-      }
-    })
+    if (catalogoExistente) {
+      // Update existing catalog
+      catalogoAtualizado = await prisma.catalogo.update({
+        where: { id },
+        data: {
+          slug,
+          title,
+          caption: caption || null,
+          banner: banner || null,
+          cover,
+          sellerName,
+          phoneContact,
+          availabilityStart: availabilityStart || null,
+          availabilityEnd: availabilityEnd || null,
+          sections: sections || []
+        }
+      })
+    } else {
+      // Create new catalog if it doesn't exist
+      catalogoAtualizado = await prisma.catalogo.create({
+        data: {
+          id,
+          slug,
+          title,
+          caption: caption || null,
+          banner: banner || null,
+          cover,
+          sellerName,
+          phoneContact,
+          availabilityStart: availabilityStart || null,
+          availabilityEnd: availabilityEnd || null,
+          sections: sections || []
+        }
+      })
+    }
 
     return NextResponse.json(catalogoAtualizado)
   } catch (error) {

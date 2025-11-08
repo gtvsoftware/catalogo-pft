@@ -1,11 +1,23 @@
 import { Button } from '@terraviva/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@terraviva/ui/card'
 import { Icon } from '@terraviva/ui/icon'
 import { Input } from '@terraviva/ui/input'
 import { Label } from '@terraviva/ui/label'
+import { toast } from '@terraviva/ui/sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@terraviva/ui/tabs'
+import { useEffect, useState } from 'react'
 
 import { useCatalogBuilder } from '../providers/CatalogBuilderContext'
+
+const generateSlug = (text: string): string => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
+    .trim()
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Remove duplicate hyphens
+}
 
 export function Sidebar() {
   const {
@@ -16,8 +28,112 @@ export function Sidebar() {
     setActiveTab,
     updateCatalogInfo,
     catalogInfo,
-    formatDateRange
+    formatDateRange,
+    formValues
   } = useCatalogBuilder()
+
+  const catalogId = formValues.watch('id')
+  const catalogSlug = catalogInfo.slug
+
+  const [mounted, setMounted] = useState(false)
+
+  // Local state for inputs
+  const [localCatalogName, setLocalCatalogName] = useState(
+    catalogInfo.catalogName
+  )
+  const [localSellerName, setLocalSellerName] = useState(catalogInfo.sellerName)
+  const [localPhoneContact, setLocalPhoneContact] = useState(
+    catalogInfo.phoneContact
+  )
+  const [localAvailabilityStart, setLocalAvailabilityStart] = useState(
+    catalogInfo.availabilityStart
+  )
+  const [localAvailabilityEnd, setLocalAvailabilityEnd] = useState(
+    catalogInfo.availabilityEnd
+  )
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false)
+  const [slugError, setSlugError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Sync local state when catalogInfo changes externally
+  useEffect(() => {
+    setLocalCatalogName(catalogInfo.catalogName)
+  }, [catalogInfo.catalogName])
+
+  useEffect(() => {
+    setLocalSellerName(catalogInfo.sellerName)
+  }, [catalogInfo.sellerName])
+
+  useEffect(() => {
+    setLocalPhoneContact(catalogInfo.phoneContact)
+  }, [catalogInfo.phoneContact])
+
+  useEffect(() => {
+    setLocalAvailabilityStart(catalogInfo.availabilityStart)
+  }, [catalogInfo.availabilityStart])
+
+  useEffect(() => {
+    setLocalAvailabilityEnd(catalogInfo.availabilityEnd)
+  }, [catalogInfo.availabilityEnd])
+
+  // Check slug availability
+  const checkSlugAvailability = async (slug: string) => {
+    if (!slug) return true
+
+    setIsCheckingSlug(true)
+    setSlugError(null)
+
+    try {
+      const response = await fetch(
+        `/api/catalogos/check-slug?slug=${encodeURIComponent(slug)}&excludeId=${catalogId}`
+      )
+      const data = await response.json()
+
+      if (!data.available) {
+        setSlugError('Este slug já está em uso. Escolha outro nome para o catálogo.')
+        return false
+      }
+
+      return true
+    } catch (error) {
+      console.error('Error checking slug:', error)
+      return true // Allow on error to not block user
+    } finally {
+      setIsCheckingSlug(false)
+    }
+  }
+
+  // Auto-generate slug from catalog name with availability check
+  useEffect(() => {
+    if (catalogInfo.catalogName) {
+      const autoSlug = generateSlug(catalogInfo.catalogName)
+      if (autoSlug !== catalogInfo.slug) {
+        checkSlugAvailability(autoSlug).then(isAvailable => {
+          if (isAvailable) {
+            setSlugError(null) // Clear error when slug is available
+            updateCatalogInfo('slug', autoSlug)
+          }
+        })
+      } else {
+        // If slug hasn't changed, clear any existing error
+        setSlugError(null)
+      }
+    }
+  }, [catalogInfo.catalogName])
+
+  const baseUrl =
+    mounted && typeof window !== 'undefined' ? window.location.origin : ''
+  const linkById = baseUrl ? `${baseUrl}/catalogos/${catalogId}` : ''
+  const linkBySlug =
+    catalogSlug && baseUrl ? `${baseUrl}/catalogos/${catalogSlug}` : ''
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text)
+    toast.success(`${label} copiado!`)
+  }
 
   return (
     <div
@@ -40,7 +156,7 @@ export function Sidebar() {
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
-        className="flex overflow-hidden mt-4 mb-0 "
+        className="flex overflow-hidden"
       >
         <div className="ml-3 mr-5">
           <TabsList className="grid-cols-2 w-full hidden">
@@ -56,129 +172,228 @@ export function Sidebar() {
 
         <TabsContent
           value="info"
-          className="flex-1 overflow-auto px-3 min-h-full"
+          className="flex-1 overflow-auto px-3 min-h-full mb-24"
         >
-          <div className="space-y-4 sm:space-y-6">
-            <Card>
-              <CardHeader className="px-3 sm:px-6">
-                <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-                  <Icon icon="file" className="w-4 h-4" />
-                  Basic Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6 pt-0">
-                <div>
-                  <Label htmlFor="catalogName" className="text-sm">
-                    Catalog Name *
-                  </Label>
-                  <Input
-                    id="catalogName"
-                    value={catalogInfo.catalogName}
-                    onChange={e =>
-                      updateCatalogInfo('catalogName', e.target.value)
-                    }
-                    placeholder="e.g., Spring Collection 2025"
-                    className="text-sm"
-                  />
-                </div>
+          <div className="flex flex-col space-y-6 pb-24 px-2">
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon icon="file" className="w-4 h-4 text-gray-600" />
+                <h3 className="text-sm font-semibold text-gray-700">
+                  Informações Básicas
+                </h3>
+              </div>
 
-                <div>
-                  <Label htmlFor="vendorName" className="text-sm">
-                    Vendor Name *
-                  </Label>
-                  <Input
-                    id="vendorName"
-                    value={catalogInfo.vendorName}
-                    onChange={e =>
-                      updateCatalogInfo('vendorName', e.target.value)
+              <div>
+                <Label htmlFor="catalogName" className="text-sm">
+                  Nome do Catálogo *
+                </Label>
+                <Input
+                  id="catalogName"
+                  value={localCatalogName}
+                  onChange={e => setLocalCatalogName(e.target.value)}
+                  onBlur={() => {
+                    if (localCatalogName !== catalogInfo.catalogName) {
+                      updateCatalogInfo('catalogName', localCatalogName)
                     }
-                    placeholder="e.g., Blooms & Petals"
-                    className="text-sm"
-                  />
-                </div>
-              </CardContent>
-            </Card>
+                  }}
+                  placeholder="ex: Coleção Primavera 2025"
+                  className="text-sm"
+                />
+              </div>
 
-            <Card>
-              <CardHeader className="px-3 sm:px-6">
-                <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-                  <Icon icon="phone" className="w-4 h-4" />
-                  Contact Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="px-3 sm:px-6 pt-0">
-                <div>
-                  <Label htmlFor="phoneContact" className="text-sm">
-                    Phone Contact (Call Back) *
-                  </Label>
+              <div>
+                <Label htmlFor="slug" className="text-sm">
+                  Slug (URL personalizada)
+                </Label>
+                <div className="relative">
                   <Input
-                    id="phoneContact"
-                    type="tel"
-                    value={catalogInfo.phoneContact}
-                    onChange={e =>
-                      updateCatalogInfo('phoneContact', e.target.value)
-                    }
-                    placeholder="e.g., +1 (555) 123-4567"
-                    className="text-sm"
+                    id="slug"
+                    readOnly
+                    value={catalogInfo.slug}
+                    placeholder="Gerado automaticamente"
+                    className={`text-sm font-mono bg-gray-50 ${slugError ? 'border-red-500' : ''}`}
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Customers will use this number to place orders
+                  {isCheckingSlug && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <Icon icon="spinner" className="w-4 h-4 animate-spin text-gray-400" />
+                    </div>
+                  )}
+                </div>
+                {slugError ? (
+                  <p className="text-xs text-red-600 mt-1">
+                    {slugError}
                   </p>
-                </div>
-              </CardContent>
-            </Card>
+                ) : (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Gerado automaticamente a partir do nome do catálogo
+                  </p>
+                )}
+              </div>
 
-            <Card>
-              <CardHeader className="px-3 sm:px-6">
-                <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-                  <Icon icon="calendar" className="w-4 h-4" />
-                  Availability Period
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6 pt-0">
-                <div>
-                  <Label htmlFor="availabilityStart" className="text-sm">
-                    Start Date *
-                  </Label>
-                  <Input
-                    id="availabilityStart"
-                    type="date"
-                    value={catalogInfo.availabilityStart}
-                    onChange={e =>
-                      updateCatalogInfo('availabilityStart', e.target.value)
+              <div>
+                <Label htmlFor="sellerName" className="text-sm">
+                  Nome do Vendedor *
+                </Label>
+                <Input
+                  id="sellerName"
+                  value={localSellerName}
+                  onChange={e => setLocalSellerName(e.target.value)}
+                  onBlur={() => {
+                    if (localSellerName !== catalogInfo.sellerName) {
+                      updateCatalogInfo('sellerName', localSellerName)
                     }
-                    className="text-sm"
-                  />
-                </div>
+                  }}
+                  placeholder="ex: João Silva"
+                  className="text-sm"
+                />
+              </div>
+            </div>
 
+            <div className="space-y-4 pt-4 border-t">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon icon="link" className="w-4 h-4 text-gray-600" />
+                <h3 className="text-sm font-semibold text-gray-700">
+                  Links de Compartilhamento
+                </h3>
+              </div>
+
+              <div className="space-y-3">
                 <div>
-                  <Label htmlFor="availabilityEnd" className="text-sm">
-                    End Date *
-                  </Label>
-                  <Input
-                    id="availabilityEnd"
-                    type="date"
-                    value={catalogInfo.availabilityEnd}
-                    onChange={e =>
-                      updateCatalogInfo('availabilityEnd', e.target.value)
-                    }
-                    className="text-sm"
-                  />
+                  <Label className="text-sm font-medium">Link por ID</Label>
+                  <div className="flex items-center gap-2 mt-1.5 px-2 bg-gray-50 rounded-md border">
+                    <code className="flex-1 text-xs font-mono text-gray-700 truncate">
+                      {linkById}
+                    </code>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => copyToClipboard(linkById, 'Link por ID')}
+                      className="flex-shrink-0"
+                    >
+                      <Icon icon="copy" className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
 
-                {(catalogInfo.availabilityStart ||
-                  catalogInfo.availabilityEnd) && (
-                  <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <p className="text-sm text-blue-800 font-medium">
-                      Available Period
-                    </p>
-                    <p className="text-xs text-blue-600 mt-1">
-                      {formatDateRange()}
-                    </p>
+                {catalogSlug && (
+                  <div>
+                    <Label className="text-sm font-medium">Link por Slug</Label>
+                    <div className="flex items-center gap-2 mt-1.5 px-2 bg-gray-50 rounded-md border">
+                      <code className="flex-1 text-xs font-mono text-gray-700 truncate">
+                        {linkBySlug}
+                      </code>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() =>
+                          copyToClipboard(linkBySlug, 'Link por Slug')
+                        }
+                        className="flex-shrink-0"
+                      >
+                        <Icon icon="copy" className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+
+              <p className="text-xs text-gray-500">
+                Compartilhe estes links com seus clientes
+              </p>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon icon="phone" className="w-4 h-4 text-gray-600" />
+                <h3 className="text-sm font-semibold text-gray-700">
+                  Informações de Contato
+                </h3>
+              </div>
+
+              <div>
+                <Label htmlFor="phoneContact" className="text-sm">
+                  Telefone de Contato *
+                </Label>
+                <Input
+                  id="phoneContact"
+                  type="tel"
+                  value={localPhoneContact}
+                  onChange={e => setLocalPhoneContact(e.target.value)}
+                  onBlur={() => {
+                    if (localPhoneContact !== catalogInfo.phoneContact) {
+                      updateCatalogInfo('phoneContact', localPhoneContact)
+                    }
+                  }}
+                  placeholder="ex: +55 (11) 98765-4321"
+                  className="text-sm"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Clientes usarão este número para fazer pedidos
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon icon="calendar" className="w-4 h-4 text-gray-600" />
+                <h3 className="text-sm font-semibold text-gray-700">
+                  Período de Disponibilidade
+                </h3>
+              </div>
+
+              <div>
+                <Label htmlFor="availabilityStart" className="text-sm">
+                  Data de Início *
+                </Label>
+                <Input
+                  id="availabilityStart"
+                  type="date"
+                  value={localAvailabilityStart}
+                  onChange={e => setLocalAvailabilityStart(e.target.value)}
+                  onBlur={() => {
+                    if (
+                      localAvailabilityStart !== catalogInfo.availabilityStart
+                    ) {
+                      updateCatalogInfo(
+                        'availabilityStart',
+                        localAvailabilityStart
+                      )
+                    }
+                  }}
+                  className="text-sm"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="availabilityEnd" className="text-sm">
+                  Data de Término *
+                </Label>
+                <Input
+                  id="availabilityEnd"
+                  type="date"
+                  value={localAvailabilityEnd}
+                  onChange={e => setLocalAvailabilityEnd(e.target.value)}
+                  onBlur={() => {
+                    if (localAvailabilityEnd !== catalogInfo.availabilityEnd) {
+                      updateCatalogInfo('availabilityEnd', localAvailabilityEnd)
+                    }
+                  }}
+                  className="text-sm"
+                />
+              </div>
+
+              {(catalogInfo.availabilityStart ||
+                catalogInfo.availabilityEnd) && (
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-800 font-medium">
+                    Período Disponível
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    {formatDateRange()}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </TabsContent>
       </Tabs>

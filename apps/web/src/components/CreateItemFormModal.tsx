@@ -13,11 +13,11 @@ import {
 import { Icon } from '@terraviva/ui/icon'
 import { Input } from '@terraviva/ui/input'
 import { Slider } from '@terraviva/ui/slider'
+import { ObjectId } from 'bson'
 import Image from 'next/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Cropper, { Area, Point } from 'react-easy-crop'
 import { FormProvider, useForm } from 'react-hook-form'
-import { v4 as randomUUID } from 'uuid'
 
 import { itemFormSchema } from '@/schemas/itemSchema'
 import getCroppedImg, { base64ToFile } from '@/utils/image'
@@ -40,7 +40,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
 
   const formValues = useForm<itemFormType>({
     resolver: zodResolver(itemFormSchema),
-    defaultValues: { id: randomUUID() }
+    defaultValues: { id: new ObjectId().toString() }
   })
 
   const {
@@ -82,7 +82,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
       const file = base64ToFile(cropped, 'image.jpg')
 
       form.append('file', file)
-      form.append('slug', randomUUID())
+      form.append('slug', new ObjectId().toString())
 
       const response = await fetch(`/api/upload`, {
         method: 'POST',

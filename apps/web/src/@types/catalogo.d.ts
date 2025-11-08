@@ -1,8 +1,20 @@
 declare type catalogoFormType = {
   id: string
+  slug?: string
   banner?: string
   title: string
   caption?: string
+  cover?: {
+    enabled: boolean
+    title: string
+    subtitle: string
+    showTitle: boolean
+    showSubtitle: boolean
+    backgroundType: 'color' | 'image'
+    backgroundColor: string
+    backgroundImage: string
+    alignment: 'center' | 'left'
+  }
   sections: sectionFormType[]
 }
 

@@ -1,10 +1,9 @@
 'use client'
 
 import { useSortable } from '@dnd-kit/sortable'
-import { Icon } from '@terraviva/ui/icon'
-import Image from 'next/image'
-import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { CSS } from '@dnd-kit/utilities'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Button } from '@terraviva/ui/button'
 import { cn } from '@terraviva/ui/cn'
 import {
   Dialog,
@@ -13,18 +12,21 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@terraviva/ui/dialog'
+import { Icon } from '@terraviva/ui/icon'
 import { Input } from '@terraviva/ui/input'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import getCroppedImg, { base64ToFile } from '@/utils/image'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { itemFormSchema } from '@/schemas/itemSchema'
-import Cropper, { Area, Point } from 'react-easy-crop'
 import { Slider } from '@terraviva/ui/slider'
-import { Button } from '@terraviva/ui/button'
+import { ObjectId } from 'bson'
+import Image from 'next/image'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import Cropper, { Area, Point } from 'react-easy-crop'
+import { FormProvider, useForm, useFormContext } from 'react-hook-form'
+
+import { itemFormSchema } from '@/schemas/itemSchema'
+import getCroppedImg, { base64ToFile } from '@/utils/image'
+
 import { DeleteModal } from './DeleteModal'
 import { ProductsModal } from './ProductsModal'
 
-import { v4 as randomUUID } from 'uuid'
 interface DraggableItemProps {
   sectionIndex: number
   itemIndex: number
@@ -93,7 +95,7 @@ export function DraggableItem({
       const file = base64ToFile(cropped, 'image.jpg')
 
       form.append('file', file)
-      form.append('slug', randomUUID())
+      form.append('slug', new ObjectId().toString())
 
       const response = await fetch(`/api/upload`, {
         method: 'POST',

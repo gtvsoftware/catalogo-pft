@@ -1,5 +1,6 @@
 'use client'
 
+import { Cover } from '@/features/builder/components/Cover'
 import { CatalogBuilderLayout } from '@/features/builder/components/Layout'
 import { NewSectionButton } from '@/features/builder/components/NewSectionButton'
 import { Sections } from '@/features/builder/components/Sections'
@@ -13,8 +14,11 @@ function FlowerCatalogBuilderContent() {
 
   return (
     <CatalogBuilderLayout>
-      <Sections />
-      {viewMode !== 'preview' && <NewSectionButton />}
+      <Cover />
+      <div className="flex flex-col px-8 py-8">
+        <Sections />
+        {viewMode !== 'preview' && <NewSectionButton />}
+      </div>
     </CatalogBuilderLayout>
   )
 }
