@@ -41,7 +41,7 @@ export function ProductCard({ item }: ProductCardProps) {
   return (
     <Card
       key={item.id}
-      className="overflow-hidden hover:shadow-lg transition-shadow pt-0"
+      className="overflow-hidden hover:shadow-lg transition-shadow pt-0 h-full"
     >
       {/* Product Image */}
       <div className="aspect-square bg-gradient-to-br bg-gray-50 flex items-center justify-center relative overflow-hidden">
