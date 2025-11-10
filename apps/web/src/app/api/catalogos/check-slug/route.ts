@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const slug = searchParams.get('slug')
-    const excludeId = searchParams.get('excludeId') // Current catalog ID to exclude from check
+    const excludeId = searchParams.get('excludeId') 
 
     if (!slug) {
       return NextResponse.json(
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       select: { id: true }
     })
 
-    // If exists and it's not the current catalog, it's taken
+    
     const isAvailable = !existing || (excludeId && existing.id === excludeId)
 
     return NextResponse.json({ available: isAvailable })

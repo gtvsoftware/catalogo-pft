@@ -36,8 +36,6 @@ export function ProductCard({ item }: ProductCardProps) {
     return cor?.toLowerCase() === 'variada'
   }
 
-  console.log(item)
-
   return (
     <Card
       key={item.id}

@@ -1,7 +1,7 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-// GET /api/grupos - Listar todos os grupos
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       where.tipoProduto = tipoProduto
     }
 
-    // Add search filter
+    
     if (search) {
       where.OR = [
         { nome: { contains: search, mode: 'insensitive' } },
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    // Get total count
+    
     const total = await prisma.grupo.count({ where })
 
     const grupos = await prisma.grupo.findMany({
@@ -68,13 +68,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/grupos - Criar um novo grupo
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { nome, slug, tipoProduto, status, descricao, imagem } = body
 
-    // Validação básica
+    
     if (!nome || !slug || !tipoProduto || !descricao) {
       return NextResponse.json(
         { message: 'Campos obrigatórios faltando' },
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se o slug já existe
+    
     const slugExistente = await prisma.grupo.findUnique({
       where: { slug }
     })
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Criar o grupo
+    
     const novoGrupo = await prisma.grupo.create({
       data: {
         nome,

@@ -7,8 +7,9 @@ import {
 } from '@terraviva/ui/dialog'
 import { Icon } from '@terraviva/ui/icon'
 import { Label } from '@terraviva/ui/label'
+import { Slider } from '@terraviva/ui/slider'
 import { Switch } from '@terraviva/ui/switch'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { ImageUpload } from '@/components/ImageUpload'
 
@@ -36,13 +37,15 @@ export function Cover() {
 
   const coverSettings = formValues.watch('cover')
 
-  // Local state for inputs to prevent excessive re-renders
   const [localTitle, setLocalTitle] = useState(coverSettings?.title || '')
   const [localSubtitle, setLocalSubtitle] = useState(
     coverSettings?.subtitle || ''
   )
+  const [localOpacity, setLocalOpacity] = useState(
+    coverSettings?.overlayOpacity ?? 30
+  )
+  const opacityTimeoutRef = useRef<NodeJS.Timeout>()
 
-  // Sync local state with form values when they change externally
   useEffect(() => {
     if (coverSettings?.title !== undefined) {
       setLocalTitle(coverSettings.title)
@@ -54,6 +57,12 @@ export function Cover() {
       setLocalSubtitle(coverSettings.subtitle)
     }
   }, [coverSettings?.subtitle])
+
+  useEffect(() => {
+    if (coverSettings?.overlayOpacity !== undefined) {
+      setLocalOpacity(coverSettings.overlayOpacity)
+    }
+  }, [coverSettings?.overlayOpacity])
 
   const updateCoverSettings = (field: string, value: any) => {
     formValues.setValue(`cover.${field}` as any, value, { shouldDirty: true })
@@ -71,16 +80,31 @@ export function Cover() {
     }
   }
 
+  const handleOpacityChange = (value: number) => {
+    setLocalOpacity(value)
+
+    if (opacityTimeoutRef.current) {
+      clearTimeout(opacityTimeoutRef.current)
+    }
+
+    opacityTimeoutRef.current = setTimeout(() => {
+      updateCoverSettings('overlayOpacity', value)
+    }, 300)
+  }
+
   if (!coverSettings) return null
 
   return (
     <>
       {coverSettings.enabled ? (
         <div
-          className="relative h-64 sm:h-72 md:h-80 rounded-t-sm overflow-hidden group"
+          className="relative h-64 sm:h-72 md:h-80 overflow-hidden group"
           style={getCoverStyle()}
         >
-          <div className="absolute inset-0 bg-black bg-opacity-30" />
+          <div
+            className="absolute inset-0 bg-black"
+            style={{ opacity: localOpacity / 100 }}
+          />
           <div
             className={`absolute inset-0 flex flex-col ${coverSettings.alignment === 'left' ? 'items-start justify-end text-left pb-8 pl-8' : 'items-center justify-center text-center'} p-4 sm:p-6 md:p-8`}
           >
@@ -122,7 +146,7 @@ export function Cover() {
             updateCoverSettings('enabled', true)
             setCoverModalOpen(true)
           }}
-          className="relative h-32 sm:h-40 rounded-t-lg overflow-hidden bg-gray-200 hover:bg-gray-300 transition-colors cursor-pointer group"
+          className="relative h-32 sm:h-40 overflow-hidden bg-gray-200 hover:bg-gray-300 transition-colors cursor-pointer group"
         >
           <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-600">
             <Icon icon="image-slash" className="w-8 h-8 mb-2" />
@@ -187,8 +211,50 @@ export function Cover() {
                           }
                         />
                       </div>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="showLogo" className="text-sm">
+                          Mostrar logo Terra Viva
+                        </Label>
+                        <Switch
+                          id="showLogo"
+                          checked={coverSettings.showLogo}
+                          onClick={() =>
+                            updateCoverSettings(
+                              'showLogo',
+                              !coverSettings.showLogo
+                            )
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
+
+                  <div className="pt-4 border-t space-y-3">
+                    <Label className="text-sm font-medium">
+                      Opacidade da sobreposição
+                    </Label>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-4">
+                        <Slider
+                          value={[localOpacity]}
+                          onValueChange={([value]) =>
+                            handleOpacityChange(value as any)
+                          }
+                          min={0}
+                          max={100}
+                          step={1}
+                          className="flex-1"
+                        />
+                        <span className="text-sm font-medium w-12 text-right">
+                          {localOpacity}%
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        Ajusta a transparência da camada escura sobre a capa
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="pt-4 border-t space-y-2">
                     <Label className="text-sm font-medium">
                       Alinhamento do texto

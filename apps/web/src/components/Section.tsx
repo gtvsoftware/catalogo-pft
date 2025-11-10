@@ -15,9 +15,9 @@ import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 
 import { useCatalogBuilder } from '@/features/builder/providers/CatalogBuilderContext'
 
-import { CreateItemFormModal } from './CreateItemFormModal'
+import { CreateItemFormModal } from '../features/builder/components/CreateItemFormModal'
+import { DraggableItem } from '../features/builder/components/DraggableItem'
 import { DeleteModal } from './DeleteModal'
-import { DraggableItem } from './DraggableItem'
 
 interface SectionProps {
   sectionIndex: number
@@ -25,8 +25,6 @@ interface SectionProps {
 
 export function Section({ sectionIndex }: SectionProps): React.ReactElement {
   const { control, watch } = useFormContext<catalogoFormType>()
-
-  console.log('control', control)
 
   const {
     move,

@@ -29,7 +29,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-// import { GroupSelect } from '@/components/GroupSelect'
+
 import { SerieSelectSimple } from '@/components/SeriesSelect'
 
 const variacaoFormSchema = z.object({
@@ -89,7 +89,7 @@ export default function EditVariacaoPage() {
   const { watch } = form
   const grupoId = watch('grupoId')
 
-  // Fetch variacao data
+  
   useEffect(() => {
     const fetchVariacao = async () => {
       try {

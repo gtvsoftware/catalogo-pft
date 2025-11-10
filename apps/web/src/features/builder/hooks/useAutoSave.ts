@@ -13,7 +13,7 @@ function debounce<T extends (...args: any[]) => any>(
 }
 
 interface AutoSaveOptions {
-  delay?: number // milliseconds to wait before saving
+  delay?: number 
   onSave: () => Promise<void>
   enabled?: boolean
 }
@@ -27,7 +27,7 @@ export function useAutoSave({
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const debouncedSaveRef = useRef<(() => void) | null>(null)
 
-  // Create debounced save function
+  
   useEffect(() => {
     const saveFunction = async () => {
       if (!enabled) return

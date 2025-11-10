@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No slug provided' }, { status: 400 })
     }
 
-    // Validate file type
+    
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024 // 5MB
+    
+    const maxSize = 5 * 1024 * 1024 
     if (file.size > maxSize) {
       return NextResponse.json(
         { error: 'File too large. Maximum size is 5MB.' },
@@ -43,22 +43,22 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create blob service client
+    
     const blobServiceClient = BlobServiceClient.fromConnectionString(
       connectionString!
     )
     const containerClient = blobServiceClient.getContainerClient(containerName)
 
-    // Ensure container exists
+    
     await containerClient.createIfNotExists({
-      access: 'blob' // Public access for blobs
+      access: 'blob' 
     })
 
-    // Generate filename using slug and file extension
+    
     const extension = file.name.split('.').pop()
     const blobName = `${slug}.${extension}`
 
-    // Upload to Azure Blob Storage
+    
     const blockBlobClient = containerClient.getBlockBlobClient(blobName)
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Return the public URL
+    
     const url = blockBlobClient.url
 
     return NextResponse.json({

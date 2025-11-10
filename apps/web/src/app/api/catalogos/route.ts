@@ -1,7 +1,6 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-// GET /api/catalogos - Listar todos os catálogos
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -45,7 +44,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/catalogos - Criar um novo catálogo
 export async function POST(request: NextRequest) {
   try {
     let body: any
@@ -53,15 +51,10 @@ export async function POST(request: NextRequest) {
     const contentType = request.headers.get('content-type') || ''
 
     if (contentType.includes('multipart/form-data')) {
-      // Quando vem como FormData
       const formData = await request.formData()
       const dataStr = formData.get('data') as string
       body = JSON.parse(dataStr)
-
-      // Se quiser lidar com upload de arquivo
-      // const bannerFile = formData.get('banner') as File | null
     } else {
-      // Quando vem puro JSON
       body = await request.json()
     }
 

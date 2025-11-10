@@ -1,18 +1,23 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-// GET /api/catalogos/:id - Buscar catálogo por ID
 export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params // ✅ agora é síncrono
-    console.log('ID recebido:', id)
+    const { id } = await context.params
 
-    const catalogo = await prisma.catalogo.findUnique({
-      where: { id }
-    })
+    // Check if id is a MongoDB ObjectId (24 hex characters) or a slug
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(id)
+
+    const catalogo = isObjectId
+      ? await prisma.catalogo.findUnique({
+          where: { id }
+        })
+      : await prisma.catalogo.findUnique({
+          where: { slug: id }
+        })
 
     if (!catalogo) {
       return NextResponse.json(
@@ -31,14 +36,12 @@ export async function GET(
   }
 }
 
-// PUT /api/catalogos/:id - Editar um catálogo
 export async function PUT(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await context.params
-    console.log('ID recebido:', id)
 
     const data = await request.json()
 
@@ -55,8 +58,6 @@ export async function PUT(
       sections
     } = data
 
-    console.log('Dados recebidos:', data)
-
     const catalogoExistente = await prisma.catalogo.findUnique({
       where: { id }
     })
@@ -64,7 +65,6 @@ export async function PUT(
     let catalogoAtualizado
 
     if (catalogoExistente) {
-      // Update existing catalog
       catalogoAtualizado = await prisma.catalogo.update({
         where: { id },
         data: {
@@ -81,7 +81,6 @@ export async function PUT(
         }
       })
     } else {
-      // Create new catalog if it doesn't exist
       catalogoAtualizado = await prisma.catalogo.create({
         data: {
           id,
@@ -109,13 +108,11 @@ export async function PUT(
   }
 }
 
-// DELETE /api/catalogos/:id - Excluir um catálogo
 export async function DELETE(
   _request: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params // ✅ agora é síncrono
-  console.log('ID recebido:', id)
+  const { id } = await context.params
 
   try {
     const catalogo = await prisma.catalogo.findUnique({ where: { id } })

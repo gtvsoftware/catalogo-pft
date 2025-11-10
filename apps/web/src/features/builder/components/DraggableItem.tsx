@@ -3,7 +3,7 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@terraviva/ui/button'
+import { Button, IconButton } from '@terraviva/ui/button'
 import { cn } from '@terraviva/ui/cn'
 import {
   Dialog,
@@ -24,8 +24,7 @@ import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { itemFormSchema } from '@/schemas/itemSchema'
 import getCroppedImg, { base64ToFile } from '@/utils/image'
 
-import { DeleteModal } from './DeleteModal'
-import { ProductsModal } from './ProductsModal'
+import { ProductsModal } from '../../../components/ProductsModal'
 
 interface DraggableItemProps {
   sectionIndex: number
@@ -41,6 +40,25 @@ export function DraggableItem({
   const { watch, setValue } = useFormContext<catalogoFormType>()
 
   const item = watch(`sections.${sectionIndex}.items.${itemIndex}`)
+
+  const handleDelete = async () => {
+    // Delete image from storage if it exists
+    if (item.image) {
+      try {
+        const filename = item.image.split('/').pop()
+        if (filename) {
+          await fetch(`/api/upload?filename=${filename}`, {
+            method: 'DELETE'
+          })
+        }
+      } catch (error) {
+        console.error('Error deleting image:', error)
+      }
+    }
+
+    // Remove item from form
+    removeFn()
+  }
 
   const [open, setOpen] = useState(false)
   const [imageSrc, setImageSrc] = useState<string | null>(null)
@@ -163,14 +181,29 @@ export function DraggableItem({
             <div
               ref={setNodeRef}
               style={style}
-              {...listeners}
-              {...attributes}
               className={cn(
-                'group flex flex-col w-full cursor-pointer rounded-xl bg-white overflow-hidden  hover:scale-[1.02] hover:bg-gray-5',
+                'group relative flex flex-col w-full cursor-pointer rounded-xl bg-white overflow-hidden  hover:scale-[1.02] hover:bg-gray-5 p-4',
                 isDragging && 'cursor-grabbing opacity-70'
               )}
             >
-              <div className="relative w-full aspect-square bg-gray-50">
+              {/* Delete Button */}
+              <IconButton
+                variant="destructive"
+                size="sm"
+                icon="trash-can"
+                onClick={e => {
+                  e.stopPropagation()
+                  handleDelete()
+                }}
+                className="absolute top-2 right-2 z-10"
+                title="Excluir item"
+              ></IconButton>
+
+              <div
+                {...listeners}
+                {...attributes}
+                className="relative w-full aspect-square bg-gray-50"
+              >
                 {item.image ? (
                   <Image
                     src={item.image}
@@ -357,25 +390,10 @@ export function DraggableItem({
                   )}
                 </div>
               </div>
-              <div className="flex gap-2">
-                <DeleteModal
-                  message="Você tem certeza que deja excluir o item?"
-                  title="Excluir item"
-                  trigger={
-                    <Button
-                      variant={'destructive'}
-                      className="w-full"
-                      leftIcon="trash-can"
-                    >
-                      Exluir item
-                    </Button>
-                  }
-                  removeFn={removeFn}
-                />
-                <Button type="submit" className="w-full" leftIcon="save">
-                  Atualizar item
-                </Button>
-              </div>
+
+              <Button type="submit" className="w-full" leftIcon="save">
+                Atualizar item
+              </Button>
             </form>
           </DialogContent>
         </Dialog>

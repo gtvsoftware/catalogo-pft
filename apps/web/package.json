@@ -33,6 +33,7 @@
     "react-dom": "^18.3.1",
     "react-easy-crop": "^5.5.3",
     "react-hook-form": "^7.65.0",
+    "react-imask": "^7.6.1",
     "react-instantsearch": "^7.17.0",
     "react-instantsearch-nextjs": "^1.0.3",
     "typesense": "^2.1.0",

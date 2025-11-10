@@ -1,7 +1,7 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-// GET /api/variacoes/[id] - Buscar uma variação específica
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -34,7 +34,7 @@ export async function GET(
   }
 }
 
-// PUT /api/variacoes/[id] - Atualizar uma variação
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -72,7 +72,7 @@ export async function PUT(
       ativo
     } = body
 
-    // Verificar se a variação existe
+    
     const variacaoExistente = await prisma.variacao.findUnique({
       where: { id }
     })
@@ -84,7 +84,7 @@ export async function PUT(
       )
     }
 
-    // Verificar se o grupo existe
+    
     const grupo = await prisma.grupo.findUnique({
       where: { id: grupoId }
     })
@@ -96,7 +96,7 @@ export async function PUT(
       )
     }
 
-    // Verificar se a série existe
+    
     const serie = await prisma.serie.findUnique({
       where: { id: serieId }
     })
@@ -108,7 +108,7 @@ export async function PUT(
       )
     }
 
-    // Verificar se o variacaoId já existe em outra variação
+    
     if (variacaoId !== variacaoExistente.variacaoId) {
       const variacaoIdExistente = await prisma.variacao.findUnique({
         where: { variacaoId }
@@ -122,7 +122,7 @@ export async function PUT(
       }
     }
 
-    // Verificar se o código veiling já existe em outra variação
+    
     if (codigoVeiling !== variacaoExistente.codigoVeiling) {
       const codigoExistente = await prisma.variacao.findUnique({
         where: { codigoVeiling }
@@ -136,7 +136,7 @@ export async function PUT(
       }
     }
 
-    // Atualizar a variação
+    
     const variacaoAtualizada = await prisma.variacao.update({
       where: { id },
       data: {
@@ -181,7 +181,7 @@ export async function PUT(
   }
 }
 
-// DELETE /api/variacoes/[id] - Deletar uma variação
+
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -189,7 +189,7 @@ export async function DELETE(
   const { id } = await params
 
   try {
-    // Verificar se a variação existe
+    
     const variacao = await prisma.variacao.findUnique({
       where: { id }
     })
@@ -201,7 +201,7 @@ export async function DELETE(
       )
     }
 
-    // Deletar a variação
+    
     await prisma.variacao.delete({
       where: { id }
     })

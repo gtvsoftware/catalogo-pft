@@ -1,20 +1,16 @@
 'use client'
 
 import { ObjectId } from 'bson'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { FormProvider, UseFormReturn, useForm } from 'react-hook-form'
 
 import { useAutoSave } from '../hooks/useAutoSave'
-
-// Types
-export type CatalogInfo = {
-  catalogName: string
-  slug: string
-  sellerName: string
-  phoneContact: string
-  availabilityStart: string
-  availabilityEnd: string
-}
 
 export type CoverSettings = {
   enabled: boolean
@@ -22,6 +18,7 @@ export type CoverSettings = {
   subtitle: string
   showTitle: boolean
   showSubtitle: boolean
+  showLogo: boolean
   backgroundType: 'color' | 'image'
   backgroundColor: string
   backgroundImage: string
@@ -31,11 +28,6 @@ export type CoverSettings = {
 export type ViewMode = 'edit' | 'preview'
 
 export type CatalogBuilderContextType = {
-  // Catalog Info State
-  catalogInfo: CatalogInfo
-  updateCatalogInfo: (field: keyof CatalogInfo, value: string) => void
-
-  // UI State
   viewMode: ViewMode
   setViewMode: (mode: ViewMode) => void
   activeTab: string
@@ -45,14 +37,11 @@ export type CatalogBuilderContextType = {
   coverModalOpen: boolean
   setCoverModalOpen: (open: boolean) => void
 
-  // Form
   formValues: UseFormReturn<catalogoFormType>
 
-  // Auto-save
   isSaving: boolean
   lastSaved: Date | null
 
-  // Utility Functions
   formatDateRange: () => string
   getCoverStyle: () => React.CSSProperties
 }
@@ -61,44 +50,41 @@ const CatalogBuilderContext = createContext<
   CatalogBuilderContextType | undefined
 >(undefined)
 
-// Provider Component
 export function CatalogBuilderProvider({
-  children
+  children,
+  catalogId
 }: {
   children: React.ReactNode
+  catalogId: string
 }) {
-  // Catalog Info State
-  const [catalogInfo, setCatalogInfo] = useState<CatalogInfo>({
-    catalogName: '',
-    slug: '',
-    sellerName: '',
-    phoneContact: '',
-    availabilityStart: '',
-    availabilityEnd: ''
-  })
-
-  // UI State
   const [viewMode, setViewMode] = useState<ViewMode>('edit')
   const [activeTab, setActiveTab] = useState('info')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [coverModalOpen, setCoverModalOpen] = useState(false)
+  const [_, setIsLoading] = useState(true)
+  const [enableAutoSave, setEnableAutoSave] = useState(false)
 
-  // Form State
   const formValues = useForm<catalogoFormType>({
     defaultValues: {
-      id: new ObjectId().toString(),
-      title: 'Título',
-      caption: 'Subtítulo',
+      id: catalogId,
+      slug: '',
+      title: '',
+      sellerName: '',
+      phoneContact: '',
+      availabilityStart: '',
+      availabilityEnd: '',
       cover: {
         enabled: true,
         title: 'Título',
         subtitle: 'Subtítulo',
         showTitle: true,
         showSubtitle: true,
+        showLogo: true,
         backgroundType: 'color',
         backgroundColor: '#4a9e2d',
         backgroundImage: '',
-        alignment: 'left'
+        alignment: 'left',
+        overlayOpacity: 30
       },
       sections: [
         {
@@ -110,20 +96,54 @@ export function CatalogBuilderProvider({
     }
   })
 
-  // Auto-save functionality
+  // Load existing catalog if it exists
+  useEffect(() => {
+    const loadCatalog = async () => {
+      try {
+        const response = await fetch(`/api/catalogos/${catalogId}`)
+
+        if (response.ok) {
+          const catalog = await response.json()
+          // Reset form with loaded data
+          formValues.reset({
+            id: catalog.id,
+            slug: catalog.slug || '',
+            title: catalog.title || '',
+            sellerName: catalog.sellerName || '',
+            phoneContact: catalog.phoneContact || '',
+            availabilityStart: catalog.availabilityStart || '',
+            availabilityEnd: catalog.availabilityEnd || '',
+            cover: catalog.cover || formValues.getValues().cover,
+            sections: catalog.sections || formValues.getValues().sections
+          })
+        }
+        // If catalog doesn't exist (404), keep default values
+      } catch (error) {
+        console.error('Error loading catalog:', error)
+      } finally {
+        setIsLoading(false)
+        // Enable auto-save after a short delay to avoid triggering on initial load
+        setTimeout(() => {
+          setEnableAutoSave(true)
+        }, 100)
+      }
+    }
+
+    loadCatalog()
+  }, [catalogId])
+
   const saveCatalog = async () => {
     const formData = formValues.getValues()
     const catalogId = formData.id
 
     const payload = {
-      slug: catalogInfo.slug,
+      slug: formData.slug,
       title: formData.title,
-      caption: formData.caption,
       cover: formData.cover,
-      sellerName: catalogInfo.sellerName,
-      phoneContact: catalogInfo.phoneContact,
-      availabilityStart: catalogInfo.availabilityStart,
-      availabilityEnd: catalogInfo.availabilityEnd,
+      sellerName: formData.sellerName,
+      phoneContact: formData.phoneContact,
+      availabilityStart: formData.availabilityStart,
+      availabilityEnd: formData.availabilityEnd,
       sections: formData.sections
     }
 
@@ -145,45 +165,51 @@ export function CatalogBuilderProvider({
   const { isSaving, lastSaved, triggerSave } = useAutoSave({
     delay: 2000,
     onSave: saveCatalog,
-    enabled: true
+    enabled: enableAutoSave // Only enable after initial load completes
   })
 
-  // Watch form changes and trigger auto-save
+  const skipSaveCountRef = useRef(0)
+
   useEffect(() => {
+    if (!enableAutoSave) return // Don't subscribe until auto-save is enabled
+
     const subscription = formValues.watch(() => {
+      if (skipSaveCountRef.current > 0) {
+        skipSaveCountRef.current--
+        return
+      }
       triggerSave()
     })
     return () => subscription.unsubscribe()
-  }, [formValues, triggerSave])
+  }, [formValues, triggerSave, enableAutoSave])
 
-  // Watch catalogInfo changes and trigger auto-save
+  // When viewMode changes, skip the next few save triggers
+  const prevViewModeRef = useRef(viewMode)
   useEffect(() => {
-    triggerSave()
-  }, [catalogInfo, triggerSave])
+    if (enableAutoSave && prevViewModeRef.current !== viewMode) {
+      skipSaveCountRef.current = 3 // Skip next 3 watch triggers
+      prevViewModeRef.current = viewMode
+    }
+  }, [viewMode, enableAutoSave])
 
-  // Update Functions
-  const updateCatalogInfo = (field: keyof CatalogInfo, value: string) => {
-    setCatalogInfo(prev => ({ ...prev, [field]: value }))
-  }
-
-  // Utility Functions
   const formatDateRange = () => {
-    if (!catalogInfo.availabilityStart && !catalogInfo.availabilityEnd) {
+    const formData = formValues.getValues()
+    if (!formData.availabilityStart && !formData.availabilityEnd) {
       return ''
     }
 
-    const start = catalogInfo.availabilityStart
-      ? new Date(catalogInfo.availabilityStart).toLocaleDateString()
+    const start = formData.availabilityStart
+      ? new Date(formData.availabilityStart).toLocaleDateString()
       : 'N/A'
-    const end = catalogInfo.availabilityEnd
-      ? new Date(catalogInfo.availabilityEnd).toLocaleDateString()
+    const end = formData.availabilityEnd
+      ? new Date(formData.availabilityEnd).toLocaleDateString()
       : 'N/A'
 
     return `${start} - ${end}`
   }
 
   const getCoverStyle = (): React.CSSProperties => {
-    const cover = formValues.watch('cover')
+    const cover = formValues.getValues('cover')
     if (!cover) return {}
 
     if (cover.backgroundType === 'image' && cover.backgroundImage) {
@@ -199,8 +225,6 @@ export function CatalogBuilderProvider({
   }
 
   const value: CatalogBuilderContextType = {
-    catalogInfo,
-    updateCatalogInfo,
     viewMode,
     setViewMode,
     activeTab,
@@ -223,7 +247,6 @@ export function CatalogBuilderProvider({
   )
 }
 
-// Hook to use the context
 export function useCatalogBuilder() {
   const context = useContext(CatalogBuilderContext)
   if (context === undefined) {

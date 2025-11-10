@@ -1,14 +1,12 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-// GET /api/grupos/[id] - Buscar um grupo específico
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-
-  console.log(id)
 
   try {
     const grupo = await prisma.grupo.findUnique({
@@ -34,7 +32,7 @@ export async function GET(
   }
 }
 
-// PUT /api/grupos/[id] - Atualizar um grupo
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -45,7 +43,7 @@ export async function PUT(
     const body = await request.json()
     const { nome, slug, tipoProduto, status, descricao, imagem } = body
 
-    // Verificar se o grupo existe
+    
     const grupoExistente = await prisma.grupo.findUnique({
       where: { id }
     })
@@ -57,7 +55,7 @@ export async function PUT(
       )
     }
 
-    // Verificar se o slug já existe em outro grupo
+    
     if (slug !== grupoExistente.slug) {
       const slugExistente = await prisma.grupo.findUnique({
         where: { slug }
@@ -71,7 +69,7 @@ export async function PUT(
       }
     }
 
-    // Atualizar o grupo
+    
     const grupoAtualizado = await prisma.grupo.update({
       where: { id: id },
       data: {
@@ -84,7 +82,7 @@ export async function PUT(
       }
     })
 
-    // Se o slug foi alterado, atualizar as referências em séries e variações
+    
     if (slug !== grupoExistente.slug) {
       await prisma.serie.updateMany({
         where: { grupoId: id },
@@ -96,7 +94,7 @@ export async function PUT(
         data: { grupoSlug: slug }
       })
     } else if (nome !== grupoExistente.nome) {
-      // Se apenas o nome foi alterado, atualizar em séries
+      
       await prisma.serie.updateMany({
         where: { grupoId: id },
         data: { grupoNome: nome }
@@ -113,13 +111,13 @@ export async function PUT(
   }
 }
 
-// DELETE /api/grupos/[id] - Deletar um grupo
+
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Verificar se o grupo existe
+    
     const grupo = await prisma.grupo.findUnique({
       where: { id: params.id },
       include: {
@@ -135,7 +133,7 @@ export async function DELETE(
       )
     }
 
-    // Verificar se existem séries ou variações vinculadas
+    
     if (grupo.series.length > 0 || grupo.variacoes.length > 0) {
       return NextResponse.json(
         {
@@ -146,7 +144,7 @@ export async function DELETE(
       )
     }
 
-    // Deletar o grupo
+    
     await prisma.grupo.delete({
       where: { id: params.id }
     })

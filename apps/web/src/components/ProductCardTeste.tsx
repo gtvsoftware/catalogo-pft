@@ -1,18 +1,12 @@
-import { getColorBadgeClass } from '@/utils/getColorBadgeClass'
 import { Badge } from '@terraviva/ui/badge'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@terraviva/ui/card'
 import { cn } from '@terraviva/ui/cn'
 import { Icon } from '@terraviva/ui/icon'
 import type { Hit } from 'instantsearch.js'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Highlight } from 'react-instantsearch'
+
+import { getColorBadgeClass } from '@/utils/getColorBadgeClass'
 
 interface ProductCardProps {
   item: Hit<any>
@@ -23,68 +17,68 @@ export function ProductCardTeste({ item, onClick }: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
 
   return (
-    <Card
+    <div
       key={item.id}
-      className="overflow-hidden p-0 h-full w-full cursor-pointer gap-2"
+      className="group flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
       onClick={onClick}
     >
-      <div className="aspect-square bg-gradient-to-br bg-gray-50 flex items-center justify-center relative overflow-hidden">
+      {/* Image Container */}
+      <div className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-gray-100">
         {item.imagem && !imageError ? (
           <Image
-            preload
             fill
             src={item.imagem}
             alt={item.descricaoCompleta || 'Produto'}
-            className="w-full h-full object-cover"
+            className="object-cover"
             onError={() => setImageError(true)}
           />
         ) : (
-          <div className="flex flex-col items-center justify-center gap-2  text-gray-400">
-            <Icon icon="image-slash" className="" />
-            <span className="text-xs font-medium text-center">
-              {!imageError && 'Sem imagem'}
-            </span>
+          <div className="flex items-center justify-center w-full h-full text-gray-400">
+            <Icon icon="image-slash" className="w-6 h-6" />
           </div>
         )}
+
+        {/* Status Badges on Image */}
         {item.tingida && (
-          <Badge className="absolute top-2 right-2 bg-purple-500">
+          <Badge className="absolute top-1 right-1 px-1.5 py-0 text-[9px] bg-purple-500 border-0">
             Tingida
           </Badge>
         )}
         {!item.ativo && (
-          <Badge className="absolute top-2 left-2 bg-gray-500">Inativo</Badge>
+          <Badge className="absolute top-1 left-1 px-1.5 py-0 text-[9px] bg-gray-500 border-0">
+            Inativo
+          </Badge>
         )}
       </div>
 
-      <CardHeader className="px-2">
-        <CardTitle>
-          <Highlight
-            className="text-xs text-wrap"
-            hit={item}
-            attribute="descricaoCompleta"
-            highlightedTagName="mark"
-          />
-        </CardTitle>
-        {item.codigoVeiling && (
-          <CardDescription className="text-[10px] font-mono">
-            {item.codigoVeiling}
-          </CardDescription>
-        )}
-      </CardHeader>
+      {/* Content Container */}
+      <div className="flex-1 min-w-0 flex items-center gap-2">
+        <Highlight
+          className="text-sm text-gray-900 line-clamp-2 flex-1"
+          hit={item}
+          attribute="descricaoCompleta"
+          highlightedTagName="mark"
+        />
 
-      <CardContent className="px-2 space-y-2 pb-2">
+        {/* Color Badge */}
         {item.cor && (
           <Badge
             variant="outline"
             className={cn(
               getColorBadgeClass(item.cor),
-              'text-[10px] rounded-[6px]'
+              'text-[10px] px-2 py-0.5 rounded-md font-medium flex-shrink-0'
             )}
           >
             {item.cor}
           </Badge>
         )}
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* Chevron Indicator */}
+      <Icon
+        icon="chevron-right"
+        className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0"
+      />
+    </div>
   )
 }

@@ -1,7 +1,7 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-// GET /api/series/[id] - Buscar uma série específica
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -33,7 +33,7 @@ export async function GET(
   }
 }
 
-// PUT /api/series/[id] - Atualizar uma série
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -44,7 +44,7 @@ export async function PUT(
     const body = await request.json()
     const { nome, slug, grupoId, imagem } = body
 
-    // Verificar se a série existe
+    
     const serieExistente = await prisma.serie.findUnique({
       where: { id }
     })
@@ -56,7 +56,7 @@ export async function PUT(
       )
     }
 
-    // Verificar se o grupo existe
+    
     const grupo = await prisma.grupo.findUnique({
       where: { id: grupoId }
     })
@@ -68,7 +68,7 @@ export async function PUT(
       )
     }
 
-    // Verificar se o slug já existe em outra série
+    
     if (slug !== serieExistente.slug) {
       const slugExistente = await prisma.serie.findUnique({
         where: { slug }
@@ -82,7 +82,7 @@ export async function PUT(
       }
     }
 
-    // Atualizar a série
+    
     const serieAtualizada = await prisma.serie.update({
       where: { id },
       data: {
@@ -96,7 +96,7 @@ export async function PUT(
       }
     })
 
-    // Se o slug foi alterado, atualizar as referências em variações
+    
     if (slug !== serieExistente.slug) {
       await prisma.variacao.updateMany({
         where: { serieId: id },
@@ -114,7 +114,7 @@ export async function PUT(
   }
 }
 
-// DELETE /api/series/[id] - Deletar uma série
+
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -122,7 +122,7 @@ export async function DELETE(
   const { id } = await params
 
   try {
-    // Verificar se a série existe
+    
     const serie = await prisma.serie.findUnique({
       where: { id },
       include: {
@@ -137,7 +137,7 @@ export async function DELETE(
       )
     }
 
-    // Verificar se existem variações vinculadas
+    
     if (serie.variacoes.length > 0) {
       return NextResponse.json(
         {
@@ -148,7 +148,7 @@ export async function DELETE(
       )
     }
 
-    // Deletar a série
+    
     await prisma.serie.delete({
       where: { id }
     })

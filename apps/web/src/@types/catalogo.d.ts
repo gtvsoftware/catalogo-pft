@@ -3,17 +3,22 @@ declare type catalogoFormType = {
   slug?: string
   banner?: string
   title: string
-  caption?: string
+  sellerName?: string
+  phoneContact?: string
+  availabilityStart?: string
+  availabilityEnd?: string
   cover?: {
     enabled: boolean
     title: string
     subtitle: string
     showTitle: boolean
     showSubtitle: boolean
+    showLogo: boolean
     backgroundType: 'color' | 'image'
     backgroundColor: string
     backgroundImage: string
     alignment: 'center' | 'left'
+    overlayOpacity: number
   }
   sections: sectionFormType[]
 }

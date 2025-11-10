@@ -73,7 +73,7 @@ export default function EditGrupoPage() {
   const { watch, setValue } = form
   const nome = watch('nome')
 
-  // Auto-generate slug from nome
+  
   useEffect(() => {
     if (nome && !form.formState.dirtyFields.slug) {
       const slugified = nome
@@ -86,7 +86,7 @@ export default function EditGrupoPage() {
     }
   }, [nome, form.formState.dirtyFields.slug, setValue])
 
-  // Fetch grupo data
+  
   useEffect(() => {
     const fetchGrupo = async () => {
       try {

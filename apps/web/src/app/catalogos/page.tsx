@@ -18,9 +18,24 @@ import { useEffect, useState } from 'react'
 
 interface Catalogo {
   id: string
+  slug?: string
   title: string
-  caption?: string
   banner?: string
+  cover?: {
+    enabled: boolean
+    title: string
+    subtitle: string
+    showTitle: boolean
+    showSubtitle: boolean
+    backgroundType: 'color' | 'image'
+    backgroundColor: string
+    backgroundImage: string
+    alignment: 'center' | 'left'
+  }
+  sellerName?: string
+  phoneContact?: string
+  availabilityStart?: string
+  availabilityEnd?: string
   sections: Array<{ id: string; title: string; items: any[] }>
   createdAt: string
   updatedAt: string
@@ -78,27 +93,36 @@ export default function CatalogosListPage() {
       }
     },
     {
-      accessorKey: 'caption',
-      header: 'Descrição',
+      accessorKey: 'sellerName',
+      header: 'Vendedor',
       cell: ({ row }) => {
-        const caption = row.getValue('caption') as string | undefined
-        return (
-          <div className="max-w-md truncate text-muted-foreground">
-            {caption || '—'}
-          </div>
-        )
+        const sellerName = row.getValue('sellerName') as string | undefined
+        return <div className="text-muted-foreground">{sellerName || '—'}</div>
       }
     },
     {
-      accessorKey: 'sections',
-      header: 'Seções',
+      accessorKey: 'availabilityStart',
+      header: 'Disponibilidade',
       cell: ({ row }) => {
-        const sections = row.getValue('sections') as Catalogo['sections']
+        const start = row.original.availabilityStart
+        const end = row.original.availabilityEnd
+        if (!start && !end)
+          return <span className="text-muted-foreground">—</span>
+
+        const formatDate = (dateStr: string) => {
+          return new Date(dateStr).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          })
+        }
+
         return (
-          <Badge variant="secondary">
-            {sections?.length || 0} seção
-            {sections?.length === 1 ? '' : 's'}
-          </Badge>
+          <div className="text-sm text-muted-foreground">
+            {start && formatDate(start)}
+            {start && end && ' - '}
+            {end && formatDate(end)}
+          </div>
         )
       }
     },
@@ -119,15 +143,65 @@ export default function CatalogosListPage() {
     {
       id: 'actions',
       header: 'Ações',
-      cell: ({ row }) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push(`/catalogos/${row.original.id}`)}
-        >
-          <Icon icon="eye" className="h-4 w-4" />
-        </Button>
-      )
+      cell: ({ row }) => {
+        const handleDelete = async () => {
+          if (
+            !window.confirm(
+              'Tem certeza que deseja excluir este catálogo? Esta ação não pode ser desfeita.'
+            )
+          ) {
+            return
+          }
+
+          try {
+            const response = await fetch(`/api/catalogos/${row.original.id}`, {
+              method: 'DELETE'
+            })
+
+            if (!response.ok) {
+              throw new Error('Erro ao excluir catálogo')
+            }
+
+            toast.success('Catálogo excluído com sucesso')
+            fetchCatalogos()
+          } catch (error) {
+            toast.error('Erro ao excluir catálogo', {
+              description:
+                error instanceof Error ? error.message : 'Erro desconhecido'
+            })
+          }
+        }
+
+        return (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push(`/criador/${row.original.id}`)}
+              title="Editar"
+            >
+              <Icon icon="pencil" className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push(`/visualizar/${row.original.id}`)}
+              title="Visualizar"
+            >
+              <Icon icon="eye" className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDelete}
+              title="Excluir"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Icon icon="trash" className="h-4 w-4" />
+            </Button>
+          </div>
+        )
+      }
     }
   ]
 

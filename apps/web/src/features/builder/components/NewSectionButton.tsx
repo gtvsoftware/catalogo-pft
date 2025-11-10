@@ -7,19 +7,17 @@ import { useCatalogBuilder } from '@/features/builder/providers/CatalogBuilderCo
 export function NewSectionButton() {
   const { formValues } = useCatalogBuilder()
 
-  const { control, watch } = formValues
+  const { control } = formValues
 
-  const { append } = useFieldArray({
+  const { append, fields } = useFieldArray({
     name: 'sections',
     control
   })
 
-  const { sections } = watch()
-
   const handleSection = () => {
     const section: sectionFormType = {
       id: new ObjectId().toString(),
-      title: `Seção ${sections.length + 1}`,
+      title: `Seção ${fields.length + 1}`,
       items: []
     }
 

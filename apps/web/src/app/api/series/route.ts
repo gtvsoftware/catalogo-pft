@@ -1,7 +1,7 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-// GET /api/series - Listar todas as séries
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       where.grupoId = grupoId
     }
 
-    // Add search filter
+    
     if (search) {
       where.OR = [
         { nome: { contains: search, mode: 'insensitive' } },
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    // Get total count
+    
     const total = await prisma.serie.count({ where })
 
     const series = await prisma.serie.findMany({
@@ -63,13 +63,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/series - Criar uma nova série
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { nome, slug, grupoId, imagem } = body
 
-    // Validação básica
+    
     if (!nome || !slug || !grupoId) {
       return NextResponse.json(
         { message: 'Campos obrigatórios faltando' },
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se o grupo existe
+    
     const grupo = await prisma.grupo.findUnique({
       where: { id: grupoId }
     })
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se o slug já existe
+    
     const slugExistente = await prisma.serie.findUnique({
       where: { slug }
     })
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Criar a série
+    
     const novaSerie = await prisma.serie.create({
       data: {
         nome,

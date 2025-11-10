@@ -11,7 +11,7 @@ interface ImageUploadProps {
   onChange: (url: string) => void
   onRemove?: () => void
   disabled?: boolean
-  maxSize?: number // in MB
+  maxSize?: number 
   accept?: string[]
 }
 
@@ -31,7 +31,7 @@ export function ImageUpload({
     async (file: File) => {
       if (disabled) return
 
-      // Validate file type
+      
       if (!accept.includes(file.type)) {
         toast.error('Tipo de arquivo inválido', {
           description: 'Por favor, selecione uma imagem JPEG, PNG, WebP ou GIF.'
@@ -39,7 +39,7 @@ export function ImageUpload({
         return
       }
 
-      // Validate file size
+      
       const maxBytes = maxSize * 1024 * 1024
       if (file.size > maxBytes) {
         toast.error('Arquivo muito grande', {
@@ -115,7 +115,7 @@ export function ImageUpload({
     if (disabled || !value) return
 
     try {
-      // Extract filename from URL
+      
       const url = new URL(value)
       const filename = url.pathname.split('/').pop()
 

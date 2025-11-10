@@ -1,5 +1,6 @@
 import { Button, IconButton } from '@terraviva/ui/button'
 import { Icon } from '@terraviva/ui/icon'
+import Link from 'next/link'
 
 import { useCatalogBuilder } from '../providers/CatalogBuilderContext'
 
@@ -25,10 +26,18 @@ export function CatalogBuilderTopBar() {
       minute: '2-digit'
     })
   }
-
   return (
     <div className="bg-white border-b px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
       <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+        <Link href="/catalogos">
+          <IconButton
+            icon="arrow-left"
+            variant="ghost"
+            size="sm"
+            className="p-2"
+            title="Voltar para lista"
+          />
+        </Link>
         <IconButton
           icon={sidebarOpen ? 'x' : 'bars'}
           variant="ghost"

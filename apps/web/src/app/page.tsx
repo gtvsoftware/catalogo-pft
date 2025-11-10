@@ -1,214 +1,245 @@
 'use client'
 
-import { getTypesenseSearchAdapter } from '@terraviva/typesense-catalogo-pft'
-import { Icon } from '@terraviva/ui/icon'
-import { useEffect } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import type { ColumnDef } from '@tanstack/react-table'
+import { Button } from '@terraviva/ui/button'
 import {
-  Configure,
-  Hits,
-  InstantSearch,
-  Pagination,
-  RefinementList,
-  ToggleRefinement,
-  useInstantSearch
-} from 'react-instantsearch'
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@terraviva/ui/card'
+import { DataTable, HeaderColumnSorting } from '@terraviva/ui/data-table'
+import { Icon } from '@terraviva/ui/icon'
+import { toast } from '@terraviva/ui/sonner'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-import { CustomSearch } from '@/components/CustomSearch'
-import { GrupoSelect } from '@/components/GroupSelect'
-import { ProductCard } from '@/components/ProductCard'
-import { SerieSelect } from '@/components/SeriesSelect'
-
-function ResetPageOnFilterChange({
-  grupo,
-  serie
-}: {
-  grupo: string | null
-  serie: string | null
-}) {
-  const { setIndexUiState } = useInstantSearch()
-
-  useEffect(() => {
-    setIndexUiState(prevState => ({
-      ...prevState,
-      page: 1
-    }))
-  }, [grupo, serie, setIndexUiState])
-
-  return null
+interface Catalogo {
+  id: string
+  slug?: string
+  title: string
+  banner?: string
+  cover?: {
+    enabled: boolean
+    title: string
+    subtitle: string
+    showTitle: boolean
+    showSubtitle: boolean
+    backgroundType: 'color' | 'image'
+    backgroundColor: string
+    backgroundImage: string
+    alignment: 'center' | 'left'
+  }
+  sellerName?: string
+  phoneContact?: string
+  availabilityStart?: string
+  availabilityEnd?: string
+  sections: Array<{ id: string; title: string; items: any[] }>
+  createdAt: string
+  updatedAt: string
 }
 
-export default function FlowerCatalog() {
-  const formProps = useForm({
-    defaultValues: { grupo: null, serie: null }
-  })
+export default function CatalogosListPage() {
+  const router = useRouter()
+  const [catalogos, setCatalogos] = useState<Catalogo[]>([])
+  const [loading, setLoading] = useState(true)
+  const [totalCount, setTotalCount] = useState(0)
+  const [pageIndex, setPageIndex] = useState(0)
+  const [pageSize, setPageSize] = useState(10)
+  const [globalFilter, setGlobalFilter] = useState('')
 
-  const { watch } = formProps
+  const fetchCatalogos = async () => {
+    setLoading(true)
+    try {
+      const params = new URLSearchParams({
+        page: (pageIndex + 1).toString(),
+        limit: pageSize.toString(),
+        ...(globalFilter && { search: globalFilter })
+      })
 
-  const grupo = watch('grupo')
-  const serie = watch('serie')
+      const response = await fetch(`/api/catalogos?${params}`)
+      if (!response.ok) {
+        throw new Error('Erro ao carregar catálogos')
+      }
 
-  const typesenseInstantsearchAdapter = getTypesenseSearchAdapter({
-    additionalSearchParameters: {
-      query_by: 'descricaoCompleta',
-      per_page: 12,
-      sort_by: 'descricaoCompleta:asc'
+      const data = await response.json()
+      setCatalogos(data.catalogos || data)
+      setTotalCount(data.total || data.length)
+    } catch (error) {
+      toast.error('Erro ao carregar catálogos', {
+        description:
+          error instanceof Error ? error.message : 'Erro desconhecido'
+      })
+    } finally {
+      setLoading(false)
     }
-  })
+  }
+
+  useEffect(() => {
+    fetchCatalogos()
+  }, [pageIndex, pageSize, globalFilter])
+
+  const columns: ColumnDef<Catalogo>[] = [
+    {
+      accessorKey: 'title',
+      header: ({ column }) => (
+        <HeaderColumnSorting column={column} content="Título" />
+      ),
+      cell: ({ row }) => {
+        const title = row.getValue('title') as string
+        return <div className="font-medium">{title}</div>
+      }
+    },
+    {
+      accessorKey: 'sellerName',
+      header: 'Vendedor',
+      cell: ({ row }) => {
+        const sellerName = row.getValue('sellerName') as string | undefined
+        return <div className="text-muted-foreground">{sellerName || '—'}</div>
+      }
+    },
+    {
+      accessorKey: 'availabilityStart',
+      header: 'Disponibilidade',
+      cell: ({ row }) => {
+        const start = row.original.availabilityStart
+        const end = row.original.availabilityEnd
+        if (!start && !end)
+          return <span className="text-muted-foreground">—</span>
+
+        const formatDate = (dateStr: string) => {
+          const date = new Date(dateStr + 'T00:00:00')
+          return date.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          })
+        }
+
+        return (
+          <div className="text-sm text-muted-foreground">
+            {start && formatDate(start)}
+            {start && end && ' - '}
+            {end && formatDate(end)}
+          </div>
+        )
+      }
+    },
+    {
+      accessorKey: 'createdAt',
+      header: ({ column }) => (
+        <HeaderColumnSorting column={column} content="Criado em" />
+      ),
+      cell: ({ row }) => {
+        const date = new Date(row.getValue('createdAt') as string)
+        return (
+          <div className="text-muted-foreground text-sm">
+            {date.toLocaleDateString('pt-BR')}
+          </div>
+        )
+      }
+    },
+    {
+      id: 'actions',
+      header: 'Ações',
+      cell: ({ row }) => {
+        const handleDelete = async () => {
+          if (
+            !window.confirm(
+              'Tem certeza que deseja excluir este catálogo? Esta ação não pode ser desfeita.'
+            )
+          ) {
+            return
+          }
+
+          try {
+            const response = await fetch(`/api/catalogos/${row.original.id}`, {
+              method: 'DELETE'
+            })
+
+            if (!response.ok) {
+              throw new Error('Erro ao excluir catálogo')
+            }
+
+            toast.success('Catálogo excluído com sucesso')
+            fetchCatalogos()
+          } catch (error) {
+            toast.error('Erro ao excluir catálogo', {
+              description:
+                error instanceof Error ? error.message : 'Erro desconhecido'
+            })
+          }
+        }
+
+        return (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push(`/criador/${row.original.id}`)}
+              title="Editar"
+            >
+              <Icon icon="pencil" className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push(`/visualizar/${row.original.id}`)}
+              title="Visualizar"
+            >
+              <Icon icon="eye" className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDelete}
+              title="Excluir"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Icon icon="trash" className="h-4 w-4" />
+            </Button>
+          </div>
+        )
+      }
+    }
+  ]
+
+  const pageCount = Math.ceil(totalCount / pageSize)
 
   return (
-    <FormProvider {...formProps}>
-      <InstantSearch
-        routing
-        indexName="variacoes"
-        searchClient={typesenseInstantsearchAdapter.searchClient}
-        initialUiState={{
-          variacoes: {
-            toggle: {
-              has_image: true
-            }
-          }
-        }}
-      >
-        <div className="flex min-h-screen gap-6 mt-4 container mx-auto py-8 px-4">
-          <aside className="w-80 h-fit bg-white rounded-xl border border-gray-200 shadow-sm p-6 sticky top-6">
-            <div className="space-y-6">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Icon icon="flower" className="w-5 h-5 text-emerald-600" />
-                  <h1 className="text-lg font-semibold text-gray-900">
-                    Todos os produtos
-                  </h1>
-                </div>
-                <p className="text-sm text-gray-500">
-                  Filtre por grupo e série
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-gray-700 uppercase tracking-wide">
-                    Busca
-                  </label>
-                  <CustomSearch />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-gray-700 uppercase tracking-wide">
-                    Grupo
-                  </label>
-                  <GrupoSelect />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-gray-700 uppercase tracking-wide">
-                    Série
-                  </label>
-                  <SerieSelect />
-                </div>
-
-                <div>
-                  <ToggleRefinement
-                    classNames={{
-                      root: 'flex items-center gap-2',
-                      label:
-                        'flex items-center gap-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer',
-                      checkbox:
-                        'peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
-                      labelText: 'text-sm font-medium leading-none'
-                    }}
-                    className="mt-5"
-                    attribute="has_image"
-                    label="Apenas produtos com imagem"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-gray-700 uppercase tracking-wide">
-                    Cor
-                  </label>
-                  <RefinementList
-                    classNames={{
-                      root: 'space-y-4',
-                      noRefinementRoot: 'text-sm text-muted-foreground p-4',
-                      searchBox: 'mb-3 hidden',
-                      noResults: 'text-sm text-muted-foreground py-2 px-1',
-                      list: 'space-y-2',
-                      item: 'flex items-center space-x-2 py-1.5 px-1 rounded-md hover:bg-accent/50 transition-colors',
-                      selectedItem: 'bg-accent',
-                      label:
-                        'flex items-center flex-1 cursor-pointer select-none',
-                      checkbox:
-                        'h-4 w-4 rounded border-input border ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
-                      labelText:
-                        'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ml-2 flex-1',
-                      count:
-                        'ml-auto text-xs text-muted-foreground font-normal bg-muted px-2 py-0.5 rounded-full',
-                      showMore:
-                        'w-full mt-3 text-sm font-medium text-primary hover:text-primary/80 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md px-4 py-2 transition-colors',
-                      disabledShowMore:
-                        'opacity-50 cursor-not-allowed hover:bg-background hover:text-primary'
-                    }}
-                    className="mt-3"
-                    attribute="cor"
-                    limit={10}
-                    showMore={true}
-                    showMoreLimit={50}
-                    searchable={true}
-                    sortBy={['name:asc']}
-                    // transformItems={transformItems}
-                  />
-                </div>
-              </div>
-
-              <Configure
-                filters={
-                  grupo && serie
-                    ? `grupoSlug:${grupo} && serieSlug:${serie}`
-                    : grupo
-                      ? `grupoSlug:${grupo}`
-                      : ''
-                }
-              />
-              <ResetPageOnFilterChange grupo={grupo} serie={serie} />
-            </div>
-          </aside>
-
-          <main className="flex-1 px-4">
-            <div className="space-y-6">
-              <div>
-                <Hits
-                  classNames={{
-                    list: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
-                  }}
-                  hitComponent={({ hit }) => <ProductCard item={hit} />}
-                />
-              </div>
-
-              <div className="pt-4">
-                <Pagination
-                  classNames={{
-                    root: 'flex items-center justify-center',
-                    noRefinementRoot:
-                      'flex items-center justify-center opacity-50 cursor-not-allowed',
-                    list: 'flex items-center gap-1',
-                    item: 'inline-flex items-center justify-center',
-                    firstPageItem: 'inline-flex items-center justify-center',
-                    previousPageItem: 'inline-flex items-center justify-center',
-                    pageItem: 'inline-flex items-center justify-center',
-                    selectedItem:
-                      'inline-flex items-center justify-center text-primary-500',
-                    disabledItem:
-                      'inline-flex items-center justify-center opacity-50 cursor-not-allowed pointer-events-none',
-                    nextPageItem: 'inline-flex items-center justify-center',
-                    lastPageItem: 'inline-flex items-center justify-center',
-                    link: 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground data-[selected=true]:hover:bg-primary data-[selected=true]:hover:text-primary-foreground'
-                  }}
-                />
-              </div>
-            </div>
-          </main>
-        </div>
-      </InstantSearch>
-    </FormProvider>
+    <div className="container mx-auto py-8 px-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Icon icon="book" className="text-primary-500" />
+            Catálogos Criados
+          </CardTitle>
+          <CardDescription>
+            Gerencie os catálogos personalizados de produtos
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataTable
+            data={catalogos}
+            columns={columns}
+            totalCount={totalCount}
+            pageIndexValue={pageIndex}
+            pageSizeValue={pageSize}
+            pageCountValue={pageCount}
+            globalFilterValue={globalFilter}
+            hideColumnsButton
+            isLoading={loading}
+            manualPagination={true}
+            manualFiltering={true}
+            manualSorting={false}
+            onPageIndexChange={setPageIndex}
+            onPageSizeChange={setPageSize}
+            onGlobalFilterChange={setGlobalFilter}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+          />
+        </CardContent>
+      </Card>
+    </div>
   )
 }

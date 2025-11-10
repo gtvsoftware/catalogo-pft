@@ -4,7 +4,8 @@ import { Input } from '@terraviva/ui/input'
 import { Label } from '@terraviva/ui/label'
 import { toast } from '@terraviva/ui/sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@terraviva/ui/tabs'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { IMask } from 'react-imask'
 
 import { useCatalogBuilder } from '../providers/CatalogBuilderContext'
 
@@ -12,11 +13,11 @@ const generateSlug = (text: string): string => {
   return text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
     .trim()
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Remove duplicate hyphens
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
 }
 
 export function Sidebar() {
@@ -26,109 +27,133 @@ export function Sidebar() {
     viewMode,
     activeTab,
     setActiveTab,
-    updateCatalogInfo,
-    catalogInfo,
     formatDateRange,
     formValues
   } = useCatalogBuilder()
 
   const catalogId = formValues.watch('id')
-  const catalogSlug = catalogInfo.slug
+  const catalogSlug = formValues.watch('slug')
+  const catalogName = formValues.watch('title')
+  const sellerName = formValues.watch('sellerName')
+  const phoneContact = formValues.watch('phoneContact')
+  const availabilityStart = formValues.watch('availabilityStart')
+  const availabilityEnd = formValues.watch('availabilityEnd')
 
   const [mounted, setMounted] = useState(false)
-
-  // Local state for inputs
-  const [localCatalogName, setLocalCatalogName] = useState(
-    catalogInfo.catalogName
-  )
-  const [localSellerName, setLocalSellerName] = useState(catalogInfo.sellerName)
-  const [localPhoneContact, setLocalPhoneContact] = useState(
-    catalogInfo.phoneContact
-  )
-  const [localAvailabilityStart, setLocalAvailabilityStart] = useState(
-    catalogInfo.availabilityStart
-  )
-  const [localAvailabilityEnd, setLocalAvailabilityEnd] = useState(
-    catalogInfo.availabilityEnd
-  )
   const [isCheckingSlug, setIsCheckingSlug] = useState(false)
   const [slugError, setSlugError] = useState<string | null>(null)
+  const [initialSlug, setInitialSlug] = useState<string | undefined>()
+
+  const [localCatalogName, setLocalCatalogName] = useState(catalogName || '')
+  const [localSellerName, setLocalSellerName] = useState(sellerName || '')
+  const [localPhoneContact, setLocalPhoneContact] = useState(phoneContact || '')
+  const [localAvailabilityStart, setLocalAvailabilityStart] = useState(
+    availabilityStart || ''
+  )
+  const [localAvailabilityEnd, setLocalAvailabilityEnd] = useState(
+    availabilityEnd || ''
+  )
+
+  const phoneInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     setMounted(true)
+
+    setInitialSlug(catalogSlug)
   }, [])
 
-  // Sync local state when catalogInfo changes externally
   useEffect(() => {
-    setLocalCatalogName(catalogInfo.catalogName)
-  }, [catalogInfo.catalogName])
+    if (catalogName !== undefined) setLocalCatalogName(catalogName)
+  }, [catalogName])
 
   useEffect(() => {
-    setLocalSellerName(catalogInfo.sellerName)
-  }, [catalogInfo.sellerName])
+    if (sellerName !== undefined) setLocalSellerName(sellerName)
+  }, [sellerName])
 
   useEffect(() => {
-    setLocalPhoneContact(catalogInfo.phoneContact)
-  }, [catalogInfo.phoneContact])
+    if (phoneContact !== undefined) setLocalPhoneContact(phoneContact)
+  }, [phoneContact])
 
   useEffect(() => {
-    setLocalAvailabilityStart(catalogInfo.availabilityStart)
-  }, [catalogInfo.availabilityStart])
+    if (availabilityStart !== undefined)
+      setLocalAvailabilityStart(availabilityStart)
+  }, [availabilityStart])
 
   useEffect(() => {
-    setLocalAvailabilityEnd(catalogInfo.availabilityEnd)
-  }, [catalogInfo.availabilityEnd])
+    if (availabilityEnd !== undefined) setLocalAvailabilityEnd(availabilityEnd)
+  }, [availabilityEnd])
 
-  // Check slug availability
-  const checkSlugAvailability = async (slug: string) => {
-    if (!slug) return true
+  // Setup IMask for phone input
+  useEffect(() => {
+    if (phoneInputRef.current) {
+      const maskInstance = IMask(phoneInputRef.current, {
+        mask: [
+          {
+            mask: '(00)0000-0000',
+            lazy: false
+          },
+          {
+            mask: '(00)00000-0000',
+            lazy: false
+          }
+        ],
+        dispatch: function (appended, dynamicMasked) {
+          const number = (dynamicMasked.value + appended).replace(/\D/g, '')
+
+          // Se tem 11 dígitos (celular com 9), usa a máscara de celular
+          // Se tem 10 dígitos ou menos, usa a máscara de fixo
+          return number.length > 10
+            ? dynamicMasked.compiledMasks[1]
+            : dynamicMasked.compiledMasks[0]
+        }
+      })
+
+      return () => {
+        maskInstance.destroy()
+      }
+    }
+  }, [])
+
+  const getUniqueSlug = async (baseSlug: string): Promise<string> => {
+    if (!baseSlug) return ''
+
+    let slug = baseSlug
+    let counter = 2
+    let isAvailable = false
 
     setIsCheckingSlug(true)
     setSlugError(null)
 
     try {
-      const response = await fetch(
-        `/api/catalogos/check-slug?slug=${encodeURIComponent(slug)}&excludeId=${catalogId}`
-      )
-      const data = await response.json()
+      while (!isAvailable) {
+        const response = await fetch(
+          `/api/catalogos/check-slug?slug=${encodeURIComponent(slug)}&excludeId=${catalogId}`
+        )
+        const data = await response.json()
 
-      if (!data.available) {
-        setSlugError('Este slug já está em uso. Escolha outro nome para o catálogo.')
-        return false
+        if (data.available) {
+          isAvailable = true
+          setSlugError(null)
+        } else {
+          slug = `${baseSlug}-${counter}`
+          counter++
+        }
       }
 
-      return true
+      return slug
     } catch (error) {
       console.error('Error checking slug:', error)
-      return true // Allow on error to not block user
+      return baseSlug
     } finally {
       setIsCheckingSlug(false)
     }
   }
 
-  // Auto-generate slug from catalog name with availability check
-  useEffect(() => {
-    if (catalogInfo.catalogName) {
-      const autoSlug = generateSlug(catalogInfo.catalogName)
-      if (autoSlug !== catalogInfo.slug) {
-        checkSlugAvailability(autoSlug).then(isAvailable => {
-          if (isAvailable) {
-            setSlugError(null) // Clear error when slug is available
-            updateCatalogInfo('slug', autoSlug)
-          }
-        })
-      } else {
-        // If slug hasn't changed, clear any existing error
-        setSlugError(null)
-      }
-    }
-  }, [catalogInfo.catalogName])
-
   const baseUrl =
     mounted && typeof window !== 'undefined' ? window.location.origin : ''
-  const linkById = baseUrl ? `${baseUrl}/catalogos/${catalogId}` : ''
+  const linkById = baseUrl ? `${baseUrl}/visualizar/${catalogId}` : ''
   const linkBySlug =
-    catalogSlug && baseUrl ? `${baseUrl}/catalogos/${catalogSlug}` : ''
+    catalogSlug && baseUrl ? `${baseUrl}/visualizar/${catalogSlug}` : ''
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text)
@@ -191,9 +216,23 @@ export function Sidebar() {
                   id="catalogName"
                   value={localCatalogName}
                   onChange={e => setLocalCatalogName(e.target.value)}
-                  onBlur={() => {
-                    if (localCatalogName !== catalogInfo.catalogName) {
-                      updateCatalogInfo('catalogName', localCatalogName)
+                  onBlur={async () => {
+                    if (localCatalogName !== catalogName) {
+                      const baseSlug = generateSlug(localCatalogName)
+
+                      if (
+                        baseSlug !== catalogSlug &&
+                        baseSlug !== initialSlug
+                      ) {
+                        const uniqueSlug = await getUniqueSlug(baseSlug)
+
+                        formValues.setValue('title', localCatalogName)
+                        formValues.setValue('slug', uniqueSlug, {
+                          shouldDirty: false
+                        })
+                      } else {
+                        formValues.setValue('title', localCatalogName)
+                      }
                     }
                   }}
                   placeholder="ex: Coleção Primavera 2025"
@@ -209,20 +248,21 @@ export function Sidebar() {
                   <Input
                     id="slug"
                     readOnly
-                    value={catalogInfo.slug}
+                    value={catalogSlug || ''}
                     placeholder="Gerado automaticamente"
                     className={`text-sm font-mono bg-gray-50 ${slugError ? 'border-red-500' : ''}`}
                   />
                   {isCheckingSlug && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <Icon icon="spinner" className="w-4 h-4 animate-spin text-gray-400" />
+                      <Icon
+                        icon="spinner"
+                        className="w-4 h-4 animate-spin text-gray-400"
+                      />
                     </div>
                   )}
                 </div>
                 {slugError ? (
-                  <p className="text-xs text-red-600 mt-1">
-                    {slugError}
-                  </p>
+                  <p className="text-xs text-red-600 mt-1">{slugError}</p>
                 ) : (
                   <p className="text-xs text-gray-500 mt-1">
                     Gerado automaticamente a partir do nome do catálogo
@@ -239,8 +279,8 @@ export function Sidebar() {
                   value={localSellerName}
                   onChange={e => setLocalSellerName(e.target.value)}
                   onBlur={() => {
-                    if (localSellerName !== catalogInfo.sellerName) {
-                      updateCatalogInfo('sellerName', localSellerName)
+                    if (localSellerName !== sellerName) {
+                      formValues.setValue('sellerName', localSellerName)
                     }
                   }}
                   placeholder="ex: João Silva"
@@ -315,16 +355,17 @@ export function Sidebar() {
                   Telefone de Contato *
                 </Label>
                 <Input
+                  ref={phoneInputRef}
                   id="phoneContact"
                   type="tel"
                   value={localPhoneContact}
                   onChange={e => setLocalPhoneContact(e.target.value)}
                   onBlur={() => {
-                    if (localPhoneContact !== catalogInfo.phoneContact) {
-                      updateCatalogInfo('phoneContact', localPhoneContact)
+                    if (localPhoneContact !== phoneContact) {
+                      formValues.setValue('phoneContact', localPhoneContact)
                     }
                   }}
-                  placeholder="ex: +55 (11) 98765-4321"
+                  placeholder="(00)00000-0000"
                   className="text-sm"
                 />
                 <p className="text-xs text-gray-500 mt-1">
@@ -351,10 +392,8 @@ export function Sidebar() {
                   value={localAvailabilityStart}
                   onChange={e => setLocalAvailabilityStart(e.target.value)}
                   onBlur={() => {
-                    if (
-                      localAvailabilityStart !== catalogInfo.availabilityStart
-                    ) {
-                      updateCatalogInfo(
+                    if (localAvailabilityStart !== availabilityStart) {
+                      formValues.setValue(
                         'availabilityStart',
                         localAvailabilityStart
                       )
@@ -374,16 +413,18 @@ export function Sidebar() {
                   value={localAvailabilityEnd}
                   onChange={e => setLocalAvailabilityEnd(e.target.value)}
                   onBlur={() => {
-                    if (localAvailabilityEnd !== catalogInfo.availabilityEnd) {
-                      updateCatalogInfo('availabilityEnd', localAvailabilityEnd)
+                    if (localAvailabilityEnd !== availabilityEnd) {
+                      formValues.setValue(
+                        'availabilityEnd',
+                        localAvailabilityEnd
+                      )
                     }
                   }}
                   className="text-sm"
                 />
               </div>
 
-              {(catalogInfo.availabilityStart ||
-                catalogInfo.availabilityEnd) && (
+              {(availabilityStart || availabilityEnd) && (
                 <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
                   <p className="text-sm text-blue-800 font-medium">
                     Período Disponível

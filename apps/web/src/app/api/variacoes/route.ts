@@ -1,7 +1,7 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-// GET /api/variacoes - Listar todas as variações
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       where.ativo = ativo === 'true'
     }
 
-    // Add search filter
+    
     if (search) {
       where.OR = [
         { descricaoComercial: { contains: search, mode: 'insensitive' } },
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    // Get total count
+    
     const total = await prisma.variacao.count({ where })
 
     const variacoes = await prisma.variacao.findMany({
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/variacoes - Criar uma nova variação
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       ativo
     } = body
 
-    // Validação básica
+    
     if (!variacaoId || !grupoId || !serieId || !codigoVeiling) {
       return NextResponse.json(
         { message: 'Campos obrigatórios faltando' },
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se o grupo existe
+    
     const grupo = await prisma.grupo.findUnique({
       where: { id: grupoId }
     })
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se a série existe
+    
     const serie = await prisma.serie.findUnique({
       where: { id: serieId }
     })
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se o variacaoId já existe
+    
     const variacaoIdExistente = await prisma.variacao.findUnique({
       where: { variacaoId }
     })
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se o código veiling já existe
+    
     const codigoExistente = await prisma.variacao.findUnique({
       where: { codigoVeiling }
     })
@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Criar a variação
+    
     const novaVariacao = await prisma.variacao.create({
       data: {
         variacaoId,
