@@ -144,6 +144,7 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
                   itemIndex={index}
                   sectionIndex={sectionIndex}
                   removeFn={() => removeItem(index)}
+                  viewMode={viewMode}
                 />
               ))}
               {viewMode !== 'preview' && (

@@ -20,18 +20,20 @@ import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 
 import { itemFormSchema } from '@/schemas/itemSchema'
 
-import { ProductsModal } from '../../../components/ProductsModal'
+import { ProductsModal } from './ProductsModal'
 
 interface DraggableItemProps {
   sectionIndex: number
   itemIndex: number
   removeFn: () => void
+  viewMode?: 'edit' | 'preview'
 }
 
 export function DraggableItem({
   sectionIndex,
   itemIndex,
-  removeFn
+  removeFn,
+  viewMode = 'edit'
 }: DraggableItemProps) {
   const { watch, setValue } = useFormContext<catalogoFormType>()
 
@@ -99,180 +101,193 @@ export function DraggableItem({
     transition
   }
 
+  const itemContent = (
+    <div
+      ref={viewMode === 'edit' ? setNodeRef : undefined}
+      style={viewMode === 'edit' ? style : undefined}
+      className={cn(
+        'group relative flex flex-col w-full rounded-xl bg-white overflow-hidden p-4',
+        viewMode === 'edit' &&
+          'cursor-pointer hover:scale-[1.02] hover:bg-gray-5',
+        isDragging && 'cursor-grabbing opacity-70'
+      )}
+    >
+      {viewMode === 'edit' && (
+        <IconButton
+          variant="destructive"
+          size="sm"
+          icon="trash-can"
+          onClick={e => {
+            e.stopPropagation()
+            handleDelete()
+          }}
+          className="absolute top-2 right-2 z-10"
+          title="Excluir item"
+        ></IconButton>
+      )}
+
+      <div
+        {...(viewMode === 'edit' ? listeners : {})}
+        {...(viewMode === 'edit' ? attributes : {})}
+        className="relative w-full aspect-square bg-gray-50"
+      >
+        {item.image ? (
+          <Image
+            src={item.image}
+            alt={item.name}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+            <Icon
+              icon="image-stack"
+              family="duotone"
+              className="text-gray-400 text-4xl"
+            />
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col flex-1 justify-between gap-4 p-2">
+        <div className="space-y-1">
+          <p className="font-medium  line-clamp-2">{item.name}</p>
+          {item.description && (
+            <p className="text-gray-500 text-sm">{item.description}</p>
+          )}
+        </div>
+        <div className="flex items-center gap-2 ">
+          {item.price && item.discountPrice ? (
+            <>
+              <p className="font-medium text-primary-500">{`R$${item.discountPrice}`}</p>
+              <p className="text-gray-500 text-sm line-through">{`R$${item.price}`}</p>
+            </>
+          ) : (
+            (item.price || item.discountPrice) && (
+              <p className="font-medium text-primary-500">{`R$${item.price || item.discountPrice}`}</p>
+            )
+          )}
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     item?.id && (
       <FormProvider {...localFormValues}>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <div
-              ref={setNodeRef}
-              style={style}
-              className={cn(
-                'group relative flex flex-col w-full cursor-pointer rounded-xl bg-white overflow-hidden  hover:scale-[1.02] hover:bg-gray-5 p-4',
-                isDragging && 'cursor-grabbing opacity-70'
-              )}
-            >
-              <IconButton
-                variant="destructive"
-                size="sm"
-                icon="trash-can"
-                onClick={e => {
-                  e.stopPropagation()
-                  handleDelete()
-                }}
-                className="absolute top-2 right-2 z-10"
-                title="Excluir item"
-              ></IconButton>
+        {viewMode === 'edit' ? (
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>{itemContent}</DialogTrigger>
+            <DialogContent className="max-h-[90%] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Editar item</DialogTitle>
+              </DialogHeader>
 
-              <div
-                {...listeners}
-                {...attributes}
-                className="relative w-full aspect-square bg-gray-50"
+              <form
+                onSubmit={localHandleSubmit(onSubmit)}
+                className="space-y-4"
               >
-                {item.image ? (
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                    <Icon
-                      icon="image-stack"
-                      family="duotone"
-                      className="text-gray-400 text-4xl"
+                <div className="flex flex-col gap-2 w-full items-center justify-center">
+                  <div
+                    className={cn(
+                      'relative flex items-center justify-center w-[300px] aspect-square overflow-hidden rounded-md border-2',
+                      errors.image
+                        ? 'border-red-500 border-solid'
+                        : 'border-dashed'
+                    )}
+                  >
+                    {localImage ? (
+                      <Image
+                        src={localImage}
+                        alt="Banner"
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-white flex items-center justify-center">
+                        <Icon
+                          icon="image-stack"
+                          family="duotone"
+                          className="text-4xl"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {errors.image && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.image.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <p className="font-medium text-sm">Nome</p>
+                  <div className="flex w-full items-center gap-2">
+                    <Input
+                      {...localRegister('name')}
+                      placeholder="Nome"
+                      className={cn(errors.name && 'border-red-500')}
+                    />
+                    <ProductsModal
+                      buttonClassName={cn(errors.name && 'border-red-500')}
                     />
                   </div>
-                )}
-              </div>
-              <div className="flex flex-col flex-1 justify-between gap-4 p-2">
+                  {errors.name && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </div>
                 <div className="space-y-1">
-                  <p className="font-medium  line-clamp-2">{item.name}</p>
-                  {item.description && (
-                    <p className="text-gray-500 text-sm">{item.description}</p>
+                  <p className="font-medium text-sm">Descrição</p>
+                  <Input
+                    {...localRegister('description')}
+                    placeholder="Descrição (opcional)"
+                    className={cn(errors.description && 'border-red-500')}
+                  />
+                  {errors.description && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.description.message}
+                    </p>
                   )}
                 </div>
-                <div className="flex items-center gap-2 ">
-                  {item.price && item.discountPrice ? (
-                    <>
-                      <p className="font-medium text-primary-500">{`R$${item.discountPrice}`}</p>
-                      <p className="text-gray-500 text-sm line-through">{`R$${item.price}`}</p>
-                    </>
-                  ) : (
-                    (item.price || item.discountPrice) && (
-                      <p className="font-medium text-primary-500">{`R$${item.price || item.discountPrice}`}</p>
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
-          </DialogTrigger>
-          <DialogContent className="max-h-[90%] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Editar item</DialogTitle>
-            </DialogHeader>
-
-            <form onSubmit={localHandleSubmit(onSubmit)} className="space-y-4">
-              <div className="flex flex-col gap-2 w-full items-center justify-center">
-                <div
-                  className={cn(
-                    'relative flex items-center justify-center w-[300px] aspect-square overflow-hidden rounded-md border-2',
-                    errors.image
-                      ? 'border-red-500 border-solid'
-                      : 'border-dashed'
-                  )}
-                >
-                  {localImage ? (
-                    <Image
-                      src={localImage}
-                      alt="Banner"
-                      fill
-                      className="object-cover"
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <p className="font-medium text-sm">Preço</p>
+                    <Input
+                      {...localRegister('price')}
+                      placeholder="Preço (opcional)"
+                      className={cn(errors.price && 'border-red-500')}
                     />
-                  ) : (
-                    <div className="w-full h-full bg-white flex items-center justify-center">
-                      <Icon
-                        icon="image-stack"
-                        family="duotone"
-                        className="text-4xl"
-                      />
-                    </div>
-                  )}
-                </div>
-                {errors.image && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.image.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-1">
-                <p className="font-medium text-sm">Nome</p>
-                <div className="flex w-full items-center gap-2">
-                  <Input
-                    {...localRegister('name')}
-                    placeholder="Nome"
-                    className={cn(errors.name && 'border-red-500')}
-                  />
-                  <ProductsModal
-                    buttonClassName={cn(errors.name && 'border-red-500')}
-                  />
-                </div>
-                {errors.name && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-1">
-                <p className="font-medium text-sm">Descrição</p>
-                <Input
-                  {...localRegister('description')}
-                  placeholder="Descrição (opcional)"
-                  className={cn(errors.description && 'border-red-500')}
-                />
-                {errors.description && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.description.message}
-                  </p>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <p className="font-medium text-sm">Preço</p>
-                  <Input
-                    {...localRegister('price')}
-                    placeholder="Preço (opcional)"
-                    className={cn(errors.price && 'border-red-500')}
-                  />
-                  {errors.price && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.price.message}
-                    </p>
-                  )}
+                    {errors.price && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.price.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <p className="font-medium text-sm">Preço com desconto</p>
+                    <Input
+                      {...localRegister('discountPrice')}
+                      placeholder="Preço com desconto (opcional)"
+                      className={cn(errors.discountPrice && 'border-red-500')}
+                    />
+                    {errors.discountPrice && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.discountPrice.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div className="space-y-1">
-                  <p className="font-medium text-sm">Preço com desconto</p>
-                  <Input
-                    {...localRegister('discountPrice')}
-                    placeholder="Preço com desconto (opcional)"
-                    className={cn(errors.discountPrice && 'border-red-500')}
-                  />
-                  {errors.discountPrice && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.discountPrice.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <Button type="submit" className="w-full" leftIcon="save">
-                Atualizar item
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+                <Button type="submit" className="w-full" leftIcon="save">
+                  Atualizar item
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        ) : (
+          itemContent
+        )}
       </FormProvider>
     )
   )

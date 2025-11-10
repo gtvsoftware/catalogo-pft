@@ -19,7 +19,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { itemFormSchema } from '@/schemas/itemSchema'
 
 import { ImageUpload } from '../../../components/ImageUpload'
-import { ProductsModal } from '../../../components/ProductsModal'
+import { ProductsModal } from './ProductsModal'
 
 interface CreateItemFormModalProps {
   append: (item: itemFormType) => void

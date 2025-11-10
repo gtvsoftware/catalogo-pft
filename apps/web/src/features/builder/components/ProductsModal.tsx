@@ -20,7 +20,7 @@ import {
 
 import { ProductItemList } from '@/features/builder/components/ProductItemList'
 
-import { CustomSearch } from './CustomSearch'
+import { CustomSearch } from '../../../components/CustomSearch'
 
 interface ProductsModalProps {
   buttonClassName?: string
