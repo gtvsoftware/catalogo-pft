@@ -27,7 +27,6 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-
 import { ImageUpload } from '@/components/ImageUpload'
 
 const serieFormSchema = z.object({
@@ -64,7 +63,6 @@ export default function EditSeriePage() {
   const { watch, setValue } = form
   const nome = watch('nome')
 
-  
   useEffect(() => {
     if (nome && !form.formState.dirtyFields.slug) {
       const slugified = nome
@@ -77,7 +75,6 @@ export default function EditSeriePage() {
     }
   }, [nome, form.formState.dirtyFields.slug, setValue])
 
-  
   useEffect(() => {
     const fetchSerie = async () => {
       try {

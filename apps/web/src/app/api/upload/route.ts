@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No slug provided' }, { status: 400 })
     }
 
-    
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
@@ -34,8 +33,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
-    const maxSize = 5 * 1024 * 1024 
+    const maxSize = 5 * 1024 * 1024
     if (file.size > maxSize) {
       return NextResponse.json(
         { error: 'File too large. Maximum size is 5MB.' },
@@ -43,22 +41,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
     const blobServiceClient = BlobServiceClient.fromConnectionString(
       connectionString!
     )
     const containerClient = blobServiceClient.getContainerClient(containerName)
 
-    
     await containerClient.createIfNotExists({
-      access: 'blob' 
+      access: 'blob'
     })
 
-    
     const extension = file.name.split('.').pop()
     const blobName = `${slug}.${extension}`
 
-    
     const blockBlobClient = containerClient.getBlockBlobClient(blobName)
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
@@ -69,7 +63,6 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    
     const url = blockBlobClient.url
 
     return NextResponse.json({

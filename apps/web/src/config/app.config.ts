@@ -2,22 +2,13 @@ import type { AppConfigProps } from '@terraviva/ui/types'
 
 import Logo from '@/assets/logo-terraviva.png'
 
-
-
-
 export const APP_CONFIG: AppConfigProps = {
-  
   APP_TITLE: 'Catalogo de Vendedores',
   APP_DESCRIPTION: 'Plataforma do Modelo de Excelência em Gestão Terra Viva',
   FOOTER_TITLE: 'Catalogo de Vendedores',
   APP_LOGO: Logo,
   TV_LOGO: Logo,
 
-  
-  
-  
-
-  
   AVATARS_URL: `${process.env.NEXT_PUBLIC_ASSETS_URL}/public/avatars/`,
   APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   APP_BASE_PATH: process.env.NEXT_PUBLIC_BASE_PATH,

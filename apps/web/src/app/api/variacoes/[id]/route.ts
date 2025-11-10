@@ -1,7 +1,6 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -33,7 +32,6 @@ export async function GET(
     )
   }
 }
-
 
 export async function PUT(
   request: NextRequest,
@@ -72,7 +70,6 @@ export async function PUT(
       ativo
     } = body
 
-    
     const variacaoExistente = await prisma.variacao.findUnique({
       where: { id }
     })
@@ -84,7 +81,6 @@ export async function PUT(
       )
     }
 
-    
     const grupo = await prisma.grupo.findUnique({
       where: { id: grupoId }
     })
@@ -96,7 +92,6 @@ export async function PUT(
       )
     }
 
-    
     const serie = await prisma.serie.findUnique({
       where: { id: serieId }
     })
@@ -108,7 +103,6 @@ export async function PUT(
       )
     }
 
-    
     if (variacaoId !== variacaoExistente.variacaoId) {
       const variacaoIdExistente = await prisma.variacao.findUnique({
         where: { variacaoId }
@@ -122,7 +116,6 @@ export async function PUT(
       }
     }
 
-    
     if (codigoVeiling !== variacaoExistente.codigoVeiling) {
       const codigoExistente = await prisma.variacao.findUnique({
         where: { codigoVeiling }
@@ -136,7 +129,6 @@ export async function PUT(
       }
     }
 
-    
     const variacaoAtualizada = await prisma.variacao.update({
       where: { id },
       data: {
@@ -181,7 +173,6 @@ export async function PUT(
   }
 }
 
-
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -189,7 +180,6 @@ export async function DELETE(
   const { id } = await params
 
   try {
-    
     const variacao = await prisma.variacao.findUnique({
       where: { id }
     })
@@ -201,7 +191,6 @@ export async function DELETE(
       )
     }
 
-    
     await prisma.variacao.delete({
       where: { id }
     })

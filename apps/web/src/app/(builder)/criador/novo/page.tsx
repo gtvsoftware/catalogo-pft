@@ -8,7 +8,6 @@ export default function NovoCatalogoPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Generate a new ObjectId and redirect to the builder
     const newId = new ObjectId().toString()
     router.replace(`/criador/${newId}`)
   }, [router])

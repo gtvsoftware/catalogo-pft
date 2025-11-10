@@ -73,7 +73,6 @@ export default function EditGrupoPage() {
   const { watch, setValue } = form
   const nome = watch('nome')
 
-  
   useEffect(() => {
     if (nome && !form.formState.dirtyFields.slug) {
       const slugified = nome
@@ -86,7 +85,6 @@ export default function EditGrupoPage() {
     }
   }, [nome, form.formState.dirtyFields.slug, setValue])
 
-  
   useEffect(() => {
     const fetchGrupo = async () => {
       try {

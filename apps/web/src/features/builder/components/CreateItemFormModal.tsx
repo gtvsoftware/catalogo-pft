@@ -75,25 +75,6 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
           </DialogHeader>
 
           <form onSubmit={localHandleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <p className="font-medium text-sm">Imagem</p>
-              <ImageUpload
-                slug={formValues.getValues('id')}
-                value={localImage}
-                onChange={url =>
-                  localSetValue('image', url, { shouldValidate: true })
-                }
-                onRemove={() =>
-                  localSetValue('image', '', { shouldValidate: true })
-                }
-              />
-              {errors.image && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.image.message}
-                </p>
-              )}
-            </div>
-
             <div className="space-y-1">
               <p className="font-medium text-sm">Nome</p>
               <div className="flex w-full items-center gap-2">
@@ -153,6 +134,25 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
                   </p>
                 )}
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <p className="font-medium text-sm">Imagem</p>
+              <ImageUpload
+                slug={formValues.getValues('id')}
+                value={localImage}
+                onChange={url =>
+                  localSetValue('image', url, { shouldValidate: true })
+                }
+                onRemove={() =>
+                  localSetValue('image', '', { shouldValidate: true })
+                }
+              />
+              {errors.image && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.image.message}
+                </p>
+              )}
             </div>
 
             <Button type="submit" className="w-full" leftIcon="plus">

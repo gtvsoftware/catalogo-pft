@@ -50,7 +50,6 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
           />
         )}
 
-        {/* Floating WhatsApp Button - Only in Preview Mode */}
         {shouldShowWhatsApp() && (
           <a
             href={getWhatsAppLink() || '#'}

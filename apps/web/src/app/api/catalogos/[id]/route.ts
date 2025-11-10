@@ -8,7 +8,6 @@ export async function GET(
   try {
     const { id } = await context.params
 
-    // Check if id is a MongoDB ObjectId (24 hex characters) or a slug
     const isObjectId = /^[0-9a-fA-F]{24}$/.test(id)
 
     const catalogo = isObjectId

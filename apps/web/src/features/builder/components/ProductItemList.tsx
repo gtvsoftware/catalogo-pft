@@ -13,7 +13,7 @@ interface ProductCardProps {
   onClick: () => void
 }
 
-export function ProductCardTeste({ item, onClick }: ProductCardProps) {
+export function ProductItemList({ item, onClick }: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
 
   return (
@@ -22,7 +22,6 @@ export function ProductCardTeste({ item, onClick }: ProductCardProps) {
       className="group flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
       onClick={onClick}
     >
-      {/* Image Container */}
       <div className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-gray-100">
         {item.imagem && !imageError ? (
           <Image
@@ -38,7 +37,6 @@ export function ProductCardTeste({ item, onClick }: ProductCardProps) {
           </div>
         )}
 
-        {/* Status Badges on Image */}
         {item.tingida && (
           <Badge className="absolute top-1 right-1 px-1.5 py-0 text-[9px] bg-purple-500 border-0">
             Tingida
@@ -51,7 +49,6 @@ export function ProductCardTeste({ item, onClick }: ProductCardProps) {
         )}
       </div>
 
-      {/* Content Container */}
       <div className="flex-1 min-w-0 flex items-center gap-2">
         <Highlight
           className="text-sm text-gray-900 line-clamp-2 flex-1"
@@ -60,7 +57,6 @@ export function ProductCardTeste({ item, onClick }: ProductCardProps) {
           highlightedTagName="mark"
         />
 
-        {/* Color Badge */}
         {item.cor && (
           <Badge
             variant="outline"
@@ -74,7 +70,6 @@ export function ProductCardTeste({ item, onClick }: ProductCardProps) {
         )}
       </div>
 
-      {/* Chevron Indicator */}
       <Icon
         icon="chevron-right"
         className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0"

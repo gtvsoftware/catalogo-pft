@@ -5,13 +5,10 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const slug = searchParams.get('slug')
-    const excludeId = searchParams.get('excludeId') 
+    const excludeId = searchParams.get('excludeId')
 
     if (!slug) {
-      return NextResponse.json(
-        { error: 'Slug is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Slug is required' }, { status: 400 })
     }
 
     const existing = await prisma.catalogo.findUnique({
@@ -19,7 +16,6 @@ export async function GET(request: NextRequest) {
       select: { id: true }
     })
 
-    
     const isAvailable = !existing || (excludeId && existing.id === excludeId)
 
     return NextResponse.json({ available: isAvailable })

@@ -29,7 +29,6 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-
 import { SerieSelectSimple } from '@/components/SeriesSelect'
 
 const variacaoFormSchema = z.object({
@@ -89,7 +88,6 @@ export default function EditVariacaoPage() {
   const { watch } = form
   const grupoId = watch('grupoId')
 
-  
   useEffect(() => {
     const fetchVariacao = async () => {
       try {
@@ -251,7 +249,6 @@ export default function EditVariacaoPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              {/* Relacionamentos */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Relacionamentos</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -294,7 +291,6 @@ export default function EditVariacaoPage() {
                 </div>
               </div>
 
-              {/* Identificação */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Identificação</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -334,7 +330,6 @@ export default function EditVariacaoPage() {
                 </div>
               </div>
 
-              {/* Descrições */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Descrições</h3>
                 <FormField
@@ -373,7 +368,6 @@ export default function EditVariacaoPage() {
                 />
               </div>
 
-              {/* Características */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Características</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -530,7 +524,6 @@ export default function EditVariacaoPage() {
                 </div>
               </div>
 
-              {/* Comercial */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">
                   Informações Comerciais

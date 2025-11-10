@@ -1,7 +1,6 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -28,7 +27,6 @@ export async function GET(request: NextRequest) {
       where.ativo = ativo === 'true'
     }
 
-    
     if (search) {
       where.OR = [
         { descricaoComercial: { contains: search, mode: 'insensitive' } },
@@ -39,7 +37,6 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    
     const total = await prisma.variacao.count({ where })
 
     const variacoes = await prisma.variacao.findMany({
@@ -70,7 +67,6 @@ export async function GET(request: NextRequest) {
     )
   }
 }
-
 
 export async function POST(request: NextRequest) {
   try {
@@ -104,7 +100,6 @@ export async function POST(request: NextRequest) {
       ativo
     } = body
 
-    
     if (!variacaoId || !grupoId || !serieId || !codigoVeiling) {
       return NextResponse.json(
         { message: 'Campos obrigatórios faltando' },
@@ -112,7 +107,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
     const grupo = await prisma.grupo.findUnique({
       where: { id: grupoId }
     })
@@ -124,7 +118,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
     const serie = await prisma.serie.findUnique({
       where: { id: serieId }
     })
@@ -136,7 +129,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
     const variacaoIdExistente = await prisma.variacao.findUnique({
       where: { variacaoId }
     })
@@ -148,7 +140,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
     const codigoExistente = await prisma.variacao.findUnique({
       where: { codigoVeiling }
     })
@@ -160,7 +151,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
     const novaVariacao = await prisma.variacao.create({
       data: {
         variacaoId,

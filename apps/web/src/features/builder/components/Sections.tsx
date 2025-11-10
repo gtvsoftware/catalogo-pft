@@ -1,4 +1,4 @@
-import { Section } from '@/components/Section'
+import { Section } from '@/features/builder/components/Section'
 
 import { useCatalogBuilder } from '../providers/CatalogBuilderContext'
 

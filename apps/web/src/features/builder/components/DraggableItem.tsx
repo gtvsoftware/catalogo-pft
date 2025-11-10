@@ -14,15 +14,11 @@ import {
 } from '@terraviva/ui/dialog'
 import { Icon } from '@terraviva/ui/icon'
 import { Input } from '@terraviva/ui/input'
-import { Slider } from '@terraviva/ui/slider'
-import { ObjectId } from 'bson'
 import Image from 'next/image'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import Cropper, { Area, Point } from 'react-easy-crop'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 
 import { itemFormSchema } from '@/schemas/itemSchema'
-import getCroppedImg, { base64ToFile } from '@/utils/image'
 
 import { ProductsModal } from '../../../components/ProductsModal'
 
@@ -42,7 +38,6 @@ export function DraggableItem({
   const item = watch(`sections.${sectionIndex}.items.${itemIndex}`)
 
   const handleDelete = async () => {
-    // Delete image from storage if it exists
     if (item.image) {
       try {
         const filename = item.image.split('/').pop()
@@ -56,18 +51,10 @@ export function DraggableItem({
       }
     }
 
-    // Remove item from form
     removeFn()
   }
 
   const [open, setOpen] = useState(false)
-  const [imageSrc, setImageSrc] = useState<string | null>(null)
-  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
-  const [zoom, setZoom] = useState(1)
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
-  const [showCropper, setShowCropper] = useState(false)
-
-  const inputRef = useRef<HTMLInputElement | null>(null)
 
   const localFormValues = useForm<itemFormType>({
     resolver: zodResolver(itemFormSchema),
@@ -78,65 +65,11 @@ export function DraggableItem({
     register: localRegister,
     handleSubmit: localHandleSubmit,
     watch: localWatch,
-    setValue: localSetValue,
     reset: localReset,
     formState: { errors }
   } = localFormValues
 
   const { image: localImage } = localWatch()
-
-  const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      const reader = new FileReader()
-      reader.onload = () => setImageSrc(reader.result as string)
-      reader.readAsDataURL(e.target.files[0])
-      setShowCropper(true)
-    }
-  }
-
-  const showCroppedImage = useCallback(async () => {
-    if (!imageSrc || !croppedAreaPixels) return
-    try {
-      const cropped = await getCroppedImg(imageSrc, croppedAreaPixels)
-
-      if (localImage) {
-        const filename = localImage.split('/').at(-1)
-
-        if (filename) {
-          await fetch(`/api/upload?filename=${filename}`, {
-            method: 'DELETE'
-          })
-        }
-      }
-
-      const form = new FormData()
-      const file = base64ToFile(cropped, 'image.jpg')
-
-      form.append('file', file)
-      form.append('slug', new ObjectId().toString())
-
-      const response = await fetch(`/api/upload`, {
-        method: 'POST',
-        body: form
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Erro ao fazer upload')
-      }
-
-      const responseJSON: any = await response.json()
-
-      localSetValue('image', responseJSON.url, { shouldValidate: true })
-
-      setShowCropper(false)
-      setImageSrc(null)
-      setShowCropper(false)
-      setImageSrc(null)
-    } catch (err) {
-      console.error(err)
-    }
-  }, [imageSrc, croppedAreaPixels, localSetValue])
 
   const onSubmit = (data: itemFormType) => {
     setValue(`sections.${sectionIndex}.items.${itemIndex}`, {
@@ -145,13 +78,6 @@ export function DraggableItem({
     localReset(data)
     setOpen(false)
   }
-
-  useEffect(() => {
-    if (!open) {
-      setImageSrc(null)
-      setShowCropper(false)
-    }
-  }, [open])
 
   useEffect(() => {
     if (item && open) localReset(item)
@@ -186,7 +112,6 @@ export function DraggableItem({
                 isDragging && 'cursor-grabbing opacity-70'
               )}
             >
-              {/* Delete Button */}
               <IconButton
                 variant="destructive"
                 size="sm"
@@ -251,58 +176,27 @@ export function DraggableItem({
             <form onSubmit={localHandleSubmit(onSubmit)} className="space-y-4">
               <div className="flex flex-col gap-2 w-full items-center justify-center">
                 <div
-                  onClick={() => !showCropper && inputRef.current?.click()}
                   className={cn(
-                    'relative flex items-center justify-center w-[300px] aspect-square overflow-hidden cursor-pointer rounded-md border-2 border-dashed',
+                    'relative flex items-center justify-center w-[300px] aspect-square overflow-hidden rounded-md border-2',
                     errors.image
                       ? 'border-red-500 border-solid'
                       : 'border-dashed'
                   )}
                 >
-                  <Input
-                    ref={inputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={onSelectFile}
-                    className="hidden"
-                  />
-
-                  {localImage && !showCropper && (
+                  {localImage ? (
                     <Image
                       src={localImage}
                       alt="Banner"
                       fill
                       className="object-cover"
                     />
-                  )}
-
-                  {!localImage && !showCropper && (
+                  ) : (
                     <div className="w-full h-full bg-white flex items-center justify-center">
                       <Icon
                         icon="image-stack"
                         family="duotone"
                         className="text-4xl"
                       />
-                    </div>
-                  )}
-
-                  {showCropper && (
-                    <Cropper
-                      crop={crop}
-                      aspect={1}
-                      zoom={zoom}
-                      image={imageSrc!}
-                      onCropChange={setCrop}
-                      onZoomChange={setZoom}
-                      onCropComplete={(_, b) => setCroppedAreaPixels(b)}
-                    />
-                  )}
-
-                  {!showCropper && (
-                    <div className="absolute bg-black/50 opacity-0 hover:opacity-100 duration-500 inset-0 flex items-center justify-center">
-                      <p className="text-white">
-                        Clique para selecionar uma imagem
-                      </p>
                     </div>
                   )}
                 </div>
@@ -312,24 +206,6 @@ export function DraggableItem({
                   </p>
                 )}
               </div>
-              {showCropper && (
-                <div className="flex flex-col gap-2 items-center">
-                  <Slider
-                    min={1}
-                    max={3}
-                    step={0.1}
-                    value={[zoom]}
-                    onValueChange={value => setZoom(Number(value[0]))}
-                  />
-                  <Button
-                    type="button"
-                    onClick={showCroppedImage}
-                    className={errors.image && 'border border-red-500'}
-                  >
-                    Confirmar
-                  </Button>
-                </div>
-              )}
               <div className="space-y-1">
                 <p className="font-medium text-sm">Nome</p>
                 <div className="flex w-full items-center gap-2">

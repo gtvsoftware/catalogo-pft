@@ -15,9 +15,9 @@ import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 
 import { useCatalogBuilder } from '@/features/builder/providers/CatalogBuilderContext'
 
-import { CreateItemFormModal } from '../features/builder/components/CreateItemFormModal'
-import { DraggableItem } from '../features/builder/components/DraggableItem'
+import { CreateItemFormModal } from './CreateItemFormModal'
 import { DeleteModal } from './DeleteModal'
+import { DraggableItem } from './DraggableItem'
 
 interface SectionProps {
   sectionIndex: number

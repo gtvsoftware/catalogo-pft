@@ -41,7 +41,6 @@ export function ProductCard({ item }: ProductCardProps) {
       key={item.id}
       className="overflow-hidden hover:shadow-lg transition-shadow pt-0 h-full"
     >
-      {/* Product Image */}
       <div className="aspect-square bg-gradient-to-br bg-gray-50 flex items-center justify-center relative overflow-hidden">
         {item.imagem && !imageError ? (
           <Image
@@ -75,7 +74,6 @@ export function ProductCard({ item }: ProductCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {/* Color Circle with Label */}
         {item.cor && (
           <div className="flex items-center gap-2">
             <div
@@ -102,7 +100,6 @@ export function ProductCard({ item }: ProductCardProps) {
           </div>
         )}
 
-        {/* Price */}
         {item.precoVendaSugerido > 0 && (
           <div className="pt-2 border-t">
             <p className="text-sm font-semibold text-green-600">

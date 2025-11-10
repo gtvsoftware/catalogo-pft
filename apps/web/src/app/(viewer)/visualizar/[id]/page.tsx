@@ -68,7 +68,6 @@ export default function Page(): React.ReactElement {
         {catalogo?.cover?.showLogo && <LogoTerraViva />}
         {catalogo && (
           <>
-            {/* Cover Section */}
             {catalogo.cover?.enabled && (
               <div
                 className="relative h-64 sm:h-72 md:h-80 overflow-hidden"
@@ -142,7 +141,6 @@ export default function Page(): React.ReactElement {
               ) : null}
             </div>
 
-            {/* Sections */}
             <div className="flex flex-col px-4 sm:px-6 md:px-8 py-8 gap-8">
               {catalogo.sections.map((section, _index) => (
                 <div
@@ -213,7 +211,6 @@ export default function Page(): React.ReactElement {
         )}
       </div>
 
-      {/* Floating WhatsApp Button */}
       {catalogo?.phoneContact && (
         <a
           href={getWhatsAppLink() || '#'}

@@ -29,7 +29,7 @@ export function CatalogBuilderTopBar() {
   return (
     <div className="bg-white border-b px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
       <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-        <Link href="/catalogos">
+        <Link href="/">
           <IconButton
             icon="arrow-left"
             variant="ghost"

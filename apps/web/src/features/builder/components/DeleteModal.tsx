@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Button } from '@terraviva/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@terraviva/ui/dialog'
-import { Button } from '@terraviva/ui/button'
+import { useState } from 'react'
 
 interface DeleteModalProps {
   removeFn: () => void

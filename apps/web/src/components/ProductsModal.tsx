@@ -10,22 +10,17 @@ import {
   DialogTrigger
 } from '@terraviva/ui/dialog'
 import { Icon } from '@terraviva/ui/icon'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import {
-  // Configure,
-  // Hits,
   InstantSearch,
   useInfiniteHits,
   useInstantSearch
 } from 'react-instantsearch'
 
-import { ProductCardTeste } from '@/components/ProductCardTeste'
+import { ProductItemList } from '@/features/builder/components/ProductItemList'
 
 import { CustomSearch } from './CustomSearch'
-
-// import { GrupoSelect } from './GroupSelect'
-// import { SerieSelect } from './SeriesSelect'
 
 interface ProductsModalProps {
   buttonClassName?: string
@@ -41,13 +36,11 @@ export function ProductsModal({ buttonClassName }: ProductsModalProps) {
   const typesenseInstantsearchAdapter = getTypesenseSearchAdapter({
     additionalSearchParameters: {
       query_by: 'descricaoCompleta',
-      per_page: 6,
+      per_page: 8,
       sort_by: 'descricaoCompleta:asc'
     }
   })
 
-  // const { watch } = formProps
-  // const { grupo, serie } = watch()
   const [open, setOpen] = useState(false)
 
   return (
@@ -63,65 +56,38 @@ export function ProductsModal({ buttonClassName }: ProductsModalProps) {
             <Icon icon="magnifying-glass" className="text-sm" />
           </button>
         </DialogTrigger>
-        <DialogContent className="min-h-[90%] max-h-[90%] overflow-y-auto">
-          <div className="flex flex-col gap-4 justify-start h-full">
-            <DialogHeader>
-              <DialogTitle>Selecionar produto</DialogTitle>
-            </DialogHeader>
+        <DialogContent className="min-h-[90%] max-h-[90%] flex flex-col overflow-hidden p-0 gap-0">
+          <DialogHeader className="flex-shrink-0 px-4 mt-4 mb-2">
+            <DialogTitle>Selecionar produto</DialogTitle>
+          </DialogHeader>
 
-            <InstantSearch
-              routing
-              indexName="variacoes"
-              searchClient={typesenseInstantsearchAdapter.searchClient}
-              initialUiState={{
-                variacoes: {
-                  toggle: {
-                    has_image: true
-                  }
+          <InstantSearch
+            indexName="variacoes"
+            searchClient={typesenseInstantsearchAdapter.searchClient}
+            initialUiState={{
+              variacoes: {
+                toggle: {
+                  has_image: true
                 }
-              }}
-            >
-              <SearchRefresher open={open} />
-              <div className="space-y-2 w-full">
-                <div className="space-y-1">
-                  <p className="font-medium text-sm">Busca</p>
-                  <CustomSearch />
-                </div>
-                {/* <div className="flex  gap-2">
-                  <div className="space-y-1 w-full">
-                    <p className="font-medium text-sm">Grupo</p>
-                    <GrupoSelect />
-                  </div>
-                  <div className="space-y-1 w-full">
-                    <p className="font-medium text-sm">Série</p>
-                    <SerieSelect />
-                  </div>
-                </div> */}
-                {/* <Configure
-                  filters={
-                    grupo && serie
-                      ? `grupoSlug:${grupo} && serieSlug:${serie}`
-                      : grupo
-                        ? `grupoSlug:${grupo}`
-                        : ''
-                  }
-                /> */}
-              </div>
+              }
+            }}
+          >
+            <SearchRefresher open={open} />
+            <div className="space-y-1 flex-shrink-0 px-4 border-b border-border pb-4 mt-4">
+              <p className="font-medium text-sm">Busca</p>
+              <CustomSearch />
+            </div>
 
-              <div
-                id="scroll-container"
-                className="flex flex-col gap-2 h-full overflow-y-auto"
-              >
-                <InfiniteHits
-                  onItemClick={(hit: any) => {
-                    setValue(`name`, hit.descricaoCompleta)
-                    setValue(`image`, hit.imagem)
-                    setOpen(false)
-                  }}
-                />
-              </div>
-            </InstantSearch>
-          </div>
+            <div className="flex-1 overflow-y-auto min-h-0 px-4 pt-4">
+              <InfiniteHits
+                onItemClick={(hit: any) => {
+                  setValue(`name`, hit.descricaoCompleta)
+                  setValue(`image`, hit.imagem)
+                  setOpen(false)
+                }}
+              />
+            </div>
+          </InstantSearch>
         </DialogContent>
       </Dialog>
     </FormProvider>
@@ -140,47 +106,75 @@ const SearchRefresher = ({ open }: { open: boolean }) => {
   return null
 }
 
-// const CustomHits = ({ hitComponent }: { hitComponent: any }) => {
-//   const { results } = useInstantSearch()
-//   const hasResults = results && results.hits && results.hits.length > 0
-//   if (!hasResults) {
-//     return (
-//       <div className="w-full flex flex-col items-center justify-center py-10 text-gray-500 border rounded-md h-full ">
-//         <p className="text-sm">Nenhum produto encontrado.</p>
-//       </div>
-//     )
-//   }
-//   return <Hits hitComponent={hitComponent} />
-// }
-
 const InfiniteHits = ({ onItemClick }: { onItemClick: (hit: any) => void }) => {
-  const { hits, isLastPage, showMore } = useInfiniteHits()
+  const { items, isLastPage, showMore } = useInfiniteHits()
   const sentinelRef = useRef<HTMLDivElement>(null)
+  const loadingRef = useRef(false)
+
+  const handleLoadMore = useCallback(() => {
+    if (!loadingRef.current && !isLastPage) {
+      loadingRef.current = true
+      showMore()
+      setTimeout(() => {
+        loadingRef.current = false
+      }, 300)
+    }
+  }, [isLastPage, showMore])
+
+  // Trigger initial load if sentinel is already visible
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel || items.length === 0) return
+
+    const checkVisibility = () => {
+      const rect = sentinel.getBoundingClientRect()
+      const isVisible = rect.top < window.innerHeight && rect.bottom > 0
+
+      if (isVisible && !isLastPage) {
+        handleLoadMore()
+      }
+    }
+
+    // Check after a small delay to ensure layout is ready
+    const timer = setTimeout(checkVisibility, 100)
+    return () => clearTimeout(timer)
+  }, [items.length, isLastPage, handleLoadMore])
 
   useEffect(() => {
-    if (!sentinelRef.current || isLastPage) return
-
-    const scrollContainer = document.getElementById('scroll-container')
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
 
     const observer = new IntersectionObserver(
       entries => {
-        if (entries[0]?.isIntersecting && !isLastPage) {
-          showMore()
+        if (entries[0]?.isIntersecting) {
+          handleLoadMore()
         }
       },
       {
-        root: scrollContainer,
-        rootMargin: '100px',
-        threshold: 0.1
+        root: null, // Use viewport instead of scroll container
+        rootMargin: '400px',
+        threshold: 0
       }
     )
 
-    observer.observe(sentinelRef.current)
+    observer.observe(sentinel)
 
     return () => observer.disconnect()
-  }, [isLastPage, showMore, hits.length])
+  }, [handleLoadMore])
 
-  if (hits.length === 0) {
+  const productList = useMemo(
+    () =>
+      items.map((hit: any) => (
+        <ProductItemList
+          key={hit.objectID}
+          item={hit}
+          onClick={() => onItemClick(hit)}
+        />
+      )),
+    [items, onItemClick]
+  )
+
+  if (items.length === 0) {
     return (
       <div className="w-full flex flex-col items-center justify-center py-10 text-gray-500 border rounded-md h-full">
         <p className="text-sm">Nenhum produto encontrado.</p>
@@ -190,15 +184,7 @@ const InfiniteHits = ({ onItemClick }: { onItemClick: (hit: any) => void }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="grid grid-cols-1 gap-2">
-        {hits.map((hit: any) => (
-          <ProductCardTeste
-            key={hit.objectID}
-            item={hit}
-            onClick={() => onItemClick(hit)}
-          />
-        ))}
-      </div>
+      <div className="grid grid-cols-1 gap-2">{productList}</div>
 
       {!isLastPage && (
         <div ref={sentinelRef} className="w-full py-4 text-center">

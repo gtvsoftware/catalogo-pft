@@ -129,7 +129,6 @@ export function Cover() {
               />
             )}
           </div>
-          {/* Floating Cog Button */}
           {viewMode === 'edit' && (
             <button
               onClick={() => setCoverModalOpen(true)}

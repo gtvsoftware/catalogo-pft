@@ -1,7 +1,6 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -18,7 +17,6 @@ export async function GET(request: NextRequest) {
       where.grupoId = grupoId
     }
 
-    
     if (search) {
       where.OR = [
         { nome: { contains: search, mode: 'insensitive' } },
@@ -27,7 +25,6 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    
     const total = await prisma.serie.count({ where })
 
     const series = await prisma.serie.findMany({
@@ -63,13 +60,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { nome, slug, grupoId, imagem } = body
 
-    
     if (!nome || !slug || !grupoId) {
       return NextResponse.json(
         { message: 'Campos obrigatórios faltando' },
@@ -77,7 +72,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
     const grupo = await prisma.grupo.findUnique({
       where: { id: grupoId }
     })
@@ -89,7 +83,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
     const slugExistente = await prisma.serie.findUnique({
       where: { slug }
     })
@@ -101,7 +94,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    
     const novaSerie = await prisma.serie.create({
       data: {
         nome,

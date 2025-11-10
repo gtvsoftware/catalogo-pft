@@ -96,7 +96,6 @@ export function CatalogBuilderProvider({
     }
   })
 
-  // Load existing catalog if it exists
   useEffect(() => {
     const loadCatalog = async () => {
       try {
@@ -104,7 +103,7 @@ export function CatalogBuilderProvider({
 
         if (response.ok) {
           const catalog = await response.json()
-          // Reset form with loaded data
+
           formValues.reset({
             id: catalog.id,
             slug: catalog.slug || '',
@@ -122,7 +121,7 @@ export function CatalogBuilderProvider({
         console.error('Error loading catalog:', error)
       } finally {
         setIsLoading(false)
-        // Enable auto-save after a short delay to avoid triggering on initial load
+
         setTimeout(() => {
           setEnableAutoSave(true)
         }, 100)
@@ -165,13 +164,13 @@ export function CatalogBuilderProvider({
   const { isSaving, lastSaved, triggerSave } = useAutoSave({
     delay: 2000,
     onSave: saveCatalog,
-    enabled: enableAutoSave // Only enable after initial load completes
+    enabled: enableAutoSave
   })
 
   const skipSaveCountRef = useRef(0)
 
   useEffect(() => {
-    if (!enableAutoSave) return // Don't subscribe until auto-save is enabled
+    if (!enableAutoSave) return
 
     const subscription = formValues.watch(() => {
       if (skipSaveCountRef.current > 0) {
@@ -183,11 +182,10 @@ export function CatalogBuilderProvider({
     return () => subscription.unsubscribe()
   }, [formValues, triggerSave, enableAutoSave])
 
-  // When viewMode changes, skip the next few save triggers
   const prevViewModeRef = useRef(viewMode)
   useEffect(() => {
     if (enableAutoSave && prevViewModeRef.current !== viewMode) {
-      skipSaveCountRef.current = 3 // Skip next 3 watch triggers
+      skipSaveCountRef.current = 3
       prevViewModeRef.current = viewMode
     }
   }, [viewMode, enableAutoSave])

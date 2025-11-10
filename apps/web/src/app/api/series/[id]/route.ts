@@ -1,7 +1,6 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -33,7 +32,6 @@ export async function GET(
   }
 }
 
-
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -44,7 +42,6 @@ export async function PUT(
     const body = await request.json()
     const { nome, slug, grupoId, imagem } = body
 
-    
     const serieExistente = await prisma.serie.findUnique({
       where: { id }
     })
@@ -56,7 +53,6 @@ export async function PUT(
       )
     }
 
-    
     const grupo = await prisma.grupo.findUnique({
       where: { id: grupoId }
     })
@@ -68,7 +64,6 @@ export async function PUT(
       )
     }
 
-    
     if (slug !== serieExistente.slug) {
       const slugExistente = await prisma.serie.findUnique({
         where: { slug }
@@ -82,7 +77,6 @@ export async function PUT(
       }
     }
 
-    
     const serieAtualizada = await prisma.serie.update({
       where: { id },
       data: {
@@ -96,7 +90,6 @@ export async function PUT(
       }
     })
 
-    
     if (slug !== serieExistente.slug) {
       await prisma.variacao.updateMany({
         where: { serieId: id },
@@ -114,7 +107,6 @@ export async function PUT(
   }
 }
 
-
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -122,7 +114,6 @@ export async function DELETE(
   const { id } = await params
 
   try {
-    
     const serie = await prisma.serie.findUnique({
       where: { id },
       include: {
@@ -137,7 +128,6 @@ export async function DELETE(
       )
     }
 
-    
     if (serie.variacoes.length > 0) {
       return NextResponse.json(
         {
@@ -148,7 +138,6 @@ export async function DELETE(
       )
     }
 
-    
     await prisma.serie.delete({
       where: { id }
     })

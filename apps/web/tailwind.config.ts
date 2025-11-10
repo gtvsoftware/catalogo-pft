@@ -6,11 +6,10 @@ const config: Config = {
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     './src/**/*.{ts,tsx}',
     '../../packages/ui/src/**/*.{ts,tsx}',
-    '../../packages/auth/src/**/*.{ts,tsx}',
+    '../../packages/auth/src/**/*.{ts,tsx}'
   ],
   darkMode: 'class',
-  presets: [baseConfig],
-
+  presets: [baseConfig]
 }
 
 export default config

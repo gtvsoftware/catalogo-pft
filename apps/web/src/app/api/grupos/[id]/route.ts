@@ -1,7 +1,6 @@
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
-
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -32,7 +31,6 @@ export async function GET(
   }
 }
 
-
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -43,7 +41,6 @@ export async function PUT(
     const body = await request.json()
     const { nome, slug, tipoProduto, status, descricao, imagem } = body
 
-    
     const grupoExistente = await prisma.grupo.findUnique({
       where: { id }
     })
@@ -55,7 +52,6 @@ export async function PUT(
       )
     }
 
-    
     if (slug !== grupoExistente.slug) {
       const slugExistente = await prisma.grupo.findUnique({
         where: { slug }
@@ -69,7 +65,6 @@ export async function PUT(
       }
     }
 
-    
     const grupoAtualizado = await prisma.grupo.update({
       where: { id: id },
       data: {
@@ -82,7 +77,6 @@ export async function PUT(
       }
     })
 
-    
     if (slug !== grupoExistente.slug) {
       await prisma.serie.updateMany({
         where: { grupoId: id },
@@ -94,7 +88,6 @@ export async function PUT(
         data: { grupoSlug: slug }
       })
     } else if (nome !== grupoExistente.nome) {
-      
       await prisma.serie.updateMany({
         where: { grupoId: id },
         data: { grupoNome: nome }
@@ -111,13 +104,11 @@ export async function PUT(
   }
 }
 
-
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    
     const grupo = await prisma.grupo.findUnique({
       where: { id: params.id },
       include: {
@@ -133,7 +124,6 @@ export async function DELETE(
       )
     }
 
-    
     if (grupo.series.length > 0 || grupo.variacoes.length > 0) {
       return NextResponse.json(
         {
@@ -144,7 +134,6 @@ export async function DELETE(
       )
     }
 
-    
     await prisma.grupo.delete({
       where: { id: params.id }
     })

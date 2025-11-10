@@ -83,7 +83,6 @@ export function Sidebar() {
     if (availabilityEnd !== undefined) setLocalAvailabilityEnd(availabilityEnd)
   }, [availabilityEnd])
 
-  // Setup IMask for phone input
   useEffect(() => {
     if (phoneInputRef.current) {
       const maskInstance = IMask(phoneInputRef.current, {
@@ -100,8 +99,6 @@ export function Sidebar() {
         dispatch: function (appended, dynamicMasked) {
           const number = (dynamicMasked.value + appended).replace(/\D/g, '')
 
-          // Se tem 11 dígitos (celular com 9), usa a máscara de celular
-          // Se tem 10 dígitos ou menos, usa a máscara de fixo
           return number.length > 10
             ? dynamicMasked.compiledMasks[1]
             : dynamicMasked.compiledMasks[0]
@@ -170,7 +167,6 @@ export function Sidebar() {
           ${viewMode === 'preview' ? 'hidden lg:hidden' : ''}
         `}
     >
-      {/* Mobile Close Button */}
       <div className="lg:hidden flex items-center justify-between p-4 border-b">
         <h2 className="font-semibold">Editor</h2>
         <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>

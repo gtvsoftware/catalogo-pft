@@ -39,7 +39,7 @@ function removeAllComments(sourceFile: any) {
     // Remove one comment at a time (starting from the end)
     const comment = uniqueComments[0]
     if (comment) {
-      const commentText = sourceFile
+      const _commentText = sourceFile
         .getFullText()
         .substring(comment.getPos(), comment.getEnd())
 
