@@ -128,11 +128,13 @@ export async function POST(request: NextRequest) {
 
     await blockBlobClient.upload(compressedBuffer, compressedBuffer.length, {
       blobHTTPHeaders: {
-        blobContentType: contentType
+        blobContentType: contentType,
+        blobCacheControl: 'public, max-age=31536000'
       }
     })
 
-    const url = blockBlobClient.url
+    // Add timestamp to URL to bust cache when image is replaced
+    const url = `${blockBlobClient.url}?t=${Date.now()}`
 
     return NextResponse.json({
       url,

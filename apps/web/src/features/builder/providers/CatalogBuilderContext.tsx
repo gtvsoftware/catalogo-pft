@@ -69,7 +69,7 @@ export function CatalogBuilderProvider({
   const [coverModalOpen, setCoverModalOpen] = useState(false)
   const [_, setIsLoading] = useState(true)
   const [enableAutoSave, setEnableAutoSave] = useState(false)
-  const [isAuthorized, setIsAuthorized] = useState(true)
+  const [_isAuthorized, setIsAuthorized] = useState(true)
 
   const formValues = useForm<catalogoFormType>({
     defaultValues: {
