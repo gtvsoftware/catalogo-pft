@@ -1,7 +1,12 @@
+import { BlobServiceClient } from '@azure/storage-blob'
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { authWrapper } from '@/utils/authWrapper'
+
+const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING
+const containerName =
+  process.env.AZURE_STORAGE_CONTAINER_NAME || 'catalogo-images'
 
 export async function GET(
   _request: NextRequest,
@@ -184,6 +189,25 @@ export async function DELETE(
         { error: 'Você não tem permissão para excluir este catálogo' },
         { status: 403 }
       )
+    }
+
+    if (connectionString) {
+      try {
+        const blobServiceClient =
+          BlobServiceClient.fromConnectionString(connectionString)
+        const containerClient =
+          blobServiceClient.getContainerClient(containerName)
+
+        const prefix = `${id}/`
+        for await (const blob of containerClient.listBlobsFlat({
+          prefix
+        })) {
+          const blobClient = containerClient.getBlobClient(blob.name)
+          await blobClient.deleteIfExists()
+        }
+      } catch (azureError) {
+        console.error('Erro ao deletar imagens do Azure:', azureError)
+      }
     }
 
     await prisma.catalogo.delete({ where: { id } })
