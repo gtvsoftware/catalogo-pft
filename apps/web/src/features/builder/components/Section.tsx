@@ -57,7 +57,6 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
 
   const { viewMode } = useCatalogBuilder()
 
-  // Sync local title with form value when section changes
   useEffect(() => {
     if (section?.title !== undefined) {
       setLocalTitle(section.title)

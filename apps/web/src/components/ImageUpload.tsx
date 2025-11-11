@@ -174,7 +174,6 @@ export function ImageUpload({
         const data = await response.json()
         onChange(data.url)
 
-        // Show compression stats if available
         if (data.compressionRatio && data.compressionRatio > 0) {
           toast.success('Imagem enviada e comprimida!', {
             description: `Tamanho reduzido em ${data.compressionRatio}% (${formatBytes(data.originalSize)} → ${formatBytes(data.compressedSize)})`
@@ -264,9 +263,16 @@ export function ImageUpload({
   }
 
   if (value && !uploading) {
+    const aspectRatioStyle = cropAspect
+      ? { aspectRatio: cropAspect.toString() }
+      : {}
+
     return (
       <div className="relative group">
-        <div className="relative aspect-video w-full overflow-hidden rounded-lg border-2 border-border">
+        <div
+          className="relative w-full overflow-hidden"
+          style={aspectRatioStyle}
+        >
           <img
             src={value}
             alt="Preview"
@@ -347,13 +353,18 @@ export function ImageUpload({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={cn(
-          'relative aspect-video w-full rounded-lg border-2 border-dashed transition-colors',
+          'relative w-full rounded-lg border-2 border-dashed transition-colors',
           isDragging
             ? 'border-primary bg-primary/5'
             : 'border-border hover:border-primary/50',
           disabled && 'opacity-50 cursor-not-allowed',
           uploading && 'pointer-events-none'
         )}
+        style={
+          cropAspect
+            ? { aspectRatio: cropAspect.toString() }
+            : { aspectRatio: '16/9' }
+        }
       >
         <label
           htmlFor="image-upload"

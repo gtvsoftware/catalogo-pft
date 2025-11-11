@@ -3,15 +3,11 @@ import type { Metadata } from 'next'
 
 import { APP_CONFIG } from '@/config/app.config'
 
-export default async function RootLayout({
+export default async function DashboardLayout({
   children
 }: React.PropsWithChildren) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body className="font-sans w-full">
-        <DashboardProvider appConfig={APP_CONFIG}>{children}</DashboardProvider>
-      </body>
-    </html>
+    <DashboardProvider appConfig={APP_CONFIG}>{children}</DashboardProvider>
   )
 }
 

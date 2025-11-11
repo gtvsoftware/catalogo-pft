@@ -9,7 +9,5 @@ export default async function Page() {
     return <></>
   }
 
-  console.log(session.user)
-
   return <FlowerCatalogBuilder user={session.user} />
 }

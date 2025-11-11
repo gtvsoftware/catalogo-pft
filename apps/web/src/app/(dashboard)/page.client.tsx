@@ -3,13 +3,20 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@terraviva/ui/avatar'
 import { Button, IconButton } from '@terraviva/ui/button'
 import { Card, CardContent } from '@terraviva/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@terraviva/ui/dropdown-menu'
 import { Icon } from '@terraviva/ui/icon'
 import { Input } from '@terraviva/ui/input'
 import { PaginationAndPerPage } from '@terraviva/ui/pagination-and-per-page'
+import { Separator } from '@terraviva/ui/separator'
 import { toast } from '@terraviva/ui/sonner'
 import { useRouter } from 'next/navigation'
 import type { User } from 'next-auth'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 interface Catalogo {
   id: string
@@ -127,6 +134,20 @@ export default function CatalogosListPage({ user }: { user: User }) {
     })
   }
 
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text)
+    toast.success(`${label} copiado!`)
+  }
+
+  const handleCopyLink = (catalogo: Catalogo) => {
+    const baseUrl = window.location.origin
+    const linkById = `${baseUrl}/visualizar/${catalogo.id}`
+
+    if (!catalogo.slug) {
+      copyToClipboard(linkById, 'Link')
+    }
+  }
+
   const totalPages = Math.ceil(totalCount / perPage)
 
   return (
@@ -134,12 +155,11 @@ export default function CatalogosListPage({ user }: { user: User }) {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2 -ml-2">
-              <Icon icon="book" className="text-primary-500" />
-              Catálogos Criados
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              Catálogos
             </h1>
             <p className="text-muted-foreground text-sm mt-1">
-              Gerencie os catálogos personalizados de produtos
+              Gerencie os catálogos personalizados
             </p>
           </div>
           <Button
@@ -184,20 +204,21 @@ export default function CatalogosListPage({ user }: { user: User }) {
           ) : (
             <div>
               <div className="space-y-4 md:hidden">
-                {catalogos.map(catalogo => (
-                  <Card
-                    key={catalogo.id}
-                    className="overflow-hidden hover:shadow-lg transition-shadow"
-                  >
-                    <CardContent className="p-4 space-y-3">
-                      <div className="space-y-2">
-                        <h3 className="font-semibold text-lg line-clamp-1">
-                          {catalogo?.title?.length > 0
-                            ? catalogo.title
-                            : 'Sem título'}
-                        </h3>
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          {catalogo.seller?.name && (
+                {catalogos.map((catalogo, index) => (
+                  <Fragment key={catalogo.id}>
+                    <Card
+                      key={catalogo.id}
+                      className="overflow-hidden border-none rounded-none shadow-none transition-shadow py-2 px-0"
+                    >
+                      <CardContent className="p-0 space-y-3">
+                        <div className="space-y-2">
+                          <h3 className="font-medium text-base line-clamp-1">
+                            {catalogo?.title?.length > 0
+                              ? catalogo.title
+                              : 'Sem título'}
+                          </h3>
+                          <div className="space-y-1 text-sm text-muted-foreground">
+                            {/* {catalogo.seller?.name && (
                             <div className="flex items-center gap-2">
                               <Avatar className="h-6 w-6">
                                 <AvatarImage
@@ -220,65 +241,115 @@ export default function CatalogosListPage({ user }: { user: User }) {
                               </Avatar>
                               <span>{catalogo.seller.name}</span>
                             </div>
-                          )}
-                          {(catalogo.availabilityStart ||
-                            catalogo.availabilityEnd) && (
-                            <div className="flex items-center gap-2">
-                              <Icon icon="calendar" className="h-4 w-4" />
+                          )} */}
+                            {(catalogo.availabilityStart ||
+                              catalogo.availabilityEnd) && (
+                              <div className="flex items-center gap-2">
+                                <Icon icon="calendar" className="h-4 w-4" />
+                                <span>
+                                  {catalogo.availabilityStart &&
+                                    formatDate(catalogo.availabilityStart)}
+                                  {catalogo.availabilityStart &&
+                                    catalogo.availabilityEnd &&
+                                    ' - '}
+                                  {catalogo.availabilityEnd &&
+                                    formatDate(catalogo.availabilityEnd)}
+                                </span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2 text-xs">
+                              <Icon
+                                variant="light"
+                                icon="clock"
+                                className="h-4 w-4"
+                              />
                               <span>
-                                {catalogo.availabilityStart &&
-                                  formatDate(catalogo.availabilityStart)}
-                                {catalogo.availabilityStart &&
-                                  catalogo.availabilityEnd &&
-                                  ' - '}
-                                {catalogo.availabilityEnd &&
-                                  formatDate(catalogo.availabilityEnd)}
+                                Criado em{' '}
+                                {new Date(
+                                  catalogo.createdAt
+                                ).toLocaleDateString('pt-BR')}
                               </span>
                             </div>
-                          )}
-                          <div className="flex items-center gap-2">
-                            <Icon icon="clock" className="h-4 w-4" />
-                            <span>
-                              Criado em{' '}
-                              {new Date(catalogo.createdAt).toLocaleDateString(
-                                'pt-BR'
-                              )}
-                            </span>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="flex items-center gap-2 pt-2 border-t">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => router.push(`/criador/${catalogo.id}`)}
-                          className="flex-1"
-                          leftIcon="pencil"
-                        >
-                          Editar
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() =>
-                            router.push(`/visualizar/${catalogo.id}`)
-                          }
-                          className="flex-1"
-                          leftIcon="eye"
-                        >
-                          Ver
-                        </Button>
-                        <IconButton
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(catalogo.id)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          icon="trash"
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
+                        <div className="flex items-center gap-2 pt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              router.push(`/criador/${catalogo.id}`)
+                            }
+                            className="flex-1"
+                            leftIcon="pencil"
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              router.push(`/visualizar/${catalogo.id}`)
+                            }
+                            className="flex-1"
+                            leftIcon="eye"
+                          >
+                            Ver
+                          </Button>
+                          {catalogo.slug ? (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <IconButton
+                                  variant="outline"
+                                  size="sm"
+                                  icon="link"
+                                />
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    copyToClipboard(
+                                      `${window.location.origin}/visualizar/${catalogo.id}`,
+                                      'Link por ID'
+                                    )
+                                  }
+                                >
+                                  <Icon icon="copy" className="mr-2 h-4 w-4" />
+                                  Copiar link por ID
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    copyToClipboard(
+                                      `${window.location.origin}/visualizar/${catalogo.slug}`,
+                                      'Link por Slug'
+                                    )
+                                  }
+                                >
+                                  <Icon icon="copy" className="mr-2 h-4 w-4" />
+                                  Copiar link por Slug
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          ) : (
+                            <IconButton
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleCopyLink(catalogo)}
+                              icon="link"
+                            />
+                          )}
+                          <IconButton
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(catalogo.id)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            icon="trash"
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                    {index < catalogos.length - 1 && <Separator />}
+                  </Fragment>
                 ))}
               </div>
 
@@ -309,7 +380,7 @@ export default function CatalogosListPage({ user }: { user: User }) {
                         key={catalogo.id}
                         className="hover:bg-muted/50 transition-colors"
                       >
-                        <td className="p-4 font-medium">
+                        <td className="p-4 font-medium text-sm">
                           {catalogo?.title?.length > 0
                             ? catalogo.title
                             : 'Sem título'}
@@ -383,6 +454,56 @@ export default function CatalogosListPage({ user }: { user: User }) {
                               title="Visualizar"
                               icon="eye"
                             />
+                            {catalogo.slug ? (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <IconButton
+                                    variant="ghost"
+                                    size="sm"
+                                    icon="link"
+                                    title="Copiar link"
+                                  />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      copyToClipboard(
+                                        `${window.location.origin}/visualizar/${catalogo.id}`,
+                                        'Link por ID'
+                                      )
+                                    }
+                                  >
+                                    <Icon
+                                      icon="copy"
+                                      className="mr-2 h-4 w-4"
+                                    />
+                                    Copiar link por ID
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      copyToClipboard(
+                                        `${window.location.origin}/visualizar/${catalogo.slug}`,
+                                        'Link por Slug'
+                                      )
+                                    }
+                                  >
+                                    <Icon
+                                      icon="copy"
+                                      className="mr-2 h-4 w-4"
+                                    />
+                                    Copiar link por Slug
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            ) : (
+                              <IconButton
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleCopyLink(catalogo)}
+                                title="Copiar link"
+                                icon="link"
+                              />
+                            )}
                             <IconButton
                               variant="ghost"
                               size="sm"

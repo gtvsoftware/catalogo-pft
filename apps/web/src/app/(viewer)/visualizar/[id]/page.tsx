@@ -40,8 +40,9 @@ export default function Page(): React.ReactElement {
     ) {
       return {
         backgroundImage: `url(${catalogo.cover.backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
       }
     }
     return {
@@ -81,7 +82,7 @@ export default function Page(): React.ReactElement {
           <>
             {catalogo.cover?.enabled && (
               <div
-                className="relative h-64 sm:h-72 md:h-80 overflow-hidden"
+                className="relative aspect-[32/9] overflow-hidden"
                 style={getCoverStyle()}
               >
                 <div
@@ -173,7 +174,7 @@ export default function Page(): React.ReactElement {
                         )}
                       >
                         <div
-                          className="relative w-full aspect-square bg-gray-50 cursor-pointer"
+                          className="relative w-full aspect-[3/4] bg-white cursor-pointer"
                           onClick={() =>
                             item.image && setSelectedImage(item.image)
                           }
@@ -183,7 +184,7 @@ export default function Page(): React.ReactElement {
                               src={item.image}
                               alt={item.name}
                               fill
-                              className="object-cover"
+                              className="object-contain"
                             />
                           ) : (
                             <div className="absolute inset-0 flex items-center justify-center bg-gray-100">

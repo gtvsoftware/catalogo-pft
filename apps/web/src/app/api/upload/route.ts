@@ -51,26 +51,21 @@ export async function POST(request: NextRequest) {
       access: 'blob'
     })
 
-    // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer()
     const inputBuffer = Buffer.from(arrayBuffer)
 
-    // Compress image based on type
     let compressedBuffer: Buffer
     let contentType: string
     let extension: string
 
     if (file.type === 'image/gif') {
-      // GIFs are not compressed to preserve animation
       compressedBuffer = inputBuffer
       contentType = 'image/gif'
       extension = 'gif'
     } else {
-      // Process with Sharp for compression
       const image = sharp(inputBuffer)
       const metadata = await image.metadata()
 
-      // Resize if image is too large (max width 1920px)
       const maxWidth = 1920
       const resizeOptions =
         metadata.width && metadata.width > maxWidth
@@ -78,7 +73,6 @@ export async function POST(request: NextRequest) {
           : undefined
 
       if (file.type === 'image/png') {
-        // Compress PNG
         compressedBuffer = await image
           .resize(resizeOptions)
           .png({
@@ -90,7 +84,6 @@ export async function POST(request: NextRequest) {
         contentType = 'image/png'
         extension = 'png'
       } else if (file.type === 'image/webp') {
-        // Compress WebP
         compressedBuffer = await image
           .resize(resizeOptions)
           .webp({
@@ -101,7 +94,6 @@ export async function POST(request: NextRequest) {
         contentType = 'image/webp'
         extension = 'webp'
       } else {
-        // Convert to JPEG and compress (default for JPEG and fallback)
         compressedBuffer = await image
           .resize(resizeOptions)
           .jpeg({

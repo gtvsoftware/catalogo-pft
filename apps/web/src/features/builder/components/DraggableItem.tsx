@@ -131,7 +131,7 @@ export function DraggableItem({
       <div
         {...(viewMode === 'edit' ? listeners : {})}
         {...(viewMode === 'edit' ? attributes : {})}
-        className="relative w-full aspect-[3/3.5] bg-white"
+        className="relative w-full aspect-[3/4] bg-white"
       >
         {item.image ? (
           <Image
@@ -250,12 +250,16 @@ export function DraggableItem({
                 </div>
 
                 <div className="flex flex-col gap-2 w-full items-center justify-center">
-                  <ImageUpload
-                    slug={item.id}
-                    value={localImage}
-                    onChange={url => localSetValue('image', url)}
-                    onRemove={() => localSetValue('image', '')}
-                  />
+                  <div className="w-full max-w-xs">
+                    <ImageUpload
+                      enableCrop
+                      cropAspect={3 / 4}
+                      slug={item.id}
+                      value={localImage}
+                      onChange={url => localSetValue('image', url)}
+                      onRemove={() => localSetValue('image', '')}
+                    />
+                  </div>
                   {errors.image && (
                     <p className="text-red-500 text-xs mt-1">
                       {errors.image.message}

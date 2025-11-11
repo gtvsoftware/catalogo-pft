@@ -220,8 +220,9 @@ export function CatalogBuilderProvider({
     if (cover.backgroundType === 'image' && cover.backgroundImage) {
       return {
         backgroundImage: `url(${cover.backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
       }
     }
     return {

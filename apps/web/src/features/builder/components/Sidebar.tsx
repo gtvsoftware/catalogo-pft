@@ -109,7 +109,6 @@ export function Sidebar() {
   const handlePhoneChange = (value: string) => {
     setLocalPhoneContact(value)
 
-    // Clear error immediately when user is typing
     if (phoneError) {
       setPhoneError(null)
     }
@@ -169,7 +168,6 @@ export function Sidebar() {
 
       maskInstanceRef.current = maskInstance
 
-      // Sync IMask changes to React state
       maskInstance.on('accept', () => {
         handlePhoneChange(maskInstance.value)
       })

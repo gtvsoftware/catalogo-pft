@@ -27,15 +27,29 @@ const colorOptions = [
 ]
 
 export function Cover() {
-  const {
-    formValues,
-    getCoverStyle,
-    viewMode,
-    setCoverModalOpen,
-    coverModalOpen
-  } = useCatalogBuilder()
+  const { formValues, viewMode, setCoverModalOpen, coverModalOpen } =
+    useCatalogBuilder()
 
   const coverSettings = formValues.watch('cover')
+
+  const getCoverStyle = (): React.CSSProperties => {
+    if (!coverSettings) return {}
+
+    if (
+      coverSettings.backgroundType === 'image' &&
+      coverSettings.backgroundImage
+    ) {
+      return {
+        backgroundImage: `url(${coverSettings.backgroundImage})`,
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }
+    }
+    return {
+      backgroundColor: coverSettings.backgroundColor
+    }
+  }
 
   const [localTitle, setLocalTitle] = useState(coverSettings?.title || '')
   const [localSubtitle, setLocalSubtitle] = useState(
@@ -98,7 +112,7 @@ export function Cover() {
     <>
       {coverSettings.enabled ? (
         <div
-          className="relative h-64 sm:h-72 md:h-80 overflow-hidden group"
+          className="relative aspect-[32/9] overflow-hidden group"
           style={getCoverStyle()}
         >
           <div
@@ -356,6 +370,8 @@ export function Cover() {
                   <div className="space-y-2">
                     <Label className="text-sm">Imagem de Fundo</Label>
                     <ImageUpload
+                      enableCrop
+                      cropAspect={32 / 9}
                       slug="cover"
                       value={coverSettings.backgroundImage}
                       onChange={url =>

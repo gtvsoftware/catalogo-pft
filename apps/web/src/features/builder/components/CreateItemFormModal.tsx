@@ -156,7 +156,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
               <p className="font-medium text-sm">Imagem</p>
               <ImageUpload
                 enableCrop
-                cropAspect={3 / 3.5}
+                cropAspect={3 / 4}
                 slug={formValues.getValues('id')}
                 value={localImage}
                 onChange={url =>

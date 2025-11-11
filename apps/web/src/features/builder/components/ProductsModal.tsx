@@ -121,7 +121,6 @@ const InfiniteHits = ({ onItemClick }: { onItemClick: (hit: any) => void }) => {
     }
   }, [isLastPage, showMore])
 
-  // Trigger initial load if sentinel is already visible
   useEffect(() => {
     const sentinel = sentinelRef.current
     if (!sentinel || items.length === 0) return
@@ -135,7 +134,6 @@ const InfiniteHits = ({ onItemClick }: { onItemClick: (hit: any) => void }) => {
       }
     }
 
-    // Check after a small delay to ensure layout is ready
     const timer = setTimeout(checkVisibility, 100)
     return () => clearTimeout(timer)
   }, [items.length, isLastPage, handleLoadMore])
