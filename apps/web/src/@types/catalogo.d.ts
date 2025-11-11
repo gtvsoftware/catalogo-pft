@@ -3,7 +3,11 @@ declare type catalogoFormType = {
   slug?: string
   banner?: string
   title: string
-  sellerName?: string
+  seller?: {
+    name: string
+    picture: string
+    id: string
+  }
   phoneContact?: string
   availabilityStart?: string
   availabilityEnd?: string

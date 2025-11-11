@@ -1,5 +1,6 @@
 'use client'
 
+import { Avatar, AvatarFallback, AvatarImage } from '@terraviva/ui/avatar'
 import { Button, IconButton } from '@terraviva/ui/button'
 import { Card, CardContent } from '@terraviva/ui/card'
 import { Icon } from '@terraviva/ui/icon'
@@ -7,6 +8,7 @@ import { Input } from '@terraviva/ui/input'
 import { PaginationAndPerPage } from '@terraviva/ui/pagination-and-per-page'
 import { toast } from '@terraviva/ui/sonner'
 import { useRouter } from 'next/navigation'
+import type { User } from 'next-auth'
 import { useEffect, useState } from 'react'
 
 interface Catalogo {
@@ -25,7 +27,11 @@ interface Catalogo {
     backgroundImage: string
     alignment: 'center' | 'left'
   }
-  sellerName?: string
+  seller?: {
+    name: string
+    picture: string
+    id: string
+  }
   phoneContact?: string
   availabilityStart?: string
   availabilityEnd?: string
@@ -34,7 +40,7 @@ interface Catalogo {
   updatedAt: string
 }
 
-export default function CatalogosListPage() {
+export default function CatalogosListPage({ user }: { user: User }) {
   const router = useRouter()
   const [catalogos, setCatalogos] = useState<Catalogo[]>([])
   const [loading, setLoading] = useState(true)
@@ -58,6 +64,7 @@ export default function CatalogosListPage() {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: perPage.toString(),
+        sellerOid: user.oid,
         ...(searchDebounce && { search: searchDebounce })
       })
 
@@ -123,11 +130,11 @@ export default function CatalogosListPage() {
   const totalPages = Math.ceil(totalCount / perPage)
 
   return (
-    <div className="container mx-auto py-4 md:py-8 px-4">
+    <div className="container mx-auto py-4 md:py-8 px-1">
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
+            <h1 className="text-2xl font-bold flex items-center gap-2 -ml-2">
               <Icon icon="book" className="text-primary-500" />
               Catálogos Criados
             </h1>
@@ -190,10 +197,28 @@ export default function CatalogosListPage() {
                             : 'Sem título'}
                         </h3>
                         <div className="space-y-1 text-sm text-muted-foreground">
-                          {catalogo.sellerName && (
+                          {catalogo.seller?.name && (
                             <div className="flex items-center gap-2">
-                              <Icon icon="user" className="h-4 w-4" />
-                              <span>{catalogo.sellerName}</span>
+                              <Avatar className="h-6 w-6">
+                                <AvatarImage
+                                  style={{ objectFit: 'cover' }}
+                                  src={
+                                    catalogo.seller.picture
+                                      ? `https://megtv2.blob.core.windows.net/public/avatars/${catalogo.seller.picture}`
+                                      : undefined
+                                  }
+                                  alt={catalogo.seller.name}
+                                />
+                                <AvatarFallback className="bg-blue-100 text-blue-700 font-medium text-xs">
+                                  {catalogo.seller.name
+                                    .split(' ')
+                                    .map(n => n[0])
+                                    .join('')
+                                    .toUpperCase()
+                                    .slice(0, 2)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span>{catalogo.seller.name}</span>
                             </div>
                           )}
                           {(catalogo.availabilityStart ||
@@ -290,7 +315,32 @@ export default function CatalogosListPage() {
                             : 'Sem título'}
                         </td>
                         <td className="p-4 text-muted-foreground text-sm">
-                          {catalogo.sellerName || '—'}
+                          {catalogo.seller?.name ? (
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-8 w-8">
+                                <AvatarImage
+                                  style={{ objectFit: 'cover' }}
+                                  src={
+                                    catalogo.seller.picture
+                                      ? `https://megtv2.blob.core.windows.net/public/avatars/${catalogo.seller.picture}`
+                                      : undefined
+                                  }
+                                  alt={catalogo.seller.name}
+                                />
+                                <AvatarFallback className="bg-blue-100 text-blue-700 font-medium text-xs">
+                                  {catalogo.seller.name
+                                    .split(' ')
+                                    .map(n => n[0])
+                                    .join('')
+                                    .toUpperCase()
+                                    .slice(0, 2)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span>{catalogo.seller.name}</span>
+                            </div>
+                          ) : (
+                            '—'
+                          )}
                         </td>
                         <td className="p-4 text-muted-foreground text-sm">
                           {catalogo.availabilityStart ||

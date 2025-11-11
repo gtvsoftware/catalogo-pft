@@ -1,4 +1,6 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@terraviva/ui/avatar'
 import { Button } from '@terraviva/ui/button'
+import { cn } from '@terraviva/ui/cn'
 import { Icon } from '@terraviva/ui/icon'
 import { Input } from '@terraviva/ui/input'
 import { Label } from '@terraviva/ui/label'
@@ -34,18 +36,27 @@ export function Sidebar() {
   const catalogId = formValues.watch('id')
   const catalogSlug = formValues.watch('slug')
   const catalogName = formValues.watch('title')
-  const sellerName = formValues.watch('sellerName')
+  const seller = formValues.watch('seller')
   const phoneContact = formValues.watch('phoneContact')
   const availabilityStart = formValues.watch('availabilityStart')
   const availabilityEnd = formValues.watch('availabilityEnd')
 
+  const sellerName = seller?.name || 'Vendedor'
+  const sellerPicture = seller?.picture
+  const sellerInitials = sellerName
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+
   const [mounted, setMounted] = useState(false)
   const [isCheckingSlug, setIsCheckingSlug] = useState(false)
   const [slugError, setSlugError] = useState<string | null>(null)
+  const [phoneError, setPhoneError] = useState<string | null>(null)
   const [initialSlug, setInitialSlug] = useState<string | undefined>()
 
   const [localCatalogName, setLocalCatalogName] = useState(catalogName || '')
-  const [localSellerName, setLocalSellerName] = useState(sellerName || '')
   const [localPhoneContact, setLocalPhoneContact] = useState(phoneContact || '')
   const [localAvailabilityStart, setLocalAvailabilityStart] = useState(
     availabilityStart || ''
@@ -55,23 +66,27 @@ export function Sidebar() {
   )
 
   const phoneInputRef = useRef<HTMLInputElement>(null)
+  const phoneTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const skipPhoneSyncRef = useRef(false)
+  const maskInstanceRef = useRef<any>(null)
 
   useEffect(() => {
     setMounted(true)
-
     setInitialSlug(catalogSlug)
-  }, [])
+  }, [catalogSlug])
 
   useEffect(() => {
     if (catalogName !== undefined) setLocalCatalogName(catalogName)
   }, [catalogName])
 
   useEffect(() => {
-    if (sellerName !== undefined) setLocalSellerName(sellerName)
-  }, [sellerName])
-
-  useEffect(() => {
-    if (phoneContact !== undefined) setLocalPhoneContact(phoneContact)
+    if (phoneContact !== undefined && !skipPhoneSyncRef.current) {
+      setLocalPhoneContact(phoneContact)
+      if (maskInstanceRef.current) {
+        maskInstanceRef.current.value = phoneContact
+      }
+    }
+    skipPhoneSyncRef.current = false
   }, [phoneContact])
 
   useEffect(() => {
@@ -82,6 +97,53 @@ export function Sidebar() {
   useEffect(() => {
     if (availabilityEnd !== undefined) setLocalAvailabilityEnd(availabilityEnd)
   }, [availabilityEnd])
+
+  useEffect(() => {
+    return () => {
+      if (phoneTimeoutRef.current) {
+        clearTimeout(phoneTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const handlePhoneChange = (value: string) => {
+    setLocalPhoneContact(value)
+
+    // Clear error immediately when user is typing
+    if (phoneError) {
+      setPhoneError(null)
+    }
+
+    if (phoneTimeoutRef.current) {
+      clearTimeout(phoneTimeoutRef.current)
+    }
+  }
+
+  const handlePhoneBlur = () => {
+    if (phoneTimeoutRef.current) {
+      clearTimeout(phoneTimeoutRef.current)
+    }
+
+    const cleanPhone = localPhoneContact.replace(/\D/g, '')
+
+    if (cleanPhone.length === 0) {
+      setPhoneError(null)
+      skipPhoneSyncRef.current = true
+      formValues.setValue('phoneContact', '')
+      return
+    }
+
+    if (cleanPhone.length === 10 || cleanPhone.length === 11) {
+      skipPhoneSyncRef.current = true
+      formValues.setValue('phoneContact', localPhoneContact)
+      setPhoneError(null)
+    } else {
+      setPhoneError(
+        'Número de telefone inválido. Use (00)0000-0000 ou (00)00000-0000'
+      )
+      toast.error('Número de telefone inválido')
+    }
+  }
 
   useEffect(() => {
     if (phoneInputRef.current) {
@@ -105,8 +167,16 @@ export function Sidebar() {
         }
       })
 
+      maskInstanceRef.current = maskInstance
+
+      // Sync IMask changes to React state
+      maskInstance.on('accept', () => {
+        handlePhoneChange(maskInstance.value)
+      })
+
       return () => {
         maskInstance.destroy()
+        maskInstanceRef.current = null
       }
     }
   }, [])
@@ -267,21 +337,30 @@ export function Sidebar() {
               </div>
 
               <div>
-                <Label htmlFor="sellerName" className="text-sm">
-                  Nome do Vendedor *
-                </Label>
-                <Input
-                  id="sellerName"
-                  value={localSellerName}
-                  onChange={e => setLocalSellerName(e.target.value)}
-                  onBlur={() => {
-                    if (localSellerName !== sellerName) {
-                      formValues.setValue('sellerName', localSellerName)
-                    }
-                  }}
-                  placeholder="ex: João Silva"
-                  className="text-sm"
-                />
+                <Label className="text-sm">Vendedor</Label>
+                <div className="flex items-center gap-3 mt-1.5 p-3 bg-gray-50 rounded-md border">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage
+                      style={{
+                        objectFit: 'cover'
+                      }}
+                      src={
+                        sellerPicture
+                          ? `https://megtv2.blob.core.windows.net/public/avatars/${sellerPicture}`
+                          : undefined
+                      }
+                      alt={sellerName}
+                    />
+                    <AvatarFallback className="bg-blue-100 text-blue-700 font-medium">
+                      {sellerInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {sellerName}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -354,19 +433,18 @@ export function Sidebar() {
                   ref={phoneInputRef}
                   id="phoneContact"
                   type="tel"
-                  value={localPhoneContact}
-                  onChange={e => setLocalPhoneContact(e.target.value)}
-                  onBlur={() => {
-                    if (localPhoneContact !== phoneContact) {
-                      formValues.setValue('phoneContact', localPhoneContact)
-                    }
-                  }}
+                  defaultValue={localPhoneContact}
+                  onBlur={handlePhoneBlur}
                   placeholder="(00)00000-0000"
-                  className="text-sm"
+                  className={cn('text-sm', phoneError && 'border-red-500')}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Clientes usarão este número para fazer pedidos
-                </p>
+                {phoneError ? (
+                  <p className="text-xs text-red-500 mt-1">{phoneError}</p>
+                ) : (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Clientes usarão este número para fazer pedidos
+                  </p>
+                )}
               </div>
             </div>
 

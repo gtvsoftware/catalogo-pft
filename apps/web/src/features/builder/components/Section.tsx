@@ -11,6 +11,7 @@ import { restrictToParentElement } from '@dnd-kit/modifiers'
 import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { Button } from '@terraviva/ui/button'
 import { Icon } from '@terraviva/ui/icon'
+import { useEffect, useState } from 'react'
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 
 import { useCatalogBuilder } from '@/features/builder/providers/CatalogBuilderContext'
@@ -44,6 +45,8 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
   const section = watch(`sections.${sectionIndex}`)
   const items = watch(`sections.${sectionIndex}.items`)
 
+  const [localTitle, setLocalTitle] = useState(section?.title || '')
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -53,6 +56,13 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
   )
 
   const { viewMode } = useCatalogBuilder()
+
+  // Sync local title with form value when section changes
+  useEffect(() => {
+    if (section?.title !== undefined) {
+      setLocalTitle(section.title)
+    }
+  }, [section?.title])
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event
@@ -70,8 +80,8 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
 
   return (
     section && (
-      <div className="w-full flex flex-col gap-4 bg-white">
-        <div className="flex items-center justify-between">
+      <div className="w-full flex flex-col gap-4 bg-white ">
+        <div className="flex items-center justify-between mx-4">
           <Controller
             name={`sections.${sectionIndex}.title`}
             control={control}
@@ -82,10 +92,12 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
                 </h2>
               ) : (
                 <input
-                  {...field}
+                  value={localTitle}
+                  onChange={e => setLocalTitle(e.target.value)}
+                  onBlur={() => field.onChange(localTitle)}
                   className="text-xl font-medium outline-none"
                   style={{
-                    width: `${Math.max(field.value?.length ?? 5, 5)}ch`
+                    width: `${Math.max(localTitle?.length ?? 5, 5)}ch`
                   }}
                   placeholder="Seção"
                 />
@@ -137,7 +149,7 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
           onDragEnd={handleDragEnd}
         >
           <SortableContext items={items} strategy={rectSortingStrategy}>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-2">
               {items.map((item, index) => (
                 <DraggableItem
                   key={item.id}

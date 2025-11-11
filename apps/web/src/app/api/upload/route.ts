@@ -1,5 +1,6 @@
 import { BlobServiceClient } from '@azure/storage-blob'
 import { NextRequest, NextResponse } from 'next/server'
+import sharp from 'sharp'
 
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING
 const containerName =
@@ -50,16 +51,76 @@ export async function POST(request: NextRequest) {
       access: 'blob'
     })
 
-    const extension = file.name.split('.').pop()
-    const blobName = `${slug}.${extension}`
-
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName)
+    // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
+    const inputBuffer = Buffer.from(arrayBuffer)
 
-    await blockBlobClient.upload(buffer, buffer.length, {
+    // Compress image based on type
+    let compressedBuffer: Buffer
+    let contentType: string
+    let extension: string
+
+    if (file.type === 'image/gif') {
+      // GIFs are not compressed to preserve animation
+      compressedBuffer = inputBuffer
+      contentType = 'image/gif'
+      extension = 'gif'
+    } else {
+      // Process with Sharp for compression
+      const image = sharp(inputBuffer)
+      const metadata = await image.metadata()
+
+      // Resize if image is too large (max width 1920px)
+      const maxWidth = 1920
+      const resizeOptions =
+        metadata.width && metadata.width > maxWidth
+          ? { width: maxWidth, withoutEnlargement: true }
+          : undefined
+
+      if (file.type === 'image/png') {
+        // Compress PNG
+        compressedBuffer = await image
+          .resize(resizeOptions)
+          .png({
+            quality: 75,
+            compressionLevel: 9,
+            adaptiveFiltering: true
+          })
+          .toBuffer()
+        contentType = 'image/png'
+        extension = 'png'
+      } else if (file.type === 'image/webp') {
+        // Compress WebP
+        compressedBuffer = await image
+          .resize(resizeOptions)
+          .webp({
+            quality: 75,
+            effort: 6
+          })
+          .toBuffer()
+        contentType = 'image/webp'
+        extension = 'webp'
+      } else {
+        // Convert to JPEG and compress (default for JPEG and fallback)
+        compressedBuffer = await image
+          .resize(resizeOptions)
+          .jpeg({
+            quality: 75,
+            progressive: true,
+            mozjpeg: true
+          })
+          .toBuffer()
+        contentType = 'image/jpeg'
+        extension = 'jpg'
+      }
+    }
+
+    const blobName = `${slug}.${extension}`
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName)
+
+    await blockBlobClient.upload(compressedBuffer, compressedBuffer.length, {
       blobHTTPHeaders: {
-        blobContentType: file.type
+        blobContentType: contentType
       }
     })
 
@@ -68,8 +129,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       url,
       filename: blobName,
-      size: file.size,
-      type: file.type
+      originalSize: file.size,
+      compressedSize: compressedBuffer.length,
+      type: contentType,
+      compressionRatio: Math.round(
+        ((file.size - compressedBuffer.length) / file.size) * 100
+      )
     })
   } catch (error) {
     console.error('Upload error:', error)

@@ -254,7 +254,7 @@ export function Cover() {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t space-y-2">
+                  {/* <div className="pt-4 border-t space-y-2">
                     <Label className="text-sm font-medium">
                       Alinhamento do texto
                     </Label>
@@ -289,7 +289,7 @@ export function Cover() {
                     <p className="text-xs text-gray-500">
                       Edite o título e subtítulo diretamente na capa
                     </p>
-                  </div>
+                  </div> */}
                 </>
               )}
             </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { LoadingSpinner } from '@terraviva/ui/button'
+import { Button, IconButton, LoadingSpinner } from '@terraviva/ui/button'
 import { cn } from '@terraviva/ui/cn'
 import { Icon } from '@terraviva/ui/icon'
 import Image from 'next/image'
@@ -13,6 +13,7 @@ export default function Page(): React.ReactElement {
   const { id } = useParams()
   const [loading, setLoading] = useState(true)
   const [catalogo, setCatalogo] = useState<catalogoFormType | null>(null)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
   useEffect(() => {
     if (id) {
@@ -58,6 +59,16 @@ export default function Page(): React.ReactElement {
     return `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`
   }
 
+  const handleDownloadImage = (imageUrl: string) => {
+    const link = document.createElement('a')
+    link.href = imageUrl
+    link.download = 'produto-imagem.jpg'
+    link.target = '_blank'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return loading ? (
     <div className="w-screen h-screen flex items-center justify-center">
       <LoadingSpinner />
@@ -100,46 +111,48 @@ export default function Page(): React.ReactElement {
               </div>
             )}
 
-            <div className="space-y-1 bg-gray-100 px-8 py-4">
-              {catalogo?.availabilityStart && catalogo?.availabilityEnd ? (
-                <div className="text-xs text-gray-400">
-                  <p>
-                    <span>Período de validade:</span>{' '}
-                    {new Date(catalogo.availabilityStart).toLocaleDateString(
-                      'pt-BR',
-                      {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric'
-                      }
-                    )}
-                    {' até '}
-                    {new Date(catalogo.availabilityEnd).toLocaleDateString(
-                      'pt-BR',
-                      {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric'
-                      }
-                    )}
-                  </p>
-                </div>
-              ) : catalogo?.availabilityEnd ? (
-                <div className="text-xs text-gray-400">
-                  <p>
-                    <span className="font-medium">Disponível até:</span>{' '}
-                    {new Date(catalogo.availabilityEnd).toLocaleDateString(
-                      'pt-BR',
-                      {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric'
-                      }
-                    )}
-                  </p>
-                </div>
-              ) : null}
-            </div>
+            {catalogo.availabilityEnd && (
+              <div className="space-y-1 bg-gray-100 px-8 py-4">
+                {catalogo?.availabilityStart && catalogo?.availabilityEnd ? (
+                  <div className="text-xs text-gray-400">
+                    <p>
+                      <span>Período de validade:</span>{' '}
+                      {new Date(catalogo.availabilityStart).toLocaleDateString(
+                        'pt-BR',
+                        {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric'
+                        }
+                      )}
+                      {' até '}
+                      {new Date(catalogo.availabilityEnd).toLocaleDateString(
+                        'pt-BR',
+                        {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric'
+                        }
+                      )}
+                    </p>
+                  </div>
+                ) : catalogo?.availabilityEnd ? (
+                  <div className="text-xs text-gray-400">
+                    <p>
+                      <span className="font-medium">Disponível até:</span>{' '}
+                      {new Date(catalogo.availabilityEnd).toLocaleDateString(
+                        'pt-BR',
+                        {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric'
+                        }
+                      )}
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            )}
 
             <div className="flex flex-col px-4 sm:px-6 md:px-8 py-8 gap-8">
               {catalogo.sections.map((section, _index) => (
@@ -156,10 +169,15 @@ export default function Page(): React.ReactElement {
                       <div
                         key={item.id}
                         className={cn(
-                          'group flex flex-col w-full cursor-pointer rounded-xl bg-white overflow-hidden hover:scale-[1.02]  transition-transform p-6'
+                          'group flex flex-col w-full rounded-xl bg-white overflow-hidden hover:scale-[1.02] transition-transform p-6'
                         )}
                       >
-                        <div className="relative w-full aspect-square bg-gray-50">
+                        <div
+                          className="relative w-full aspect-square bg-gray-50 cursor-pointer"
+                          onClick={() =>
+                            item.image && setSelectedImage(item.image)
+                          }
+                        >
                           {item.image ? (
                             <Image
                               src={item.image}
@@ -222,6 +240,46 @@ export default function Page(): React.ReactElement {
           <Icon icon="whatsapp" variant="brands" className="text-2xl" />
           <span>Comprar Agora</span>
         </a>
+      )}
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div
+            className="relative max-w-4xl max-h-[90vh] w-full flex items-center justify-center"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="relative w-full h-full ">
+              <Image
+                src={selectedImage}
+                alt="Product image"
+                width={1200}
+                height={1200}
+                className="object-contain w-full h-full max-h-[80vh]"
+              />
+            </div>
+            <div className="absolute bottom-0 mb-4 mx-auto">
+              <Button
+                leftIcon="arrow-down"
+                onClick={() => handleDownloadImage(selectedImage)}
+                title="Baixar imagem"
+              >
+                Baixar Imagem
+              </Button>
+            </div>
+            <div className="absolute top-4 right-4 flex gap-2">
+              <IconButton
+                icon="xmark"
+                onClick={() => setSelectedImage(null)}
+                className="bg-white hover:bg-gray-100 text-gray-800 rounded-full p-3 shadow-lg transition-colors"
+                title="Fechar"
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

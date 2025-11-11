@@ -30,7 +30,14 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
 
   const formValues = useForm<itemFormType>({
     resolver: zodResolver(itemFormSchema),
-    defaultValues: { id: new ObjectId().toString() }
+    defaultValues: {
+      id: new ObjectId().toString(),
+      name: '',
+      description: '',
+      price: '',
+      discountPrice: '',
+      image: ''
+    }
   })
 
   const {
@@ -53,7 +60,14 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
 
   useEffect(() => {
     if (!open) {
-      localReset({ id: new ObjectId().toString() })
+      localReset({
+        id: new ObjectId().toString(),
+        name: '',
+        description: '',
+        price: '',
+        discountPrice: '',
+        image: ''
+      })
     }
   }, [open, localReset])
 
@@ -61,11 +75,13 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
     <FormProvider {...formValues}>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <div className="border-2 cursor-pointer border-dashed gap-4 h-full w-full aspect-square flex flex-col items-center justify-center bg-gray-100 rounded-md">
-            <Icon icon="plus" className="text-gray-500 text-xl" />
-            <p className="font-medium text-gray-500 text-sm text-center max-w-36">
-              Clique para adicionar um novo item
-            </p>
+          <div className="p-4">
+            <div className="border-2 h-64 cursor-pointer border-dashed gap-4  w-full flex flex-col items-center justify-center bg-gray-100 rounded-md">
+              <Icon icon="plus" className="text-gray-500 text-xl" />
+              <p className="font-medium text-gray-500 text-sm text-center max-w-36">
+                Clique para adicionar um novo item
+              </p>
+            </div>
           </div>
         </DialogTrigger>
 
@@ -139,6 +155,8 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
             <div className="space-y-2">
               <p className="font-medium text-sm">Imagem</p>
               <ImageUpload
+                enableCrop
+                cropAspect={3 / 3.5}
                 slug={formValues.getValues('id')}
                 value={localImage}
                 onChange={url =>

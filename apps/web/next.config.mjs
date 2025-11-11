@@ -5,6 +5,7 @@ const nextConfig = {
   allowedDevOrigins: [
     'app-notifications.terraviva.agr.br',
     'local.dev.terraviva',
+    'catalogo.terraviva.agr.br'
   ],
   output: 'standalone',
   poweredByHeader: false,

@@ -20,6 +20,7 @@ import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 
 import { itemFormSchema } from '@/schemas/itemSchema'
 
+import { ImageUpload } from '../../../components/ImageUpload'
 import { ProductsModal } from './ProductsModal'
 
 interface DraggableItemProps {
@@ -67,6 +68,7 @@ export function DraggableItem({
     register: localRegister,
     handleSubmit: localHandleSubmit,
     watch: localWatch,
+    setValue: localSetValue,
     reset: localReset,
     formState: { errors }
   } = localFormValues
@@ -106,7 +108,7 @@ export function DraggableItem({
       ref={viewMode === 'edit' ? setNodeRef : undefined}
       style={viewMode === 'edit' ? style : undefined}
       className={cn(
-        'group relative flex flex-col w-full rounded-xl bg-white overflow-hidden p-4',
+        'group relative flex flex-col w-full rounded-xl bg-white overflow-hidden p-2',
         viewMode === 'edit' &&
           'cursor-pointer hover:scale-[1.02] hover:bg-gray-5',
         isDragging && 'cursor-grabbing opacity-70'
@@ -129,14 +131,14 @@ export function DraggableItem({
       <div
         {...(viewMode === 'edit' ? listeners : {})}
         {...(viewMode === 'edit' ? attributes : {})}
-        className="relative w-full aspect-square bg-gray-50"
+        className="relative w-full aspect-[3/3.5] bg-white"
       >
         {item.image ? (
           <Image
             src={item.image}
             alt={item.name}
             fill
-            className="object-cover"
+            className="object-contain"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -186,38 +188,6 @@ export function DraggableItem({
                 onSubmit={localHandleSubmit(onSubmit)}
                 className="space-y-4"
               >
-                <div className="flex flex-col gap-2 w-full items-center justify-center">
-                  <div
-                    className={cn(
-                      'relative flex items-center justify-center w-[300px] aspect-square overflow-hidden rounded-md border-2',
-                      errors.image
-                        ? 'border-red-500 border-solid'
-                        : 'border-dashed'
-                    )}
-                  >
-                    {localImage ? (
-                      <Image
-                        src={localImage}
-                        alt="Banner"
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-white flex items-center justify-center">
-                        <Icon
-                          icon="image-stack"
-                          family="duotone"
-                          className="text-4xl"
-                        />
-                      </div>
-                    )}
-                  </div>
-                  {errors.image && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.image.message}
-                    </p>
-                  )}
-                </div>
                 <div className="space-y-1">
                   <p className="font-medium text-sm">Nome</p>
                   <div className="flex w-full items-center gap-2">
@@ -277,6 +247,20 @@ export function DraggableItem({
                       </p>
                     )}
                   </div>
+                </div>
+
+                <div className="flex flex-col gap-2 w-full items-center justify-center">
+                  <ImageUpload
+                    slug={item.id}
+                    value={localImage}
+                    onChange={url => localSetValue('image', url)}
+                    onRemove={() => localSetValue('image', '')}
+                  />
+                  {errors.image && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.image.message}
+                    </p>
+                  )}
                 </div>
 
                 <Button type="submit" className="w-full" leftIcon="save">

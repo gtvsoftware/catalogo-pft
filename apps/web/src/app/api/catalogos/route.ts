@@ -5,6 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
+    const sellerOid = searchParams.get('sellerOid')
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
 
@@ -19,17 +20,25 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    const total = await prisma.catalogo.count({ where })
-
-    const catalogos = await prisma.catalogo.findMany({
+    // First, get all catalogos matching the search criteria
+    let catalogos = await prisma.catalogo.findMany({
       where,
-      skip,
-      take: limit,
       orderBy: { createdAt: 'desc' }
     })
 
+    // Filter by seller if sellerOid is provided
+    if (sellerOid) {
+      catalogos = catalogos.filter((catalogo: any) => {
+        return catalogo.seller && catalogo.seller.id === sellerOid
+      })
+    }
+
+    // Calculate total and apply pagination manually
+    const total = catalogos.length
+    const paginatedCatalogos = catalogos.slice(skip, skip + limit)
+
     return NextResponse.json({
-      catalogos,
+      catalogos: paginatedCatalogos,
       total,
       page,
       limit,

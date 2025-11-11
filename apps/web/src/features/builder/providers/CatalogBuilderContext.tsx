@@ -1,6 +1,7 @@
 'use client'
 
 import { ObjectId } from 'bson'
+import type { User } from 'next-auth'
 import React, {
   createContext,
   useContext,
@@ -52,10 +53,12 @@ const CatalogBuilderContext = createContext<
 
 export function CatalogBuilderProvider({
   children,
-  catalogId
+  catalogId,
+  loggedUser
 }: {
   children: React.ReactNode
   catalogId: string
+  loggedUser: User
 }) {
   const [viewMode, setViewMode] = useState<ViewMode>('edit')
   const [activeTab, setActiveTab] = useState('info')
@@ -69,7 +72,11 @@ export function CatalogBuilderProvider({
       id: catalogId,
       slug: '',
       title: '',
-      sellerName: '',
+      seller: {
+        id: loggedUser.oid,
+        name: loggedUser.name,
+        picture: loggedUser.picture
+      },
       phoneContact: '',
       availabilityStart: '',
       availabilityEnd: '',
@@ -108,7 +115,7 @@ export function CatalogBuilderProvider({
             id: catalog.id,
             slug: catalog.slug || '',
             title: catalog.title || '',
-            sellerName: catalog.sellerName || '',
+            seller: catalog.seller,
             phoneContact: catalog.phoneContact || '',
             availabilityStart: catalog.availabilityStart || '',
             availabilityEnd: catalog.availabilityEnd || '',
@@ -139,7 +146,7 @@ export function CatalogBuilderProvider({
       slug: formData.slug,
       title: formData.title,
       cover: formData.cover,
-      sellerName: formData.sellerName,
+      seller: formData.seller,
       phoneContact: formData.phoneContact,
       availabilityStart: formData.availabilityStart,
       availabilityEnd: formData.availabilityEnd,

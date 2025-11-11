@@ -1,3 +1,4 @@
+import { AuthProvider } from '@terraviva/auth'
 import { ThemeProvider } from '@terraviva/ui/providers'
 import type { Metadata } from 'next'
 
@@ -9,9 +10,9 @@ export default async function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className="font-sans w-full">
-        {/* <TerraVivaAuthProvider> */}
-        <ThemeProvider>{children}</ThemeProvider>
-        {/* </TerraVivaAuthProvider> */}
+        <AuthProvider publicPaths={['/visualizar']}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   )
