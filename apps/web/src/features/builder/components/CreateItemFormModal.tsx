@@ -156,21 +156,22 @@ export function CreateItemFormModal({
               </div>
             </div>
 
-            <div className="space-y-2">
-              <p className="font-medium text-sm">Imagem</p>
-              <ImageUpload
-                enableCrop
-                cropAspect={3 / 4}
-                slug={formValues.getValues('id')}
-                catalogId={catalogId}
-                value={localImage}
-                onChange={url =>
-                  localSetValue('image', url, { shouldValidate: true })
-                }
-                onRemove={() =>
-                  localSetValue('image', '', { shouldValidate: true })
-                }
-              />
+            <div className="flex flex-col gap-2 w-full items-center justify-center">
+              <div className="w-full max-w-xs">
+                <ImageUpload
+                  enableCrop
+                  cropAspect={3 / 4}
+                  slug={formValues.getValues('id')}
+                  catalogId={catalogId}
+                  value={localImage}
+                  onChange={url =>
+                    localSetValue('image', url, { shouldValidate: true })
+                  }
+                  onRemove={() =>
+                    localSetValue('image', '', { shouldValidate: true })
+                  }
+                />
+              </div>
               {errors.image && (
                 <p className="text-red-500 text-xs mt-1">
                   {errors.image.message}

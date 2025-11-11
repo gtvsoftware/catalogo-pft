@@ -279,7 +279,7 @@ export function ImageUpload({
           <img
             src={value}
             alt="Preview"
-            className="object-cover w-full h-full"
+            className="object-contain w-full h-full"
           />
           {!disabled && (
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
