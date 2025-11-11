@@ -1,7 +1,6 @@
 declare type catalogoFormType = {
   id: string
   slug?: string
-  banner?: string
   title: string
   seller?: {
     name: string

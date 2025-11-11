@@ -1,3 +1,4 @@
+import { auth } from '@terraviva/auth'
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -40,6 +41,12 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await auth()
+
+    if (!session?.user) {
+      return NextResponse.json({ message: 'Não autorizado' }, { status: 401 })
+    }
+
     const { id } = await context.params
 
     const data = await request.json()
@@ -47,11 +54,8 @@ export async function PUT(
     const {
       slug,
       title,
-      caption,
-      banner,
       cover,
       seller,
-      sellerName,
       phoneContact,
       availabilityStart,
       availabilityEnd,
@@ -62,6 +66,25 @@ export async function PUT(
       where: { id }
     })
 
+    // If catalog exists, verify the user is the owner
+    if (catalogoExistente) {
+      const existingSeller = catalogoExistente.seller as any
+      if (existingSeller?.id && existingSeller.id !== session.user.oid) {
+        return NextResponse.json(
+          { message: 'Você não tem permissão para editar este catálogo' },
+          { status: 403 }
+        )
+      }
+    }
+
+    // Verify the seller in the data matches the logged user
+    if (seller?.id && seller.id !== session.user.oid) {
+      return NextResponse.json(
+        { message: 'Você não pode atribuir este catálogo a outro vendedor' },
+        { status: 403 }
+      )
+    }
+
     let catalogoAtualizado
 
     if (catalogoExistente) {
@@ -70,11 +93,8 @@ export async function PUT(
         data: {
           slug,
           title,
-          caption: caption || null,
-          banner: banner || null,
           cover,
           seller,
-          sellerName,
           phoneContact,
           availabilityStart: availabilityStart || null,
           availabilityEnd: availabilityEnd || null,
@@ -87,11 +107,8 @@ export async function PUT(
           id,
           slug,
           title,
-          caption: caption || null,
-          banner: banner || null,
           cover,
           seller,
-          sellerName,
           phoneContact,
           availabilityStart: availabilityStart || null,
           availabilityEnd: availabilityEnd || null,
@@ -114,6 +131,12 @@ export async function DELETE(
   _request: Request,
   context: { params: Promise<{ id: string }> }
 ) {
+  const session = await auth()
+
+  if (!session?.user) {
+    return Response.json({ error: 'Não autorizado' }, { status: 401 })
+  }
+
   const { id } = await context.params
 
   try {
@@ -123,6 +146,15 @@ export async function DELETE(
       return Response.json(
         { error: 'Catálogo não encontrado' },
         { status: 404 }
+      )
+    }
+
+    // Verify the user is the owner
+    const seller = catalogo.seller as any
+    if (seller?.id && seller.id !== session.user.oid) {
+      return Response.json(
+        { error: 'Você não tem permissão para excluir este catálogo' },
+        { status: 403 }
       )
     }
 

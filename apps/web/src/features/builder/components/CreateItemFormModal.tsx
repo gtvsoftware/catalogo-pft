@@ -23,9 +23,13 @@ import { ProductsModal } from './ProductsModal'
 
 interface CreateItemFormModalProps {
   append: (item: itemFormType) => void
+  catalogId: string
 }
 
-export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
+export function CreateItemFormModal({
+  append,
+  catalogId
+}: CreateItemFormModalProps) {
   const [open, setOpen] = useState(false)
 
   const formValues = useForm<itemFormType>({
@@ -158,6 +162,7 @@ export function CreateItemFormModal({ append }: CreateItemFormModalProps) {
                 enableCrop
                 cropAspect={3 / 4}
                 slug={formValues.getValues('id')}
+                catalogId={catalogId}
                 value={localImage}
                 onChange={url =>
                   localSetValue('image', url, { shouldValidate: true })

@@ -159,18 +159,18 @@ export default function Page(): React.ReactElement {
               {catalogo.sections.map((section, _index) => (
                 <div
                   key={section.id}
-                  className="w-full flex flex-col gap-4 bg-white"
+                  className="w-full flex flex-col gap-0 bg-white"
                 >
                   <h2 className="text-xl font-medium">
                     {section.title || 'Seção'}
                   </h2>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8">
                     {section.items.map(item => (
                       <div
                         key={item.id}
                         className={cn(
-                          'group flex flex-col w-full rounded-xl bg-white overflow-hidden hover:scale-[1.02] transition-transform p-6'
+                          'group flex flex-col w-full rounded-xl bg-white overflow-hidden hover:scale-[1.02] transition-transform'
                         )}
                       >
                         <div
@@ -243,7 +243,6 @@ export default function Page(): React.ReactElement {
         </a>
       )}
 
-      {/* Image Modal */}
       {selectedImage && (
         <div
           className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"

@@ -1,6 +1,8 @@
 'use client'
 
+import { toast } from '@terraviva/ui/sonner'
 import { ObjectId } from 'bson'
+import { useRouter } from 'next/navigation'
 import type { User } from 'next-auth'
 import React, {
   createContext,
@@ -60,12 +62,14 @@ export function CatalogBuilderProvider({
   catalogId: string
   loggedUser: User
 }) {
+  const router = useRouter()
   const [viewMode, setViewMode] = useState<ViewMode>('edit')
   const [activeTab, setActiveTab] = useState('info')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [coverModalOpen, setCoverModalOpen] = useState(false)
   const [_, setIsLoading] = useState(true)
   const [enableAutoSave, setEnableAutoSave] = useState(false)
+  const [isAuthorized, setIsAuthorized] = useState(true)
 
   const formValues = useForm<catalogoFormType>({
     defaultValues: {
@@ -111,6 +115,16 @@ export function CatalogBuilderProvider({
         if (response.ok) {
           const catalog = await response.json()
 
+          // Check if the logged user is the seller of this catalog
+          if (catalog.seller?.id && catalog.seller.id !== loggedUser.oid) {
+            setIsAuthorized(false)
+            toast.error('Acesso negado', {
+              description: 'Você não tem permissão para editar este catálogo.'
+            })
+            router.push('/')
+            return
+          }
+
           formValues.reset({
             id: catalog.id,
             slug: catalog.slug || '',
@@ -136,7 +150,7 @@ export function CatalogBuilderProvider({
     }
 
     loadCatalog()
-  }, [catalogId])
+  }, [catalogId, loggedUser.oid, router])
 
   const saveCatalog = async () => {
     const formData = formValues.getValues()

@@ -26,6 +26,7 @@ interface SectionProps {
 
 export function Section({ sectionIndex }: SectionProps): React.ReactElement {
   const { control, watch } = useFormContext<catalogoFormType>()
+  const catalogId = watch('id')
 
   const {
     move,
@@ -159,7 +160,7 @@ export function Section({ sectionIndex }: SectionProps): React.ReactElement {
                 />
               ))}
               {viewMode !== 'preview' && (
-                <CreateItemFormModal append={append} />
+                <CreateItemFormModal append={append} catalogId={catalogId} />
               )}
             </div>
           </SortableContext>

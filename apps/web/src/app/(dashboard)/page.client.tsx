@@ -22,7 +22,6 @@ interface Catalogo {
   id: string
   slug?: string
   title: string
-  banner?: string
   cover?: {
     enabled: boolean
     title: string

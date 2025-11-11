@@ -9,6 +9,7 @@ import Cropper, { Area, Point } from 'react-easy-crop'
 
 interface ImageUploadProps {
   slug: string
+  catalogId: string
   value?: string
   onChange: (url: string) => void
   onRemove?: () => void
@@ -21,6 +22,7 @@ interface ImageUploadProps {
 
 export function ImageUpload({
   slug,
+  catalogId,
   value,
   onChange,
   onRemove,
@@ -160,6 +162,7 @@ export function ImageUpload({
         const formData = new FormData()
         formData.append('file', file)
         formData.append('slug', slug)
+        formData.append('catalogId', catalogId)
 
         const response = await fetch('/api/upload', {
           method: 'POST',
@@ -190,7 +193,7 @@ export function ImageUpload({
         setUploading(false)
       }
     },
-    [accept, disabled, maxSize, onChange, slug]
+    [accept, disabled, maxSize, onChange, slug, catalogId]
   )
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {

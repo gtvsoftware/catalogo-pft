@@ -1,4 +1,5 @@
 import { BlobServiceClient } from '@azure/storage-blob'
+import { auth } from '@terraviva/auth'
 import { NextRequest, NextResponse } from 'next/server'
 import sharp from 'sharp'
 
@@ -12,9 +13,16 @@ if (!connectionString) {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth()
+
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
     const formData = await request.formData()
     const file = formData.get('file') as File
     const slug = formData.get('slug') as string
+    const catalogId = formData.get('catalogId') as string
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
@@ -22,6 +30,13 @@ export async function POST(request: NextRequest) {
 
     if (!slug) {
       return NextResponse.json({ error: 'No slug provided' }, { status: 400 })
+    }
+
+    if (!catalogId) {
+      return NextResponse.json(
+        { error: 'No catalogId provided' },
+        { status: 400 }
+      )
     }
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -107,7 +122,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const blobName = `${slug}.${extension}`
+    // Use catalogId prefix to ensure uniqueness across catalogs
+    const blobName = `${catalogId}/${slug}.${extension}`
     const blockBlobClient = containerClient.getBlockBlobClient(blobName)
 
     await blockBlobClient.upload(compressedBuffer, compressedBuffer.length, {
@@ -139,6 +155,12 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const session = await auth()
+
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+
     const { searchParams } = new URL(request.url)
     const filename = searchParams.get('filename')
 

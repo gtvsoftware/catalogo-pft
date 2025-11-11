@@ -30,6 +30,8 @@ export function Cover() {
   const { formValues, viewMode, setCoverModalOpen, coverModalOpen } =
     useCatalogBuilder()
 
+  const catalogId = formValues.watch('id')
+
   const coverSettings = formValues.watch('cover')
 
   const getCoverStyle = (): React.CSSProperties => {
@@ -120,7 +122,7 @@ export function Cover() {
             style={{ opacity: localOpacity / 100 }}
           />
           <div
-            className={`absolute inset-0 flex flex-col ${coverSettings.alignment === 'left' ? 'items-start justify-end text-left pb-8 pl-8' : 'items-center justify-center text-center'} p-4 sm:p-6 md:p-8`}
+            className={`absolute inset-0 flex flex-col ${coverSettings.alignment === 'left' ? 'items-start justify-end text-left' : 'items-center justify-center text-center'} p-4 md:p-8`}
           >
             {coverSettings.showTitle && (
               <input
@@ -373,6 +375,7 @@ export function Cover() {
                       enableCrop
                       cropAspect={32 / 9}
                       slug="cover"
+                      catalogId={catalogId}
                       value={coverSettings.backgroundImage}
                       onChange={url =>
                         updateCoverSettings('backgroundImage', url)

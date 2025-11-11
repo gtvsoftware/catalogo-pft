@@ -39,6 +39,7 @@ export function DraggableItem({
   const { watch, setValue } = useFormContext<catalogoFormType>()
 
   const item = watch(`sections.${sectionIndex}.items.${itemIndex}`)
+  const catalogId = watch('id')
 
   const handleDelete = async () => {
     if (item.image) {
@@ -255,6 +256,7 @@ export function DraggableItem({
                       enableCrop
                       cropAspect={3 / 4}
                       slug={item.id}
+                      catalogId={catalogId}
                       value={localImage}
                       onChange={url => localSetValue('image', url)}
                       onRemove={() => localSetValue('image', '')}

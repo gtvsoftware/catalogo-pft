@@ -14,10 +14,7 @@ export async function GET(request: NextRequest) {
     const where: any = {}
 
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { caption: { contains: search, mode: 'insensitive' } }
-      ]
+      where.title = { contains: search, mode: 'insensitive' }
     }
 
     let catalogos = await prisma.catalogo.findMany({
@@ -64,7 +61,7 @@ export async function POST(request: NextRequest) {
       body = await request.json()
     }
 
-    const { title, caption, banner, sections } = body
+    const { title, sections } = body
 
     if (!title) {
       return NextResponse.json(
@@ -76,8 +73,6 @@ export async function POST(request: NextRequest) {
     const novoCatalogo = await prisma.catalogo.create({
       data: {
         title,
-        caption: caption || null,
-        banner: banner || null,
         sections: sections || []
       }
     })
