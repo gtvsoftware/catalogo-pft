@@ -10,9 +10,13 @@ export default async function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className="font-sans w-full">
-        <AuthProvider publicPaths={['/visualizar']}>
+        {process.env.NEXT_PUBLIC_DISABLE_AUTH ? (
           <ThemeProvider>{children}</ThemeProvider>
-        </AuthProvider>
+        ) : (
+          <AuthProvider publicPaths={['/visualizar']}>
+            <ThemeProvider>{children}</ThemeProvider>
+          </AuthProvider>
+        )}
       </body>
     </html>
   )

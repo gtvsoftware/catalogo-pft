@@ -14,6 +14,7 @@ export default function Page(): React.ReactElement {
   const [loading, setLoading] = useState(true)
   const [catalogo, setCatalogo] = useState<catalogoFormType | null>(null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     if (id) {
@@ -174,25 +175,36 @@ export default function Page(): React.ReactElement {
                         )}
                       >
                         <div
-                          className="relative w-full aspect-[3/4] bg-white cursor-pointer"
+                          className="relative w-full aspect-[3/4] bg-white cursor-pointer overflow-hidden"
                           onClick={() =>
-                            item.image && setSelectedImage(item.image)
+                            item.image &&
+                            !imageErrors[item.id] &&
+                            setSelectedImage(item.image)
                           }
                         >
-                          {item.image ? (
+                          {item.image && !imageErrors[item.id] ? (
                             <Image
                               src={item.image}
-                              alt={item.name}
+                              alt={item.name || 'Produto'}
                               fill
-                              className="object-contain"
+                              className="object-cover"
+                              onError={() =>
+                                setImageErrors(prev => ({
+                                  ...prev,
+                                  [item.id]: true
+                                }))
+                              }
                             />
                           ) : (
-                            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 p-4">
                               <Icon
-                                icon="image-stack"
-                                family="duotone"
-                                className="text-gray-400 text-4xl"
+                                icon="image-slash"
+                                variant="light"
+                                className="text-gray-400 text-3xl"
                               />
+                              <span className="text-sm font-medium text-gray-500 mt-2">
+                                {imageErrors[item.id] && 'Sem imagem'}
+                              </span>
                             </div>
                           )}
                         </div>

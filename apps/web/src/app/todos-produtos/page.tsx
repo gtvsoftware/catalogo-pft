@@ -155,7 +155,6 @@ export default function FlowerCatalog() {
                     showMoreLimit={50}
                     searchable={true}
                     sortBy={['name:asc']}
-                    // transformItems={transformItems}
                   />
                 </div>
               </div>

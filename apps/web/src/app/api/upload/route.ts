@@ -1,7 +1,8 @@
 import { BlobServiceClient } from '@azure/storage-blob'
-import { auth } from '@terraviva/auth'
 import { NextRequest, NextResponse } from 'next/server'
 import sharp from 'sharp'
+
+import { authWrapper } from '@/utils/authWrapper'
 
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING
 const containerName =
@@ -13,7 +14,7 @@ if (!connectionString) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
+    const session = await authWrapper()
 
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
@@ -122,7 +123,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Use catalogId prefix to ensure uniqueness across catalogs
     const blobName = `${catalogId}/${slug}.${extension}`
     const blockBlobClient = containerClient.getBlockBlobClient(blobName)
 
@@ -133,7 +133,6 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Add timestamp to URL to bust cache when image is replaced
     const url = `${blockBlobClient.url}?t=${Date.now()}`
 
     return NextResponse.json({
@@ -157,7 +156,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await auth()
+    const session = await authWrapper()
 
     if (!session?.user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })

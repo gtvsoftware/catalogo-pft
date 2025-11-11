@@ -60,6 +60,7 @@ export function DraggableItem({
 
   const [open, setOpen] = useState(false)
 
+  const [imageError, setImageError] = useState(false)
   const localFormValues = useForm<itemFormType>({
     resolver: zodResolver(itemFormSchema),
     defaultValues: { ...item }
@@ -87,6 +88,11 @@ export function DraggableItem({
   useEffect(() => {
     if (item && open) localReset(item)
   }, [open, item])
+
+  // Reset image error when the item image changes
+  useEffect(() => {
+    setImageError(false)
+  }, [item?.image])
 
   const {
     attributes,
@@ -124,7 +130,7 @@ export function DraggableItem({
             e.stopPropagation()
             handleDelete()
           }}
-          className="absolute top-2 right-2 z-10"
+          className="absolute top-4 right-4 z-10"
           title="Excluir item"
         ></IconButton>
       )}
@@ -132,22 +138,26 @@ export function DraggableItem({
       <div
         {...(viewMode === 'edit' ? listeners : {})}
         {...(viewMode === 'edit' ? attributes : {})}
-        className="relative w-full aspect-[3/4] bg-white"
+        className="relative w-full aspect-[3/4] bg-white overflow-hidden"
       >
-        {item.image ? (
+        {item.image && !imageError ? (
           <Image
             src={item.image}
-            alt={item.name}
+            alt={item.name || 'Produto'}
             fill
-            className="object-contain"
+            className="object-cover"
+            onError={() => setImageError(true)}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 p-4">
             <Icon
-              icon="image-stack"
-              family="duotone"
-              className="text-gray-400 text-4xl"
+              icon="image-slash"
+              variant="light"
+              className="text-gray-400 text-3xl"
             />
+            <span className="text-sm font-medium text-gray-500 mt-2">
+              Produto sem imagem
+            </span>
           </div>
         )}
       </div>

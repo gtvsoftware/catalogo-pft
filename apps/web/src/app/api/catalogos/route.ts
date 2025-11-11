@@ -24,7 +24,13 @@ export async function GET(request: NextRequest) {
 
     if (sellerOid) {
       catalogos = catalogos.filter((catalogo: any) => {
-        return catalogo.seller && catalogo.seller.id === sellerOid
+        const isSeller = catalogo.seller && catalogo.seller.id === sellerOid
+        const isSharedWith =
+          catalogo.sharedWith &&
+          Array.isArray(catalogo.sharedWith) &&
+          catalogo.sharedWith.some((shared: any) => shared.id === sellerOid)
+
+        return isSeller || isSharedWith
       })
     }
 

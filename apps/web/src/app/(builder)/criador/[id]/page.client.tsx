@@ -33,7 +33,7 @@ function FlowerCatalogBuilderContent() {
 }
 
 interface FlowerCatalogBuilderProps {
-  user: User
+  user: Partial<User>
 }
 
 export default function FlowerCatalogBuilder({
@@ -47,7 +47,6 @@ export default function FlowerCatalogBuilder({
 
   useEffect(() => {
     const checkAuthorization = async () => {
-      // For new catalogs, allow access
       if (catalogId === 'novo') {
         setIsAuthorized(true)
         setIsChecking(false)
@@ -60,7 +59,6 @@ export default function FlowerCatalogBuilder({
         if (response.ok) {
           const catalog = await response.json()
 
-          // Check if the logged user is the seller of this catalog
           if (catalog.seller?.id && catalog.seller.id !== user.oid) {
             toast.error('Acesso negado', {
               description: 'Você não tem permissão para editar este catálogo.'
@@ -71,7 +69,6 @@ export default function FlowerCatalogBuilder({
 
           setIsAuthorized(true)
         } else if (response.status === 404) {
-          // Catalog doesn't exist yet, allow creation
           setIsAuthorized(true)
         } else {
           toast.error('Erro ao carregar catálogo')

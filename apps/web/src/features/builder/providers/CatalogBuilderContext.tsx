@@ -33,20 +33,17 @@ export type ViewMode = 'edit' | 'preview'
 export type CatalogBuilderContextType = {
   viewMode: ViewMode
   setViewMode: (mode: ViewMode) => void
-  activeTab: string
-  setActiveTab: (tab: string) => void
   sidebarOpen: boolean
   setSidebarOpen: (open: boolean) => void
   coverModalOpen: boolean
   setCoverModalOpen: (open: boolean) => void
-
   formValues: UseFormReturn<catalogoFormType>
-
   isSaving: boolean
   lastSaved: Date | null
-
   formatDateRange: () => string
   getCoverStyle: () => React.CSSProperties
+  isMounted: boolean
+  setIsMounted: (isMounted: boolean) => void
 }
 
 const CatalogBuilderContext = createContext<
@@ -60,16 +57,16 @@ export function CatalogBuilderProvider({
 }: {
   children: React.ReactNode
   catalogId: string
-  loggedUser: User
+  loggedUser: Partial<User>
 }) {
   const router = useRouter()
   const [viewMode, setViewMode] = useState<ViewMode>('edit')
-  const [activeTab, setActiveTab] = useState('info')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [coverModalOpen, setCoverModalOpen] = useState(false)
   const [_, setIsLoading] = useState(true)
   const [enableAutoSave, setEnableAutoSave] = useState(false)
   const [_isAuthorized, setIsAuthorized] = useState(true)
+  const [isMounted, setIsMounted] = useState(false)
 
   const formValues = useForm<catalogoFormType>({
     defaultValues: {
@@ -84,6 +81,7 @@ export function CatalogBuilderProvider({
       phoneContact: '',
       availabilityStart: '',
       availabilityEnd: '',
+      sharedWith: [],
       cover: {
         enabled: true,
         title: 'Título',
@@ -115,7 +113,6 @@ export function CatalogBuilderProvider({
         if (response.ok) {
           const catalog = await response.json()
 
-          // Check if the logged user is the seller of this catalog
           if (catalog.seller?.id && catalog.seller.id !== loggedUser.oid) {
             setIsAuthorized(false)
             toast.error('Acesso negado', {
@@ -133,11 +130,11 @@ export function CatalogBuilderProvider({
             phoneContact: catalog.phoneContact || '',
             availabilityStart: catalog.availabilityStart || '',
             availabilityEnd: catalog.availabilityEnd || '',
+            sharedWith: catalog.sharedWith || [],
             cover: catalog.cover || formValues.getValues().cover,
             sections: catalog.sections || formValues.getValues().sections
           })
         }
-        // If catalog doesn't exist (404), keep default values
       } catch (error) {
         console.error('Error loading catalog:', error)
       } finally {
@@ -164,6 +161,7 @@ export function CatalogBuilderProvider({
       phoneContact: formData.phoneContact,
       availabilityStart: formData.availabilityStart,
       availabilityEnd: formData.availabilityEnd,
+      sharedWith: formData.sharedWith || [],
       sections: formData.sections
     }
 
@@ -247,12 +245,12 @@ export function CatalogBuilderProvider({
   const value: CatalogBuilderContextType = {
     viewMode,
     setViewMode,
-    activeTab,
-    setActiveTab,
     sidebarOpen,
     setSidebarOpen,
     coverModalOpen,
     setCoverModalOpen,
+    isMounted,
+    setIsMounted,
     formValues,
     isSaving,
     lastSaved,

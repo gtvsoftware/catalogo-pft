@@ -1,9 +1,9 @@
-import { auth } from '@terraviva/auth'
+import { authWrapper } from '@/utils/authWrapper'
 
 import CatalogosListPage from './page.client'
 
 export default async function () {
-  const session = await auth()
+  const session = await authWrapper()
 
   if (!session) {
     return <></>

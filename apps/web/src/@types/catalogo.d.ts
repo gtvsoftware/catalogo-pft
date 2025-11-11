@@ -10,6 +10,11 @@ declare type catalogoFormType = {
   phoneContact?: string
   availabilityStart?: string
   availabilityEnd?: string
+  sharedWith?: Array<{
+    id: string
+    name: string | null
+    picture: string | null
+  }>
   cover?: {
     enabled: boolean
     title: string

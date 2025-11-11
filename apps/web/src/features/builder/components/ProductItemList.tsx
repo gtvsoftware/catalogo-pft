@@ -33,7 +33,7 @@ export function ProductItemList({ item, onClick }: ProductCardProps) {
           />
         ) : (
           <div className="flex items-center justify-center w-full h-full text-gray-400">
-            <Icon icon="image-slash" className="w-6 h-6" />
+            <Icon icon="image-slash" variant="light" className="w-6 h-6" />
           </div>
         )}
 

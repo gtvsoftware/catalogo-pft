@@ -1,6 +1,5 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@terraviva/ui/avatar'
 import { Button, IconButton } from '@terraviva/ui/button'
 import { Card, CardContent } from '@terraviva/ui/card'
 import {
@@ -14,9 +13,12 @@ import { Input } from '@terraviva/ui/input'
 import { PaginationAndPerPage } from '@terraviva/ui/pagination-and-per-page'
 import { Separator } from '@terraviva/ui/separator'
 import { toast } from '@terraviva/ui/sonner'
+import { ObjectID } from 'bson'
 import { useRouter } from 'next/navigation'
 import type { User } from 'next-auth'
 import { Fragment, useEffect, useState } from 'react'
+
+import Avatar from '@/components/Avatar'
 
 interface Catalogo {
   id: string
@@ -38,6 +40,11 @@ interface Catalogo {
     picture: string
     id: string
   }
+  sharedWith?: Array<{
+    id: string
+    name: string | null
+    picture: string | null
+  }>
   phoneContact?: string
   availabilityStart?: string
   availabilityEnd?: string
@@ -46,7 +53,7 @@ interface Catalogo {
   updatedAt: string
 }
 
-export default function CatalogosListPage({ user }: { user: User }) {
+export default function CatalogosListPage({ user }: { user: Partial<User> }) {
   const router = useRouter()
   const [catalogos, setCatalogos] = useState<Catalogo[]>([])
   const [loading, setLoading] = useState(true)
@@ -55,6 +62,7 @@ export default function CatalogosListPage({ user }: { user: User }) {
   const [perPage, setPerPage] = useState(10)
   const [search, setSearch] = useState('')
   const [searchDebounce, setSearchDebounce] = useState('')
+  const [duplicatingId, setDuplicatingId] = useState<string | null>(null)
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -70,7 +78,7 @@ export default function CatalogosListPage({ user }: { user: User }) {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: perPage.toString(),
-        sellerOid: user.oid,
+        sellerOid: user.oid!,
         ...(searchDebounce && { search: searchDebounce })
       })
 
@@ -124,6 +132,121 @@ export default function CatalogosListPage({ user }: { user: User }) {
     }
   }
 
+  const handleDuplicate = async (catalogo: Catalogo) => {
+    setDuplicatingId(catalogo.id)
+    const toastId = toast.loading('Duplicando catálogo...', {
+      description: 'Preparando dados...',
+      duration: Infinity
+    })
+
+    try {
+      toast.loading('Duplicando catálogo...', {
+        id: toastId,
+        description: 'Carregando dados do catálogo...',
+        duration: Infinity
+      })
+      const response = await fetch(`/api/catalogos/${catalogo.id}`)
+      if (!response.ok) {
+        throw new Error('Erro ao carregar catálogo')
+      }
+
+      const fullCatalogo = await response.json()
+
+      const newId = new ObjectID().toString()
+
+      toast.loading('Duplicando catálogo...', {
+        id: toastId,
+        description: 'Copiando imagens...',
+        duration: Infinity
+      })
+      const duplicateImagesResponse = await fetch('/api/catalogos/duplicate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sourceCatalogId: catalogo.id,
+          targetCatalogId: newId
+        })
+      })
+
+      if (!duplicateImagesResponse.ok) {
+        throw new Error('Erro ao copiar imagens')
+      }
+
+      const { copiedCount } = await duplicateImagesResponse.json()
+
+      const remapImageUrls = (obj: any): any => {
+        if (!obj) return obj
+
+        if (typeof obj === 'string') {
+          return obj.replace(new RegExp(`/${catalogo.id}/`, 'g'), `/${newId}/`)
+        }
+
+        if (Array.isArray(obj)) {
+          return obj.map(item => remapImageUrls(item))
+        }
+
+        if (typeof obj === 'object') {
+          const newObj: any = {}
+          for (const key in obj) {
+            newObj[key] = remapImageUrls(obj[key])
+          }
+          return newObj
+        }
+
+        return obj
+      }
+
+      toast.loading('Duplicando catálogo...', {
+        id: toastId,
+        description: 'Atualizando referências de imagens...',
+        duration: Infinity
+      })
+      const remappedSections = remapImageUrls(fullCatalogo.sections)
+
+      toast.loading('Duplicando catálogo...', {
+        id: toastId,
+        description: 'Criando catálogo duplicado...',
+        duration: Infinity
+      })
+      const newCatalogo = {
+        ...fullCatalogo,
+        sections: remappedSections,
+        slug: undefined,
+        title: `${fullCatalogo.title} (Cópia)`,
+        seller: {
+          id: user.oid,
+          name: user.name,
+          picture: user.picture
+        },
+        sharedWith: []
+      }
+
+      const createResponse = await fetch(`/api/catalogos/${newId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCatalogo)
+      })
+
+      if (!createResponse.ok) {
+        throw new Error('Erro ao duplicar catálogo')
+      }
+
+      const created = await createResponse.json()
+      toast.success(
+        `Catálogo duplicado com sucesso${copiedCount > 0 ? ` (${copiedCount} imagens copiadas)` : ''}`,
+        { id: toastId }
+      )
+      router.push(`/criador/${created.id}`)
+    } catch (error) {
+      toast.error('Erro ao duplicar catálogo', {
+        id: toastId,
+        description:
+          error instanceof Error ? error.message : 'Erro desconhecido'
+      })
+      setDuplicatingId(null)
+    }
+  }
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr + 'T00:00:00')
     return date.toLocaleDateString('pt-BR', {
@@ -145,6 +268,10 @@ export default function CatalogosListPage({ user }: { user: User }) {
     if (!catalogo.slug) {
       copyToClipboard(linkById, 'Link')
     }
+  }
+
+  const isOwner = (catalogo: Catalogo) => {
+    return catalogo.seller?.id === user.oid
   }
 
   const totalPages = Math.ceil(totalCount / perPage)
@@ -273,77 +400,123 @@ export default function CatalogosListPage({ user }: { user: User }) {
                         </div>
 
                         <div className="flex items-center gap-2 pt-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              router.push(`/criador/${catalogo.id}`)
-                            }
-                            className="flex-1"
-                            leftIcon="pencil"
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              router.push(`/visualizar/${catalogo.id}`)
-                            }
-                            className="flex-1"
-                            leftIcon="eye"
-                          >
-                            Ver
-                          </Button>
-                          {catalogo.slug ? (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
+                          {isOwner(catalogo) ? (
+                            <>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  router.push(`/criador/${catalogo.id}`)
+                                }
+                                className="flex-1"
+                                leftIcon="pencil"
+                              >
+                                Editar
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  window.open(
+                                    `/visualizar/${catalogo.id}`,
+                                    '_blank'
+                                  )
+                                }
+                                className="flex-1"
+                                leftIcon="eye"
+                              >
+                                Ver
+                              </Button>
+                              {catalogo.slug ? (
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <IconButton
+                                      variant="outline"
+                                      size="sm"
+                                      icon="link"
+                                    />
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuItem
+                                      onClick={() =>
+                                        copyToClipboard(
+                                          `${window.location.origin}/visualizar/${catalogo.id}`,
+                                          'Link por ID'
+                                        )
+                                      }
+                                    >
+                                      <Icon
+                                        icon="copy"
+                                        className="mr-2 h-4 w-4"
+                                      />
+                                      Copiar link por ID
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() =>
+                                        copyToClipboard(
+                                          `${window.location.origin}/visualizar/${catalogo.slug}`,
+                                          'Link por Slug'
+                                        )
+                                      }
+                                    >
+                                      <Icon
+                                        icon="copy"
+                                        className="mr-2 h-4 w-4"
+                                      />
+                                      Copiar link por Slug
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              ) : (
                                 <IconButton
                                   variant="outline"
                                   size="sm"
+                                  onClick={() => handleCopyLink(catalogo)}
                                   icon="link"
                                 />
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    copyToClipboard(
-                                      `${window.location.origin}/visualizar/${catalogo.id}`,
-                                      'Link por ID'
-                                    )
-                                  }
-                                >
-                                  <Icon icon="copy" className="mr-2 h-4 w-4" />
-                                  Copiar link por ID
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    copyToClipboard(
-                                      `${window.location.origin}/visualizar/${catalogo.slug}`,
-                                      'Link por Slug'
-                                    )
-                                  }
-                                >
-                                  <Icon icon="copy" className="mr-2 h-4 w-4" />
-                                  Copiar link por Slug
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                              )}
+                              <IconButton
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDelete(catalogo.id)}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                icon="trash"
+                              />
+                            </>
                           ) : (
-                            <IconButton
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleCopyLink(catalogo)}
-                              icon="link"
-                            />
+                            <>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  window.open(
+                                    `/visualizar/${catalogo.id}`,
+                                    '_blank'
+                                  )
+                                }
+                                className="flex-1"
+                                leftIcon="eye"
+                              >
+                                Ver
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDuplicate(catalogo)}
+                                className="flex-1"
+                                leftIcon={
+                                  duplicatingId === catalogo.id
+                                    ? 'spinner'
+                                    : 'copy'
+                                }
+                                disabled={duplicatingId === catalogo.id}
+                              >
+                                {duplicatingId === catalogo.id
+                                  ? 'Duplicando...'
+                                  : 'Duplicar'}
+                              </Button>
+                            </>
                           )}
-                          <IconButton
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDelete(catalogo.id)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            icon="trash"
-                          />
                         </div>
                       </CardContent>
                     </Card>
@@ -387,25 +560,7 @@ export default function CatalogosListPage({ user }: { user: User }) {
                         <td className="p-4 text-muted-foreground text-sm">
                           {catalogo.seller?.name ? (
                             <div className="flex items-center gap-2">
-                              <Avatar className="h-8 w-8">
-                                <AvatarImage
-                                  style={{ objectFit: 'cover' }}
-                                  src={
-                                    catalogo.seller.picture
-                                      ? `https://megtv2.blob.core.windows.net/public/avatars/${catalogo.seller.picture}`
-                                      : undefined
-                                  }
-                                  alt={catalogo.seller.name}
-                                />
-                                <AvatarFallback className="bg-blue-100 text-blue-700 font-medium text-xs">
-                                  {catalogo.seller.name
-                                    .split(' ')
-                                    .map(n => n[0])
-                                    .join('')
-                                    .toUpperCase()
-                                    .slice(0, 2)}
-                                </AvatarFallback>
-                              </Avatar>
+                              <Avatar image={catalogo.seller.picture} />
                               <span>{catalogo.seller.name}</span>
                             </div>
                           ) : (
@@ -435,82 +590,121 @@ export default function CatalogosListPage({ user }: { user: User }) {
                         </td>
                         <td className="p-4">
                           <div className="flex items-center justify-end gap-1">
-                            <IconButton
-                              variant="ghost"
-                              size="sm"
-                              onClick={() =>
-                                router.push(`/criador/${catalogo.id}`)
-                              }
-                              title="Editar"
-                              icon="pencil"
-                            />
-                            <IconButton
-                              variant="ghost"
-                              size="sm"
-                              onClick={() =>
-                                router.push(`/visualizar/${catalogo.id}`)
-                              }
-                              title="Visualizar"
-                              icon="eye"
-                            />
-                            {catalogo.slug ? (
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
+                            {isOwner(catalogo) ? (
+                              <>
+                                <IconButton
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    router.push(`/criador/${catalogo.id}`)
+                                  }
+                                  title="Editar"
+                                  icon="pencil"
+                                />
+                                <IconButton
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    window.open(
+                                      `/visualizar/${catalogo.id}`,
+                                      '_blank'
+                                    )
+                                  }
+                                  title="Visualizar"
+                                  icon="eye"
+                                />
+                                {catalogo.slug ? (
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <IconButton
+                                        variant="ghost"
+                                        size="sm"
+                                        icon="link"
+                                        title="Copiar link"
+                                      />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuItem
+                                        onClick={() =>
+                                          copyToClipboard(
+                                            `${window.location.origin}/visualizar/${catalogo.id}`,
+                                            'Link por ID'
+                                          )
+                                        }
+                                      >
+                                        <Icon
+                                          icon="copy"
+                                          className="mr-2 h-4 w-4"
+                                        />
+                                        Copiar link por ID
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem
+                                        onClick={() =>
+                                          copyToClipboard(
+                                            `${window.location.origin}/visualizar/${catalogo.slug}`,
+                                            'Link por Slug'
+                                          )
+                                        }
+                                      >
+                                        <Icon
+                                          icon="copy"
+                                          className="mr-2 h-4 w-4"
+                                        />
+                                        Copiar link por Slug
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                ) : (
                                   <IconButton
                                     variant="ghost"
                                     size="sm"
-                                    icon="link"
+                                    onClick={() => handleCopyLink(catalogo)}
                                     title="Copiar link"
+                                    icon="link"
                                   />
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem
-                                    onClick={() =>
-                                      copyToClipboard(
-                                        `${window.location.origin}/visualizar/${catalogo.id}`,
-                                        'Link por ID'
-                                      )
-                                    }
-                                  >
-                                    <Icon
-                                      icon="copy"
-                                      className="mr-2 h-4 w-4"
-                                    />
-                                    Copiar link por ID
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() =>
-                                      copyToClipboard(
-                                        `${window.location.origin}/visualizar/${catalogo.slug}`,
-                                        'Link por Slug'
-                                      )
-                                    }
-                                  >
-                                    <Icon
-                                      icon="copy"
-                                      className="mr-2 h-4 w-4"
-                                    />
-                                    Copiar link por Slug
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                                )}
+                                <IconButton
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDelete(catalogo.id)}
+                                  title="Excluir"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  icon="trash"
+                                />
+                              </>
                             ) : (
-                              <IconButton
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleCopyLink(catalogo)}
-                                title="Copiar link"
-                                icon="link"
-                              />
+                              <>
+                                <IconButton
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    window.open(
+                                      `/visualizar/${catalogo.id}`,
+                                      '_blank'
+                                    )
+                                  }
+                                  title="Visualizar"
+                                  icon="eye"
+                                />
+                                <IconButton
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDuplicate(catalogo)}
+                                  title="Duplicar"
+                                  icon={
+                                    duplicatingId === catalogo.id
+                                      ? 'spinner'
+                                      : 'copy'
+                                  }
+                                  disabled={duplicatingId === catalogo.id}
+                                  className={
+                                    duplicatingId === catalogo.id
+                                      ? 'animate-spin'
+                                      : ''
+                                  }
+                                />
+                              </>
                             )}
-                            <IconButton
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDelete(catalogo.id)}
-                              title="Excluir"
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                              icon="trash"
-                            />
                           </div>
                         </td>
                       </tr>

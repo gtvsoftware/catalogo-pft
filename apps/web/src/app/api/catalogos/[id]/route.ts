@@ -1,6 +1,7 @@
-import { auth } from '@terraviva/auth'
 import { prisma } from '@terraviva/db-catalogo-pft'
 import { NextRequest, NextResponse } from 'next/server'
+
+import { authWrapper } from '@/utils/authWrapper'
 
 export async function GET(
   _request: NextRequest,
@@ -41,7 +42,7 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
+    const session = await authWrapper()
 
     if (!session?.user) {
       return NextResponse.json({ message: 'Não autorizado' }, { status: 401 })
@@ -59,6 +60,7 @@ export async function PUT(
       phoneContact,
       availabilityStart,
       availabilityEnd,
+      sharedWith,
       sections
     } = data
 
@@ -66,7 +68,6 @@ export async function PUT(
       where: { id }
     })
 
-    // If catalog exists, verify the user is the owner
     if (catalogoExistente) {
       const existingSeller = catalogoExistente.seller as any
       if (existingSeller?.id && existingSeller.id !== session.user.oid) {
@@ -77,7 +78,6 @@ export async function PUT(
       }
     }
 
-    // Verify the seller in the data matches the logged user
     if (seller?.id && seller.id !== session.user.oid) {
       return NextResponse.json(
         { message: 'Você não pode atribuir este catálogo a outro vendedor' },
@@ -98,6 +98,7 @@ export async function PUT(
           phoneContact,
           availabilityStart: availabilityStart || null,
           availabilityEnd: availabilityEnd || null,
+          sharedWith: sharedWith || [],
           sections: sections || []
         }
       })
@@ -112,9 +113,37 @@ export async function PUT(
           phoneContact,
           availabilityStart: availabilityStart || null,
           availabilityEnd: availabilityEnd || null,
+          sharedWith: sharedWith || [],
           sections: sections || []
         }
       })
+    }
+
+    try {
+      if (seller?.id) {
+        const now = new Date()
+
+        await prisma.$runCommandRaw({
+          update: 'sellers',
+          updates: [
+            {
+              q: { _id: seller.id },
+              u: {
+                $set: {
+                  _id: seller.id,
+                  name: seller.name ?? null,
+                  picture: seller.picture ?? null,
+                  updated_at: now
+                },
+                $setOnInsert: { created_at: now }
+              },
+              upsert: true
+            }
+          ]
+        })
+      }
+    } catch (err) {
+      console.error('Erro ao upsert seller:', err)
     }
 
     return NextResponse.json(catalogoAtualizado)
@@ -131,7 +160,7 @@ export async function DELETE(
   _request: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth()
+  const session = await authWrapper()
 
   if (!session?.user) {
     return Response.json({ error: 'Não autorizado' }, { status: 401 })
@@ -149,7 +178,6 @@ export async function DELETE(
       )
     }
 
-    // Verify the user is the owner
     const seller = catalogo.seller as any
     if (seller?.id && seller.id !== session.user.oid) {
       return Response.json(

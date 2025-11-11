@@ -19,6 +19,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'terravivabr.blob.core.windows.net',
         pathname: '/**'
+      }, {
+        protocol: 'https',
+        hostname: 'megtv2.blob.core.windows.net',
+        pathname: '/**'
       }
     ]
   }

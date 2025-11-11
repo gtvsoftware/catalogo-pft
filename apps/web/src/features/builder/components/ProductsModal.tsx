@@ -149,7 +149,7 @@ const InfiniteHits = ({ onItemClick }: { onItemClick: (hit: any) => void }) => {
         }
       },
       {
-        root: null, // Use viewport instead of scroll container
+        root: null,
         rootMargin: '400px',
         threshold: 0
       }
