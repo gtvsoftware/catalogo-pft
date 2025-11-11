@@ -15,8 +15,13 @@ const nextConfig = {
   turbopack: {},
   images: {
     remotePatterns: [
-      new URL('https://terravivabr.blob.core.windows.net/**')]
-  },
+      {
+        protocol: 'https',
+        hostname: 'terravivabr.blob.core.windows.net',
+        pathname: '/**'
+      }
+    ]
+  }
 };
 
 export default nextConfig;
