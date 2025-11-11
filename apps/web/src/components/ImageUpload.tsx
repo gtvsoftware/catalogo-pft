@@ -25,7 +25,7 @@ export function ImageUpload({
   onChange,
   onRemove,
   disabled = false,
-  maxSize = 5,
+  maxSize = 10,
   accept = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   enableCrop = false,
   cropAspect = 16 / 9
