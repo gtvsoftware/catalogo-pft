@@ -338,70 +338,65 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                       className="overflow-hidden border-none rounded-none shadow-none transition-shadow py-2 px-0"
                     >
                       <CardContent className="p-0 space-y-3">
-                        <div className="space-y-2">
-                          <h3 className="font-medium text-base line-clamp-1">
-                            {catalogo?.title?.length > 0
-                              ? catalogo.title
-                              : 'Sem título'}
-                          </h3>
-                          <div className="space-y-1 text-sm text-muted-foreground">
-                            {/* {catalogo.seller?.name && (
-                            <div className="flex items-center gap-2">
-                              <Avatar className="h-6 w-6">
-                                <AvatarImage
-                                  style={{ objectFit: 'cover' }}
-                                  src={
-                                    catalogo.seller.picture
-                                      ? `https://megtv2.blob.core.windows.net/public/avatars/${catalogo.seller.picture}`
-                                      : undefined
-                                  }
-                                  alt={catalogo.seller.name}
+                        <div className="flex gap-4 mb-4">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-base mb-2 line-clamp-2">
+                              {catalogo?.title?.length > 0
+                                ? catalogo.title
+                                : 'Sem título'}
+                            </h3>
+
+                            <div className="space-y-1.5 text-xs text-gray-600">
+                              {(catalogo.availabilityStart ||
+                                catalogo.availabilityEnd) && (
+                                <div className="flex items-center gap-1.5">
+                                  <Icon
+                                    icon="calendar"
+                                    className="h-3.5 w-3.5 flex-shrink-0"
+                                  />
+                                  <span className="truncate">
+                                    {catalogo.availabilityStart &&
+                                      formatDate(catalogo.availabilityStart)}
+                                    {catalogo.availabilityStart &&
+                                      catalogo.availabilityEnd &&
+                                      ' - '}
+                                    {catalogo.availabilityEnd &&
+                                      formatDate(catalogo.availabilityEnd)}
+                                  </span>
+                                </div>
+                              )}
+                              <div className="flex items-center gap-1.5">
+                                <Icon
+                                  icon="clock"
+                                  className="h-3.5 w-3.5 flex-shrink-0"
                                 />
-                                <AvatarFallback className="bg-blue-100 text-blue-700 font-medium text-xs">
-                                  {catalogo.seller.name
-                                    .split(' ')
-                                    .map(n => n[0])
-                                    .join('')
-                                    .toUpperCase()
-                                    .slice(0, 2)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span>{catalogo.seller.name}</span>
-                            </div>
-                          )} */}
-                            {(catalogo.availabilityStart ||
-                              catalogo.availabilityEnd) && (
-                              <div className="flex items-center gap-2">
-                                <Icon icon="calendar" className="h-4 w-4" />
                                 <span>
-                                  {catalogo.availabilityStart &&
-                                    formatDate(catalogo.availabilityStart)}
-                                  {catalogo.availabilityStart &&
-                                    catalogo.availabilityEnd &&
-                                    ' - '}
-                                  {catalogo.availabilityEnd &&
-                                    formatDate(catalogo.availabilityEnd)}
+                                  Criado em{' '}
+                                  {new Date(
+                                    catalogo.createdAt
+                                  ).toLocaleDateString('pt-BR')}
                                 </span>
                               </div>
-                            )}
-                            <div className="flex items-center gap-2 text-xs">
-                              <Icon
-                                variant="light"
-                                icon="clock"
-                                className="h-4 w-4"
-                              />
-                              <span>
-                                Criado em{' '}
-                                {new Date(
-                                  catalogo.createdAt
-                                ).toLocaleDateString('pt-BR')}
-                              </span>
                             </div>
                           </div>
+
+                          {catalogo.seller?.name && (
+                            <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                              <Avatar
+                                image={
+                                  catalogo.seller.picture
+                                    ? `https://megtv2.blob.core.windows.net/public/avatars/${catalogo.seller.picture}`
+                                    : undefined
+                                }
+                              />
+                              <span className="text-xs text-gray-600 text-right max-w-[80px] truncate">
+                                {catalogo.seller.name}
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex items-center gap-2 pt-2">
-                          {/* View Button - Everyone */}
                           <Button
                             variant="outline"
                             size="sm"
@@ -417,7 +412,6 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                             Ver
                           </Button>
 
-                          {/* Owner-only: Edit */}
                           {isOwner(catalogo) && (
                             <Button
                               variant="outline"
@@ -432,7 +426,6 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                             </Button>
                           )}
 
-                          {/* Duplicate - Everyone */}
                           <Button
                             variant="outline"
                             size="sm"
@@ -448,7 +441,6 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                               : 'Duplicar'}
                           </Button>
 
-                          {/* Actions Menu - Link & Delete */}
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <IconButton
@@ -458,7 +450,6 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                               />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              {/* Copy Link options */}
                               {catalogo.slug ? (
                                 <>
                                   <DropdownMenuItem
@@ -499,7 +490,6 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                                 </DropdownMenuItem>
                               )}
 
-                              {/* Delete - Owner only */}
                               {isOwner(catalogo) && (
                                 <>
                                   <DropdownMenuSeparator />
@@ -590,7 +580,6 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                         </td>
                         <td className="p-4">
                           <div className="flex items-center justify-end gap-1">
-                            {/* View Button - Everyone */}
                             <IconButton
                               variant="ghost"
                               size="sm"
@@ -604,7 +593,6 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                               icon="eye"
                             />
 
-                            {/* Owner-only: Edit & Delete */}
                             {isOwner(catalogo) && (
                               <>
                                 <IconButton
@@ -628,7 +616,6 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                               </>
                             )}
 
-                            {/* Duplicate - Everyone */}
                             <IconButton
                               variant="ghost"
                               size="sm"
@@ -647,7 +634,6 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                               }
                             />
 
-                            {/* Copy Link - Everyone (ID always exists, Slug optional) */}
                             {catalogo.slug ? (
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
