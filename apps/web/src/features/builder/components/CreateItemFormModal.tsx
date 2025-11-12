@@ -40,7 +40,8 @@ export function CreateItemFormModal({
       description: '',
       price: '',
       discountPrice: '',
-      image: ''
+      image: '',
+      additionalImages: []
     }
   })
 
@@ -53,7 +54,8 @@ export function CreateItemFormModal({
     formState: { errors }
   } = formValues
 
-  const { image: localImage } = localWatch()
+  const { image: localImage, additionalImages: localAdditionalImages } =
+    localWatch()
 
   const onSubmit = (data: itemFormType) => {
     append({
@@ -70,7 +72,8 @@ export function CreateItemFormModal({
         description: '',
         price: '',
         discountPrice: '',
-        image: ''
+        image: '',
+        additionalImages: []
       })
     }
   }, [open, localReset])
@@ -89,99 +92,150 @@ export function CreateItemFormModal({
           </div>
         </DialogTrigger>
 
-        <DialogContent className="max-h-[90%] overflow-y-auto">
-          <DialogHeader>
+        <DialogContent className="w-[95vw] max-w-2xl h-[95vh] max-h-[900px] p-0 flex flex-col">
+          <DialogHeader className="px-4 py-3 sm:px-6 sm:py-4 border-b flex-shrink-0">
             <DialogTitle>Novo item</DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={localHandleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-1">
-              <p className="font-medium text-sm">Nome</p>
-              <div className="flex w-full items-center gap-2">
-                <Input
-                  {...localRegister('name')}
-                  placeholder="Nome"
-                  className={cn(errors.name && 'border-red-500')}
-                />
-                <ProductsModal
-                  buttonClassName={cn(errors.name && 'border-red-500')}
-                />
-              </div>
-              {errors.name && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
-            <div className="space-y-1">
-              <p className="font-medium text-sm">Descrição</p>
-              <Input
-                {...localRegister('description')}
-                placeholder="Descrição (opcional)"
-                className={cn(errors.description && 'border-red-500')}
-              />
-              {errors.description && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-            <div className="grid grid-cols-2 gap-2">
+          <form
+            onSubmit={localHandleSubmit(onSubmit)}
+            className="flex flex-col flex-1 overflow-hidden"
+          >
+            <div className="flex-1 overflow-y-auto px-4 py-3 sm:px-6 sm:py-4 space-y-4">
               <div className="space-y-1">
-                <p className="font-medium text-sm">Preço</p>
-                <Input
-                  {...localRegister('price')}
-                  placeholder="Preço (opcional)"
-                  className={cn(errors.price && 'border-red-500')}
-                />
-                {errors.price && (
+                <p className="font-medium text-sm">Nome</p>
+                <div className="flex w-full items-center gap-2">
+                  <Input
+                    {...localRegister('name')}
+                    placeholder="Nome"
+                    className={cn(errors.name && 'border-red-500')}
+                  />
+                  <ProductsModal
+                    buttonClassName={cn(errors.name && 'border-red-500')}
+                  />
+                </div>
+                {errors.name && (
                   <p className="text-red-500 text-xs mt-1">
-                    {errors.price.message}
+                    {errors.name.message}
                   </p>
                 )}
               </div>
-
               <div className="space-y-1">
-                <p className="font-medium text-sm">Preço com desconto</p>
+                <p className="font-medium text-sm">Descrição</p>
                 <Input
-                  {...localRegister('discountPrice')}
-                  placeholder="Preço com desconto (opcional)"
-                  className={cn(errors.discountPrice && 'border-red-500')}
+                  {...localRegister('description')}
+                  placeholder="Descrição (opcional)"
+                  className={cn(errors.description && 'border-red-500')}
                 />
-                {errors.discountPrice && (
+                {errors.description && (
                   <p className="text-red-500 text-xs mt-1">
-                    {errors.discountPrice.message}
+                    {errors.description.message}
+                  </p>
+                )}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <p className="font-medium text-sm">Preço</p>
+                  <Input
+                    {...localRegister('price')}
+                    placeholder="Preço (opcional)"
+                    className={cn(errors.price && 'border-red-500')}
+                  />
+                  {errors.price && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.price.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-1">
+                  <p className="font-medium text-sm">Preço com desconto</p>
+                  <Input
+                    {...localRegister('discountPrice')}
+                    placeholder="Preço com desconto (opcional)"
+                    className={cn(errors.discountPrice && 'border-red-500')}
+                  />
+                  {errors.discountPrice && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.discountPrice.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="font-medium text-sm">Imagem principal *</p>
+                <div className="flex flex-col items-center justify-center">
+                  <div className="w-full max-w-sm">
+                    <ImageUpload
+                      enableCrop
+                      cropAspect={3 / 4}
+                      slug={formValues.getValues('id')}
+                      catalogId={catalogId}
+                      value={localImage}
+                      onChange={url =>
+                        localSetValue('image', url, { shouldValidate: true })
+                      }
+                      onRemove={() =>
+                        localSetValue('image', '', { shouldValidate: true })
+                      }
+                    />
+                  </div>
+                  {errors.image && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.image.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="font-medium text-sm">
+                  Imagens adicionais (até 3)
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[0, 1, 2].map(index => (
+                    <div key={index} className="w-full">
+                      <ImageUpload
+                        enableCrop
+                        cropAspect={3 / 4}
+                        slug={`${formValues.getValues('id')}-additional-${index}`}
+                        catalogId={catalogId}
+                        value={localAdditionalImages?.[index] || ''}
+                        onChange={url => {
+                          const current = localAdditionalImages || []
+                          const updated = [...current]
+                          updated[index] = url
+                          localSetValue(
+                            'additionalImages',
+                            updated.filter(Boolean),
+                            { shouldValidate: true }
+                          )
+                        }}
+                        onRemove={() => {
+                          const current = localAdditionalImages || []
+                          const updated = current.filter((_, i) => i !== index)
+                          localSetValue('additionalImages', updated, {
+                            shouldValidate: true
+                          })
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {errors.additionalImages && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.additionalImages.message}
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 w-full items-center justify-center">
-              <div className="w-full max-w-xs">
-                <ImageUpload
-                  enableCrop
-                  cropAspect={3 / 4}
-                  slug={formValues.getValues('id')}
-                  catalogId={catalogId}
-                  value={localImage}
-                  onChange={url =>
-                    localSetValue('image', url, { shouldValidate: true })
-                  }
-                  onRemove={() =>
-                    localSetValue('image', '', { shouldValidate: true })
-                  }
-                />
-              </div>
-              {errors.image && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.image.message}
-                </p>
-              )}
+            <div className="border-t px-4 py-3 sm:px-6 sm:py-4 flex-shrink-0">
+              <Button type="submit" className="w-full" leftIcon="plus">
+                Adicionar item
+              </Button>
             </div>
-
-            <Button type="submit" className="w-full" leftIcon="plus">
-              Adicionar item
-            </Button>
           </form>
         </DialogContent>
       </Dialog>

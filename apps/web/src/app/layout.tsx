@@ -9,6 +9,15 @@ export default async function RootLayout({
 }: React.PropsWithChildren) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover"
+      />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent"
+      />
       <body className="font-sans w-full">
         {process.env.NEXT_PUBLIC_DISABLE_AUTH ? (
           <ThemeProvider>{children}</ThemeProvider>
@@ -24,5 +33,17 @@ export default async function RootLayout({
 
 export const metadata: Metadata = {
   title: APP_CONFIG.APP_TITLE,
-  description: APP_CONFIG.APP_DESCRIPTION
+  description: APP_CONFIG.APP_DESCRIPTION,
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: 'cover'
+  },
+  themeColor: '#ffffff',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default'
+  }
 }

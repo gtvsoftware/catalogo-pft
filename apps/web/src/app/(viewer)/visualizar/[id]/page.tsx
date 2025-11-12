@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, IconButton, LoadingSpinner } from '@terraviva/ui/button'
+import { IconButton, LoadingSpinner } from '@terraviva/ui/button'
 import { cn } from '@terraviva/ui/cn'
 import { Icon } from '@terraviva/ui/icon'
 import Image from 'next/image'
@@ -18,7 +18,67 @@ export default function Page(): React.ReactElement {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({})
   const [progress, setProgress] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
-  const [isHolding, setIsHolding] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [savedScrollPosition, setSavedScrollPosition] = useState(0)
+
+  useEffect(() => {
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+    const metaStatusBar = document.querySelector(
+      'meta[name="apple-mobile-web-app-status-bar-style"]'
+    )
+
+    if (selectedImages.length > 0) {
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', '#000000')
+      } else {
+        const meta = document.createElement('meta')
+        meta.name = 'theme-color'
+        meta.content = '#000000'
+        document.head.appendChild(meta)
+      }
+
+      if (metaStatusBar) {
+        metaStatusBar.setAttribute('content', 'black-translucent')
+      } else {
+        const meta = document.createElement('meta')
+        meta.name = 'apple-mobile-web-app-status-bar-style'
+        meta.content = 'black-translucent'
+        document.head.appendChild(meta)
+      }
+
+      document.body.style.backgroundColor = '#000000'
+      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.width = '100%'
+      document.body.style.height = '100%'
+      document.body.style.top = `-${savedScrollPosition}px`
+      document.documentElement.style.backgroundColor = '#000000'
+      document.documentElement.style.overflow = 'hidden'
+
+      const currentScroll = window.scrollY
+      window.scrollTo(0, 1)
+      setTimeout(() => window.scrollTo(0, currentScroll), 0)
+    } else {
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', '#ffffff')
+      }
+
+      if (metaStatusBar) {
+        metaStatusBar.setAttribute('content', 'default')
+      }
+
+      document.body.style.backgroundColor = ''
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.width = ''
+      document.body.style.height = ''
+      document.body.style.top = ''
+      document.documentElement.style.backgroundColor = ''
+      document.documentElement.style.overflow = ''
+
+      window.scrollTo(0, savedScrollPosition)
+    }
+  }, [selectedImages, savedScrollPosition])
 
   useEffect(() => {
     if (id) {
@@ -36,9 +96,16 @@ export default function Page(): React.ReactElement {
     }
   }, [id])
 
-  // Story progress effect
+  const handleCloseModal = () => {
+    setSelectedImages([])
+    setCurrentImageIndex(0)
+    setProgress(0)
+    setIsPaused(false)
+    setImageLoaded(false)
+  }
+
   useEffect(() => {
-    if (selectedImages.length === 0 || isPaused || isHolding) return
+    if (selectedImages.length === 0 || isPaused || !imageLoaded) return
 
     const duration = 5000
     const interval = 50
@@ -49,12 +116,12 @@ export default function Page(): React.ReactElement {
         const newProgress = prev + increment
         if (newProgress >= 100) {
           if (currentImageIndex < selectedImages.length - 1) {
-            setCurrentImageIndex(prev => prev + 1)
+            setCurrentImageIndex(currentImageIndex + 1)
+            setImageLoaded(false)
             return 0
           } else {
-            setSelectedImages([])
-            setCurrentImageIndex(0)
-            return 0
+            setTimeout(() => handleCloseModal(), 0)
+            return 100
           }
         }
         return newProgress
@@ -62,12 +129,13 @@ export default function Page(): React.ReactElement {
     }, interval)
 
     return () => clearInterval(timer)
-  }, [selectedImages, currentImageIndex, isPaused, isHolding])
+  }, [selectedImages.length, currentImageIndex, isPaused, imageLoaded])
 
   const handlePrevImage = () => {
     if (currentImageIndex > 0) {
       setCurrentImageIndex(prev => prev - 1)
       setProgress(0)
+      setImageLoaded(false)
     }
   }
 
@@ -75,18 +143,10 @@ export default function Page(): React.ReactElement {
     if (currentImageIndex < selectedImages.length - 1) {
       setCurrentImageIndex(prev => prev + 1)
       setProgress(0)
+      setImageLoaded(false)
     } else {
-      setSelectedImages([])
-      setCurrentImageIndex(0)
-      setProgress(0)
+      handleCloseModal()
     }
-  }
-
-  const handleCloseModal = () => {
-    setSelectedImages([])
-    setCurrentImageIndex(0)
-    setProgress(0)
-    setIsPaused(false)
   }
 
   const getCoverStyle = (): React.CSSProperties => {
@@ -235,9 +295,15 @@ export default function Page(): React.ReactElement {
                           className="relative w-full aspect-[3/4] bg-white cursor-pointer overflow-hidden"
                           onClick={() => {
                             if (item.image && !imageErrors[item.id]) {
-                              setSelectedImages([item.image])
+                              setSavedScrollPosition(window.scrollY)
+                              const images = [
+                                item.image,
+                                ...(item.additionalImages || [])
+                              ].filter(Boolean)
+                              setSelectedImages(images)
                               setCurrentImageIndex(0)
                               setProgress(0)
+                              setImageLoaded(false)
                             }
                           }}
                         >
@@ -316,121 +382,182 @@ export default function Page(): React.ReactElement {
 
       {selectedImages.length > 0 && (
         <div
-          className="fixed inset-0 bg-black z-[100] flex items-center justify-center"
-          onClick={handleCloseModal}
+          className="fixed top-0 left-0 right-0 bottom-0 bg-black z-[100]"
+          style={{
+            width: '100vw',
+            height: '100vh',
+            minHeight: '-webkit-fill-available'
+          }}
         >
-          <div className="absolute top-0 left-0 right-0 flex gap-1 p-2 z-10">
-            {selectedImages.map((_, index) => (
-              <div
-                key={index}
-                className="flex-1 h-0.5 bg-white/30 rounded-full overflow-hidden"
-              >
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div
+              className="absolute top-0 left-0 right-0 flex gap-1 p-2 z-10"
+              style={{ paddingTop: 'env(safe-area-inset-top)' }}
+            >
+              {selectedImages.map((_, index) => (
                 <div
-                  className="h-full bg-white transition-all duration-100 ease-linear"
-                  style={{
-                    width:
-                      index < currentImageIndex
-                        ? '100%'
-                        : index === currentImageIndex
-                          ? `${progress}%`
-                          : '0%'
-                  }}
-                />
-              </div>
-            ))}
-          </div>
+                  key={index}
+                  className="flex-1 h-0.5 bg-white/30 rounded-full overflow-hidden"
+                >
+                  <div
+                    className="h-full bg-white transition-all duration-100 ease-linear"
+                    style={{
+                      width:
+                        index < currentImageIndex
+                          ? '100%'
+                          : index === currentImageIndex
+                            ? `${progress}%`
+                            : '0%'
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
 
-          <div className="absolute top-4 right-4 flex gap-2 z-10">
-            <IconButton
-              icon={isPaused ? 'play' : 'pause'}
-              onClick={e => {
-                e.stopPropagation()
-                setIsPaused(!isPaused)
-              }}
-              className="bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors"
-              title={isPaused ? 'Retomar' : 'Pausar'}
-            />
-            <IconButton
-              icon="xmark"
-              onClick={handleCloseModal}
-              className="bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors"
-              title="Fechar"
-            />
-          </div>
-
-          <div
-            className="relative w-full h-full max-w-lg flex items-center justify-center"
-            onClick={e => {
-              e.stopPropagation()
-              setIsPaused(!isPaused)
-            }}
-          >
             <div
-              className="absolute left-0 top-0 bottom-0 w-1/3 cursor-pointer z-10"
-              onClick={e => {
-                e.stopPropagation()
-                handlePrevImage()
-              }}
-            />
-            <div
-              className="absolute right-0 top-0 bottom-0 w-1/3 cursor-pointer z-10"
-              onClick={e => {
-                e.stopPropagation()
-                handleNextImage()
-              }}
-            />
-
-            <div className="relative w-full h-full flex items-center justify-center">
-              <Image
-                src={selectedImages[currentImageIndex]}
-                alt="Product image"
-                width={1200}
-                height={1200}
-                className="object-contain w-full h-full max-h-screen"
+              className="absolute top-4 right-4 flex gap-2 z-10"
+              style={{ paddingTop: 'env(safe-area-inset-top)' }}
+            >
+              <IconButton
+                icon={isPaused ? 'play' : 'pause'}
+                onClick={e => {
+                  e.stopPropagation()
+                  setIsPaused(!isPaused)
+                }}
+                className="bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors"
+                title={isPaused ? 'Retomar' : 'Pausar'}
+              />
+              <IconButton
+                icon="xmark"
+                onClick={handleCloseModal}
+                className="bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors"
+                title="Fechar"
               />
             </div>
 
-            {currentImageIndex > 0 && (
-              <button
-                onClick={e => {
-                  e.stopPropagation()
-                  handlePrevImage()
-                }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors hidden md:block z-20"
-                title="Anterior"
-              >
-                <Icon icon="chevron-left" className="text-xl" />
-              </button>
-            )}
-            {currentImageIndex < selectedImages.length - 1 && (
-              <button
-                onClick={e => {
-                  e.stopPropagation()
-                  handleNextImage()
-                }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors hidden md:block z-20"
-                title="Próximo"
-              >
-                <Icon icon="chevron-right" className="text-xl" />
-              </button>
-            )}
-          </div>
+            <div
+              className="relative w-full h-full max-w-lg flex items-center justify-center select-none"
+              onTouchStart={e => {
+                e.preventDefault()
+                if (!e.touches[0]) return
+                const rect = e.currentTarget.getBoundingClientRect()
+                const x = e.touches[0].clientX - rect.left
+                const width = rect.width
 
-          <div className="absolute bottom-6 right-6 flex gap-3 z-10">
-            <IconButton
-              icon="arrow-down"
-              onClick={e => {
-                e.stopPropagation()
-                handleDownloadImage(selectedImages[currentImageIndex])
+                if (x < width * 0.33) {
+                  handlePrevImage()
+                } else if (x > width * 0.67) {
+                  handleNextImage()
+                } else {
+                  setIsPaused(true)
+                }
               }}
-              className="bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors"
-              title="Baixar imagem"
-            />
-            {selectedImages.length > 1 && (
-              <div className="bg-black/50 backdrop-blur-sm text-white px-3 py-2 rounded-full text-xs font-medium">
-                {currentImageIndex + 1}/{selectedImages.length}
+              onTouchEnd={e => {
+                e.preventDefault()
+                if (!e.changedTouches[0]) return
+                const rect = e.currentTarget.getBoundingClientRect()
+                const x = e.changedTouches[0].clientX - rect.left
+                const width = rect.width
+
+                if (x >= width * 0.33 && x <= width * 0.67) {
+                  setIsPaused(false)
+                }
+              }}
+              onContextMenu={e => e.preventDefault()}
+              onMouseDown={e => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const x = e.clientX - rect.left
+                const width = rect.width
+
+                if (x < width * 0.33) {
+                  handlePrevImage()
+                } else if (x > width * 0.67) {
+                  handleNextImage()
+                } else {
+                  setIsPaused(true)
+                }
+              }}
+              onMouseUp={e => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const x = e.clientX - rect.left
+                const width = rect.width
+
+                if (x >= width * 0.33 && x <= width * 0.67) {
+                  setIsPaused(false)
+                }
+              }}
+              onMouseLeave={() => {
+                setIsPaused(false)
+              }}
+            >
+              <div className="relative w-full h-full flex items-center justify-center select-none">
+                {selectedImages[currentImageIndex] && (
+                  <Image
+                    src={selectedImages[currentImageIndex]}
+                    alt="Product image"
+                    width={1200}
+                    height={1200}
+                    className="object-contain w-full h-full max-h-screen select-none pointer-events-none"
+                    draggable={false}
+                    onLoad={() => setImageLoaded(true)}
+                  />
+                )}
               </div>
-            )}
+
+              {currentImageIndex > 0 && (
+                <button
+                  onClick={e => {
+                    e.stopPropagation()
+                    handlePrevImage()
+                  }}
+                  className="opacity-0 absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors hidden md:block z-20"
+                  title="Anterior"
+                >
+                  <Icon icon="chevron-left" className="text-xl" />
+                </button>
+              )}
+              {currentImageIndex < selectedImages.length - 1 && (
+                <button
+                  onClick={e => {
+                    e.stopPropagation()
+                    handleNextImage()
+                  }}
+                  className="opacity-0 absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors hidden md:block z-20"
+                  title="Próximo"
+                >
+                  <Icon icon="chevron-right" className="text-xl" />
+                </button>
+              )}
+            </div>
+
+            <div
+              className="absolute bottom-4 right-4 flex gap-3 z-10"
+              style={{
+                paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))'
+              }}
+            >
+              <div
+                onClick={e => {
+                  e.stopPropagation()
+                  const image = selectedImages[currentImageIndex]
+                  if (image) handleDownloadImage(image)
+                }}
+                className="flex bg-black/50 hover:bg-black/70 text-white rounded-full py-3 px-3 backdrop-blur-sm transition-colors gap-1"
+              >
+                <Icon
+                  icon="arrow-down-to-bracket"
+                  className="text-lg"
+                  title="Baixar imagem"
+                />
+                <span className="text-sm">Baixar imagem</span>
+              </div>
+
+              {selectedImages.length > 1 && (
+                <div className="bg-black/50 backdrop-blur-sm text-white px-3 py-2 rounded-full text-xs font-medium">
+                  {currentImageIndex + 1}/{selectedImages.length}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

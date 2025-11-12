@@ -44,4 +44,5 @@ declare type itemFormType = {
   price?: string
   description?: string
   discountPrice?: string
+  additionalImages?: string[]
 }

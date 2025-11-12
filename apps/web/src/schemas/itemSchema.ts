@@ -34,7 +34,11 @@ export const itemFormSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   description: z.string().optional(),
   price: priceSchema,
-  discountPrice: priceSchema
+  discountPrice: priceSchema,
+  additionalImages: z
+    .array(z.string())
+    .max(3, 'Máximo de 3 imagens adicionais')
+    .optional()
 })
 
 export type itemFormType = z.infer<typeof itemFormSchema>
