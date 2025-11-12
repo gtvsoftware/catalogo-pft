@@ -13,8 +13,12 @@ export default function Page(): React.ReactElement {
   const { id } = useParams()
   const [loading, setLoading] = useState(true)
   const [catalogo, setCatalogo] = useState<catalogoFormType | null>(null)
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedImages, setSelectedImages] = useState<string[]>([])
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({})
+  const [progress, setProgress] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const [isHolding, setIsHolding] = useState(false)
 
   useEffect(() => {
     if (id) {
@@ -31,6 +35,59 @@ export default function Page(): React.ReactElement {
       setLoading(false)
     }
   }, [id])
+
+  // Story progress effect
+  useEffect(() => {
+    if (selectedImages.length === 0 || isPaused || isHolding) return
+
+    const duration = 5000
+    const interval = 50
+    const increment = (interval / duration) * 100
+
+    const timer = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + increment
+        if (newProgress >= 100) {
+          if (currentImageIndex < selectedImages.length - 1) {
+            setCurrentImageIndex(prev => prev + 1)
+            return 0
+          } else {
+            setSelectedImages([])
+            setCurrentImageIndex(0)
+            return 0
+          }
+        }
+        return newProgress
+      })
+    }, interval)
+
+    return () => clearInterval(timer)
+  }, [selectedImages, currentImageIndex, isPaused, isHolding])
+
+  const handlePrevImage = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(prev => prev - 1)
+      setProgress(0)
+    }
+  }
+
+  const handleNextImage = () => {
+    if (currentImageIndex < selectedImages.length - 1) {
+      setCurrentImageIndex(prev => prev + 1)
+      setProgress(0)
+    } else {
+      setSelectedImages([])
+      setCurrentImageIndex(0)
+      setProgress(0)
+    }
+  }
+
+  const handleCloseModal = () => {
+    setSelectedImages([])
+    setCurrentImageIndex(0)
+    setProgress(0)
+    setIsPaused(false)
+  }
 
   const getCoverStyle = (): React.CSSProperties => {
     if (!catalogo?.cover) return {}
@@ -64,7 +121,7 @@ export default function Page(): React.ReactElement {
   const handleDownloadImage = (imageUrl: string) => {
     const link = document.createElement('a')
     link.href = imageUrl
-    link.download = 'produto-imagem.jpg'
+    link.download = `produto-imagem-${currentImageIndex + 1}.jpg`
     link.target = '_blank'
     document.body.appendChild(link)
     link.click()
@@ -176,11 +233,13 @@ export default function Page(): React.ReactElement {
                       >
                         <div
                           className="relative w-full aspect-[3/4] bg-white cursor-pointer overflow-hidden"
-                          onClick={() =>
-                            item.image &&
-                            !imageErrors[item.id] &&
-                            setSelectedImage(item.image)
-                          }
+                          onClick={() => {
+                            if (item.image && !imageErrors[item.id]) {
+                              setSelectedImages([item.image])
+                              setCurrentImageIndex(0)
+                              setProgress(0)
+                            }
+                          }}
                         >
                           {item.image && !imageErrors[item.id] ? (
                             <Image
@@ -255,41 +314,123 @@ export default function Page(): React.ReactElement {
         </a>
       )}
 
-      {selectedImage && (
+      {selectedImages.length > 0 && (
         <div
-          className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
+          className="fixed inset-0 bg-black z-[100] flex items-center justify-center"
+          onClick={handleCloseModal}
         >
+          <div className="absolute top-0 left-0 right-0 flex gap-1 p-2 z-10">
+            {selectedImages.map((_, index) => (
+              <div
+                key={index}
+                className="flex-1 h-0.5 bg-white/30 rounded-full overflow-hidden"
+              >
+                <div
+                  className="h-full bg-white transition-all duration-100 ease-linear"
+                  style={{
+                    width:
+                      index < currentImageIndex
+                        ? '100%'
+                        : index === currentImageIndex
+                          ? `${progress}%`
+                          : '0%'
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="absolute top-4 right-4 flex gap-2 z-10">
+            <IconButton
+              icon={isPaused ? 'play' : 'pause'}
+              onClick={e => {
+                e.stopPropagation()
+                setIsPaused(!isPaused)
+              }}
+              className="bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors"
+              title={isPaused ? 'Retomar' : 'Pausar'}
+            />
+            <IconButton
+              icon="xmark"
+              onClick={handleCloseModal}
+              className="bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors"
+              title="Fechar"
+            />
+          </div>
+
           <div
-            className="relative max-w-4xl max-h-[90vh] w-full flex items-center justify-center"
-            onClick={e => e.stopPropagation()}
+            className="relative w-full h-full max-w-lg flex items-center justify-center"
+            onClick={e => {
+              e.stopPropagation()
+              setIsPaused(!isPaused)
+            }}
           >
-            <div className="relative w-full h-full ">
+            <div
+              className="absolute left-0 top-0 bottom-0 w-1/3 cursor-pointer z-10"
+              onClick={e => {
+                e.stopPropagation()
+                handlePrevImage()
+              }}
+            />
+            <div
+              className="absolute right-0 top-0 bottom-0 w-1/3 cursor-pointer z-10"
+              onClick={e => {
+                e.stopPropagation()
+                handleNextImage()
+              }}
+            />
+
+            <div className="relative w-full h-full flex items-center justify-center">
               <Image
-                src={selectedImage}
+                src={selectedImages[currentImageIndex]}
                 alt="Product image"
                 width={1200}
                 height={1200}
-                className="object-contain w-full h-full max-h-[80vh]"
+                className="object-contain w-full h-full max-h-screen"
               />
             </div>
-            <div className="absolute bottom-0 mb-4 mx-auto">
-              <Button
-                leftIcon="arrow-down"
-                onClick={() => handleDownloadImage(selectedImage)}
-                title="Baixar imagem"
+
+            {currentImageIndex > 0 && (
+              <button
+                onClick={e => {
+                  e.stopPropagation()
+                  handlePrevImage()
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors hidden md:block z-20"
+                title="Anterior"
               >
-                Baixar Imagem
-              </Button>
-            </div>
-            <div className="absolute top-4 right-4 flex gap-2">
-              <IconButton
-                icon="xmark"
-                onClick={() => setSelectedImage(null)}
-                className="bg-white hover:bg-gray-100 text-gray-800 rounded-full p-3 shadow-lg transition-colors"
-                title="Fechar"
-              />
-            </div>
+                <Icon icon="chevron-left" className="text-xl" />
+              </button>
+            )}
+            {currentImageIndex < selectedImages.length - 1 && (
+              <button
+                onClick={e => {
+                  e.stopPropagation()
+                  handleNextImage()
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors hidden md:block z-20"
+                title="Próximo"
+              >
+                <Icon icon="chevron-right" className="text-xl" />
+              </button>
+            )}
+          </div>
+
+          <div className="absolute bottom-6 right-6 flex gap-3 z-10">
+            <IconButton
+              icon="arrow-down"
+              onClick={e => {
+                e.stopPropagation()
+                handleDownloadImage(selectedImages[currentImageIndex])
+              }}
+              className="bg-black/50 hover:bg-black/70 text-white rounded-full p-3 backdrop-blur-sm transition-colors"
+              title="Baixar imagem"
+            />
+            {selectedImages.length > 1 && (
+              <div className="bg-black/50 backdrop-blur-sm text-white px-3 py-2 rounded-full text-xs font-medium">
+                {currentImageIndex + 1}/{selectedImages.length}
+              </div>
+            )}
           </div>
         </div>
       )}
