@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@terraviva/ui/dropdown-menu'
 import { Icon } from '@terraviva/ui/icon'
@@ -400,123 +401,122 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                         </div>
 
                         <div className="flex items-center gap-2 pt-2">
-                          {isOwner(catalogo) ? (
-                            <>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                  router.push(`/criador/${catalogo.id}`)
-                                }
-                                className="flex-1"
-                                leftIcon="pencil"
-                              >
-                                Editar
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                  window.open(
-                                    `/visualizar/${catalogo.id}`,
-                                    '_blank'
-                                  )
-                                }
-                                className="flex-1"
-                                leftIcon="eye"
-                              >
-                                Ver
-                              </Button>
-                              {catalogo.slug ? (
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <IconButton
-                                      variant="outline"
-                                      size="sm"
-                                      icon="link"
-                                    />
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        copyToClipboard(
-                                          `${window.location.origin}/visualizar/${catalogo.id}`,
-                                          'Link por ID'
-                                        )
-                                      }
-                                    >
-                                      <Icon
-                                        icon="copy"
-                                        className="mr-2 h-4 w-4"
-                                      />
-                                      Copiar link por ID
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        copyToClipboard(
-                                          `${window.location.origin}/visualizar/${catalogo.slug}`,
-                                          'Link por Slug'
-                                        )
-                                      }
-                                    >
-                                      <Icon
-                                        icon="copy"
-                                        className="mr-2 h-4 w-4"
-                                      />
-                                      Copiar link por Slug
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              ) : (
-                                <IconButton
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleCopyLink(catalogo)}
-                                  icon="link"
-                                />
-                              )}
+                          {/* View Button - Everyone */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              window.open(
+                                `/visualizar/${catalogo.id}`,
+                                '_blank'
+                              )
+                            }
+                            className="flex-1"
+                            leftIcon="eye"
+                          >
+                            Ver
+                          </Button>
+
+                          {/* Owner-only: Edit */}
+                          {isOwner(catalogo) && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                router.push(`/criador/${catalogo.id}`)
+                              }
+                              className="flex-1"
+                              leftIcon="pencil"
+                            >
+                              Editar
+                            </Button>
+                          )}
+
+                          {/* Duplicate - Everyone */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDuplicate(catalogo)}
+                            className="flex-1"
+                            leftIcon={
+                              duplicatingId === catalogo.id ? 'spinner' : 'copy'
+                            }
+                            disabled={duplicatingId === catalogo.id}
+                          >
+                            {duplicatingId === catalogo.id
+                              ? 'Duplicando...'
+                              : 'Duplicar'}
+                          </Button>
+
+                          {/* Actions Menu - Link & Delete */}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
                               <IconButton
                                 variant="outline"
                                 size="sm"
-                                onClick={() => handleDelete(catalogo.id)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                icon="trash"
+                                icon="ellipsis-vertical"
                               />
-                            </>
-                          ) : (
-                            <>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                  window.open(
-                                    `/visualizar/${catalogo.id}`,
-                                    '_blank'
-                                  )
-                                }
-                                className="flex-1"
-                                leftIcon="eye"
-                              >
-                                Ver
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleDuplicate(catalogo)}
-                                className="flex-1"
-                                leftIcon={
-                                  duplicatingId === catalogo.id
-                                    ? 'spinner'
-                                    : 'copy'
-                                }
-                                disabled={duplicatingId === catalogo.id}
-                              >
-                                {duplicatingId === catalogo.id
-                                  ? 'Duplicando...'
-                                  : 'Duplicar'}
-                              </Button>
-                            </>
-                          )}
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              {/* Copy Link options */}
+                              {catalogo.slug ? (
+                                <>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      copyToClipboard(
+                                        `${window.location.origin}/visualizar/${catalogo.id}`,
+                                        'Link por ID'
+                                      )
+                                    }
+                                  >
+                                    <Icon
+                                      icon="link"
+                                      className="mr-2 h-4 w-4"
+                                    />
+                                    Copiar link por ID
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      copyToClipboard(
+                                        `${window.location.origin}/visualizar/${catalogo.slug}`,
+                                        'Link por Slug'
+                                      )
+                                    }
+                                  >
+                                    <Icon
+                                      icon="link"
+                                      className="mr-2 h-4 w-4"
+                                    />
+                                    Copiar link por Slug
+                                  </DropdownMenuItem>
+                                </>
+                              ) : (
+                                <DropdownMenuItem
+                                  onClick={() => handleCopyLink(catalogo)}
+                                >
+                                  <Icon icon="link" className="mr-2 h-4 w-4" />
+                                  Copiar link
+                                </DropdownMenuItem>
+                              )}
+
+                              {/* Delete - Owner only */}
+                              {isOwner(catalogo) && (
+                                <>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => handleDelete(catalogo.id)}
+                                    className="text-red-600 focus:text-red-700"
+                                  >
+                                    <Icon
+                                      icon="trash"
+                                      className="mr-2 h-4 w-4"
+                                    />
+                                    Excluir
+                                  </DropdownMenuItem>
+                                </>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </CardContent>
                     </Card>
@@ -590,7 +590,22 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                         </td>
                         <td className="p-4">
                           <div className="flex items-center justify-end gap-1">
-                            {isOwner(catalogo) ? (
+                            {/* View Button - Everyone */}
+                            <IconButton
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                window.open(
+                                  `/visualizar/${catalogo.id}`,
+                                  '_blank'
+                                )
+                              }
+                              title="Visualizar"
+                              icon="eye"
+                            />
+
+                            {/* Owner-only: Edit & Delete */}
+                            {isOwner(catalogo) && (
                               <>
                                 <IconButton
                                   variant="ghost"
@@ -601,68 +616,7 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                                   title="Editar"
                                   icon="pencil"
                                 />
-                                <IconButton
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() =>
-                                    window.open(
-                                      `/visualizar/${catalogo.id}`,
-                                      '_blank'
-                                    )
-                                  }
-                                  title="Visualizar"
-                                  icon="eye"
-                                />
-                                {catalogo.slug ? (
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <IconButton
-                                        variant="ghost"
-                                        size="sm"
-                                        icon="link"
-                                        title="Copiar link"
-                                      />
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                      <DropdownMenuItem
-                                        onClick={() =>
-                                          copyToClipboard(
-                                            `${window.location.origin}/visualizar/${catalogo.id}`,
-                                            'Link por ID'
-                                          )
-                                        }
-                                      >
-                                        <Icon
-                                          icon="copy"
-                                          className="mr-2 h-4 w-4"
-                                        />
-                                        Copiar link por ID
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem
-                                        onClick={() =>
-                                          copyToClipboard(
-                                            `${window.location.origin}/visualizar/${catalogo.slug}`,
-                                            'Link por Slug'
-                                          )
-                                        }
-                                      >
-                                        <Icon
-                                          icon="copy"
-                                          className="mr-2 h-4 w-4"
-                                        />
-                                        Copiar link por Slug
-                                      </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
-                                ) : (
-                                  <IconButton
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleCopyLink(catalogo)}
-                                    title="Copiar link"
-                                    icon="link"
-                                  />
-                                )}
+
                                 <IconButton
                                   variant="ghost"
                                   size="sm"
@@ -672,38 +626,77 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                                   icon="trash"
                                 />
                               </>
+                            )}
+
+                            {/* Duplicate - Everyone */}
+                            <IconButton
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDuplicate(catalogo)}
+                              title="Duplicar"
+                              icon={
+                                duplicatingId === catalogo.id
+                                  ? 'spinner'
+                                  : 'copy'
+                              }
+                              disabled={duplicatingId === catalogo.id}
+                              className={
+                                duplicatingId === catalogo.id
+                                  ? 'animate-spin'
+                                  : ''
+                              }
+                            />
+
+                            {/* Copy Link - Everyone (ID always exists, Slug optional) */}
+                            {catalogo.slug ? (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <IconButton
+                                    variant="ghost"
+                                    size="sm"
+                                    icon="link"
+                                    title="Copiar link"
+                                  />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      copyToClipboard(
+                                        `${window.location.origin}/visualizar/${catalogo.id}`,
+                                        'Link por ID'
+                                      )
+                                    }
+                                  >
+                                    <Icon
+                                      icon="copy"
+                                      className="mr-2 h-4 w-4"
+                                    />
+                                    Copiar link por ID
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      copyToClipboard(
+                                        `${window.location.origin}/visualizar/${catalogo.slug}`,
+                                        'Link por Slug'
+                                      )
+                                    }
+                                  >
+                                    <Icon
+                                      icon="copy"
+                                      className="mr-2 h-4 w-4"
+                                    />
+                                    Copiar link por Slug
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             ) : (
-                              <>
-                                <IconButton
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() =>
-                                    window.open(
-                                      `/visualizar/${catalogo.id}`,
-                                      '_blank'
-                                    )
-                                  }
-                                  title="Visualizar"
-                                  icon="eye"
-                                />
-                                <IconButton
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDuplicate(catalogo)}
-                                  title="Duplicar"
-                                  icon={
-                                    duplicatingId === catalogo.id
-                                      ? 'spinner'
-                                      : 'copy'
-                                  }
-                                  disabled={duplicatingId === catalogo.id}
-                                  className={
-                                    duplicatingId === catalogo.id
-                                      ? 'animate-spin'
-                                      : ''
-                                  }
-                                />
-                              </>
+                              <IconButton
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleCopyLink(catalogo)}
+                                title="Copiar link"
+                                icon="link"
+                              />
                             )}
                           </div>
                         </td>
