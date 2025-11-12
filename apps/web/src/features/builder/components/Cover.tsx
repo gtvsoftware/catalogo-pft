@@ -114,7 +114,7 @@ export function Cover() {
     <>
       {coverSettings.enabled ? (
         <div
-          className="relative aspect-[32/9] overflow-hidden group"
+          className="relative aspect-[21/9] overflow-hidden group"
           style={getCoverStyle()}
         >
           <div
@@ -373,7 +373,7 @@ export function Cover() {
                     <Label className="text-sm">Imagem de Fundo</Label>
                     <ImageUpload
                       enableCrop
-                      cropAspect={32 / 9}
+                      cropAspect={21 / 9}
                       slug="cover"
                       catalogId={catalogId}
                       value={coverSettings.backgroundImage}

@@ -200,7 +200,7 @@ export default function Page(): React.ReactElement {
           <>
             {catalogo.cover?.enabled && (
               <div
-                className="relative aspect-[32/9] overflow-hidden"
+                className="relative aspect-[21/9] overflow-hidden"
                 style={getCoverStyle()}
               >
                 <div
@@ -212,7 +212,7 @@ export default function Page(): React.ReactElement {
                 <div
                   className={`absolute inset-0 flex flex-col ${
                     catalogo.cover.alignment === 'left'
-                      ? 'items-start justify-end text-left pb-8 pl-8'
+                      ? 'items-start justify-end text-left pb-8 pl-4'
                       : 'items-center justify-center text-center'
                   } p-4 sm:p-6 md:p-8`}
                 >
@@ -283,12 +283,12 @@ export default function Page(): React.ReactElement {
                     {section.title || 'Seção'}
                   </h2>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8">
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-10">
                     {section.items.map(item => (
                       <div
                         key={item.id}
                         className={cn(
-                          'group flex flex-col w-full rounded-xl bg-white overflow-hidden hover:scale-[1.02] transition-transform'
+                          'group flex flex-col w-full bg-white overflow-hidden hover:scale-[1.02] transition-transform'
                         )}
                       >
                         <div
@@ -339,7 +339,7 @@ export default function Page(): React.ReactElement {
                               {item.name}
                             </p>
                             {item.description && (
-                              <p className="text-gray-500 text-sm line-clamp-2">
+                              <p className="text-gray-500 text-sm line-clamp-3">
                                 {item.description}
                               </p>
                             )}
@@ -439,6 +439,7 @@ export default function Page(): React.ReactElement {
               className="relative w-full h-full max-w-lg flex items-center justify-center select-none"
               onTouchStart={e => {
                 e.preventDefault()
+                e.stopPropagation()
                 if (!e.touches[0]) return
                 const rect = e.currentTarget.getBoundingClientRect()
                 const x = e.touches[0].clientX - rect.left
@@ -454,6 +455,7 @@ export default function Page(): React.ReactElement {
               }}
               onTouchEnd={e => {
                 e.preventDefault()
+                e.stopPropagation()
                 if (!e.changedTouches[0]) return
                 const rect = e.currentTarget.getBoundingClientRect()
                 const x = e.changedTouches[0].clientX - rect.left
@@ -465,6 +467,7 @@ export default function Page(): React.ReactElement {
               }}
               onContextMenu={e => e.preventDefault()}
               onMouseDown={e => {
+                e.stopPropagation()
                 const rect = e.currentTarget.getBoundingClientRect()
                 const x = e.clientX - rect.left
                 const width = rect.width
@@ -478,6 +481,7 @@ export default function Page(): React.ReactElement {
                 }
               }}
               onMouseUp={e => {
+                e.stopPropagation()
                 const rect = e.currentTarget.getBoundingClientRect()
                 const x = e.clientX - rect.left
                 const width = rect.width

@@ -12,6 +12,5 @@ export default async function DashboardLayout({
 }
 
 export const metadata: Metadata = {
-  title: APP_CONFIG.APP_TITLE,
-  description: APP_CONFIG.APP_DESCRIPTION
+  title: APP_CONFIG.APP_TITLE
 }

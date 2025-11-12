@@ -33,7 +33,6 @@ export default async function RootLayout({
 
 export const metadata: Metadata = {
   title: APP_CONFIG.APP_TITLE,
-  description: APP_CONFIG.APP_DESCRIPTION,
   viewport: {
     width: 'device-width',
     initialScale: 1,
