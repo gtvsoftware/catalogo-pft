@@ -1,6 +1,7 @@
 import { Button, IconButton } from '@terraviva/ui/button'
 import { Icon } from '@terraviva/ui/icon'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { useCatalogBuilder } from '../providers/CatalogBuilderContext'
 
@@ -20,6 +21,9 @@ export function CatalogBuilderTopBar() {
       minute: '2-digit'
     })
   }
+
+  const router = useRouter()
+
   return (
     <>
       <div className="lg:hidden items-center sticky top-0 z-10 flex gap-2 px-4 py-1 border-b bg-white">
@@ -35,11 +39,20 @@ export function CatalogBuilderTopBar() {
             <h2 className="text-base font-semibold text-gray-800">
               Criador de catálogos
             </h2>
-            <span className="text-gray-500 text-sm flex -mt-1">
+            <span className="text-gray-500 text-sm flex items-center gap-1 -mt-1">
               {mobileTab === 'builder' ? 'Estrutura' : 'Informações'}
+              <span className="text-xs text-gray-500 flex mt-0.5">
+                {' - '}Salvo {formatLastSaved()}
+              </span>
             </span>
           </div>
-          <Button variant="outline" size="sm">
+          <Button
+            onClick={() => {
+              router.push('/')
+            }}
+            variant="outline"
+            size="sm"
+          >
             Sair do criador
           </Button>
         </div>

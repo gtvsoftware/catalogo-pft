@@ -16,12 +16,10 @@ import { SharingLinks } from './SharingLinks'
 export function Sidebar() {
   const { viewMode, mobileTab } = useCatalogBuilder()
 
-  // Hide sidebar in preview mode
   if (viewMode === 'preview') {
     return null
   }
 
-  // On mobile, show only when sidebar tab is active
   const mobileVisibility =
     mobileTab === 'sidebar' ? 'translate-x-0' : 'translate-x-full'
 

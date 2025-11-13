@@ -390,7 +390,7 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                                 }
                               />
                               <span className="text-xs text-gray-600 text-right max-w-[80px] truncate">
-                                {catalogo.seller.name}
+                                {catalogo.seller.name?.split(' ')[0]}
                               </span>
                             </div>
                           )}

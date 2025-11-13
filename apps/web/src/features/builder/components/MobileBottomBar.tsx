@@ -5,7 +5,6 @@ import { useCatalogBuilder } from '../providers/CatalogBuilderContext'
 export function MobileBottomBar() {
   const { mobileTab, setMobileTab, viewMode } = useCatalogBuilder()
 
-  // Don't show in preview mode
   if (viewMode === 'preview') {
     return null
   }
@@ -21,7 +20,7 @@ export function MobileBottomBar() {
             transition-colors duration-200
             ${
               mobileTab === 'builder'
-                ? 'bg-primary-50 text-primary-600 border-t-2 border-primary-500'
+                ? 'text-primary-600 border-t-2 border-primary-500'
                 : 'text-gray-600 hover:bg-gray-50'
             }
           `}
@@ -38,7 +37,7 @@ export function MobileBottomBar() {
             transition-colors duration-200
             ${
               mobileTab === 'sidebar'
-                ? 'bg-primary-50 text-primary-600 border-t-2 border-primary-500'
+                ? 'text-primary-600 border-t-2 border-primary-500'
                 : 'text-gray-600 hover:bg-gray-50'
             }
           `}

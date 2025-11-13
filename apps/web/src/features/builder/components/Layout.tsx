@@ -1,3 +1,4 @@
+import { Alert, AlertDescription, AlertTitle } from '@terraviva/ui/alert'
 import { Icon } from '@terraviva/ui/icon'
 
 import { useCatalogBuilder } from '../providers/CatalogBuilderContext'
@@ -11,8 +12,9 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
   const { sidebarOpen, setSidebarOpen, formValues, viewMode, mobileTab } =
     useCatalogBuilder()
 
+  const catalogData = formValues.getValues()
+
   const getWhatsAppLink = () => {
-    const catalogData = formValues.getValues()
     if (!catalogData?.phoneContact) return null
 
     const phone = catalogData.phoneContact.replace(/\D/g, '')
@@ -42,6 +44,23 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
         >
           <div className="p-3 sm:p-6 md:p-8 pb-24 lg:pb-8">
             <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg min-h-full">
+              {!catalogData.title && (
+                <div className="mx-4 py-4">
+                  <Alert variant="warning">
+                    <AlertTitle>Catálogo sem nome</AlertTitle>
+                    <AlertDescription className="inline-block">
+                      O catálogo ainda não tem um nome — adicione um para gerar
+                      o link de compartilhamento amigável{' '}
+                      <span className="lg:hidden inline">
+                        pela aba <strong>Informações</strong> no menu inferior
+                      </span>
+                      <span className="hidden lg:inline">
+                        na barra lateral à direita
+                      </span>
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              )}
               <div className="flex flex-col">
                 {formValues.getValues().cover?.showLogo && <LogoTerraViva />}
                 {children}
