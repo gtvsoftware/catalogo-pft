@@ -55,7 +55,7 @@ export default async function Layout({
 
   if (!isAvailable(catalogo)) {
     const getWhatsAppLink = () => {
-      if (!catalogo?.seller?.phone) return null
+      if (!catalogo?.phoneContact) return null
 
       const phone = catalogo.phoneContact.replace(/\D/g, '')
       const title = catalogo.title || 'catálogo'
