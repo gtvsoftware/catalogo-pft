@@ -29,6 +29,7 @@ export type CoverSettings = {
 }
 
 export type ViewMode = 'edit' | 'preview'
+export type MobileTab = 'builder' | 'sidebar'
 
 export type CatalogBuilderContextType = {
   viewMode: ViewMode
@@ -37,6 +38,8 @@ export type CatalogBuilderContextType = {
   setSidebarOpen: (open: boolean) => void
   coverModalOpen: boolean
   setCoverModalOpen: (open: boolean) => void
+  mobileTab: MobileTab
+  setMobileTab: (tab: MobileTab) => void
   formValues: UseFormReturn<catalogoFormType>
   isSaving: boolean
   lastSaved: Date | null
@@ -63,6 +66,7 @@ export function CatalogBuilderProvider({
   const [viewMode, setViewMode] = useState<ViewMode>('edit')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [coverModalOpen, setCoverModalOpen] = useState(false)
+  const [mobileTab, setMobileTab] = useState<MobileTab>('builder')
   const [_, setIsLoading] = useState(true)
   const [enableAutoSave, setEnableAutoSave] = useState(false)
   const [_isAuthorized, setIsAuthorized] = useState(true)
@@ -249,6 +253,8 @@ export function CatalogBuilderProvider({
     setSidebarOpen,
     coverModalOpen,
     setCoverModalOpen,
+    mobileTab,
+    setMobileTab,
     isMounted,
     setIsMounted,
     formValues,

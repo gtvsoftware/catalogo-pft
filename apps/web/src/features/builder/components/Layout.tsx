@@ -2,12 +2,13 @@ import { Icon } from '@terraviva/ui/icon'
 
 import { useCatalogBuilder } from '../providers/CatalogBuilderContext'
 import { LogoTerraViva } from './LogoTerraViva'
+import { MobileBottomBar } from './MobileBottomBar'
 import { MobileViewSwitch } from './MobileViewSwitch'
 import { Sidebar } from './Sidebar'
 import { CatalogBuilderTopBar } from './Topbar'
 
 export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
-  const { sidebarOpen, setSidebarOpen, formValues, viewMode } =
+  const { sidebarOpen, setSidebarOpen, formValues, viewMode, mobileTab } =
     useCatalogBuilder()
 
   const getWhatsAppLink = () => {
@@ -32,8 +33,14 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
       <MobileViewSwitch />
 
       <div className="flex-1 flex overflow-hidden relative">
-        <div className="flex-1 overflow-auto bg-gray-100">
-          <div className="p-3 sm:p-6 md:p-8">
+        <div
+          className={`
+            flex-1 overflow-auto bg-gray-100
+            ${viewMode === 'edit' ? 'lg:block' : ''}
+            ${viewMode === 'edit' && mobileTab === 'sidebar' ? 'hidden lg:block' : ''}
+          `}
+        >
+          <div className="p-3 sm:p-6 md:p-8 pb-24 lg:pb-8">
             <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg min-h-full">
               <div className="flex flex-col">
                 {formValues.getValues().cover?.showLogo && <LogoTerraViva />}
@@ -67,6 +74,8 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
           </a>
         )}
       </div>
+
+      <MobileBottomBar />
     </div>
   )
 }

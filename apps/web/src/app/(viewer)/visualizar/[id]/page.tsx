@@ -20,6 +20,7 @@ export default function Page(): React.ReactElement {
   const [isPaused, setIsPaused] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [savedScrollPosition, setSavedScrollPosition] = useState(0)
+  const [isClosing, setIsClosing] = useState(false)
 
   useEffect(() => {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]')
@@ -97,11 +98,15 @@ export default function Page(): React.ReactElement {
   }, [id])
 
   const handleCloseModal = () => {
-    setSelectedImages([])
-    setCurrentImageIndex(0)
-    setProgress(0)
-    setIsPaused(false)
-    setImageLoaded(false)
+    setIsClosing(true)
+    setTimeout(() => {
+      setSelectedImages([])
+      setCurrentImageIndex(0)
+      setProgress(0)
+      setIsPaused(false)
+      setImageLoaded(false)
+      setIsClosing(false)
+    }, 100)
   }
 
   useEffect(() => {
@@ -294,6 +299,7 @@ export default function Page(): React.ReactElement {
                         <div
                           className="relative w-full aspect-[3/4] bg-white cursor-pointer overflow-hidden"
                           onClick={() => {
+                            if (isClosing) return
                             if (item.image && !imageErrors[item.id]) {
                               setSavedScrollPosition(window.scrollY)
                               const images = [
@@ -312,6 +318,7 @@ export default function Page(): React.ReactElement {
                               src={item.image}
                               alt={item.name || 'Produto'}
                               fill
+                              preload
                               className="object-cover"
                               onError={() =>
                                 setImageErrors(prev => ({
@@ -388,6 +395,9 @@ export default function Page(): React.ReactElement {
             height: '100vh',
             minHeight: '-webkit-fill-available'
           }}
+          onClick={e => e.stopPropagation()}
+          onTouchStart={e => e.stopPropagation()}
+          onTouchEnd={e => e.stopPropagation()}
         >
           <div className="relative w-full h-full flex items-center justify-center">
             <div
@@ -497,6 +507,7 @@ export default function Page(): React.ReactElement {
               <div className="relative w-full h-full flex items-center justify-center select-none">
                 {selectedImages[currentImageIndex] && (
                   <Image
+                    preload
                     src={selectedImages[currentImageIndex]}
                     alt="Product image"
                     width={1200}
