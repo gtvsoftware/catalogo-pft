@@ -520,7 +520,7 @@ export default function CatalogosListPage({ user }: { user: Partial<User> }) {
                   <thead className="bg-muted/50">
                     <tr>
                       <th className="text-left p-4 font-semibold text-sm">
-                        Título
+                        Nome
                       </th>
                       <th className="text-left p-4 font-semibold text-sm">
                         Vendedor

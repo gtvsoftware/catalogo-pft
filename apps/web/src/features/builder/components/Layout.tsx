@@ -44,7 +44,7 @@ export function CatalogBuilderLayout({ children }: React.PropsWithChildren) {
         >
           <div className="p-3 sm:p-6 md:p-8 pb-24 lg:pb-8">
             <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg min-h-full">
-              {!catalogData.title && (
+              {!catalogData.title && viewMode !== 'preview' && (
                 <div className="mx-4 py-4">
                   <Alert variant="warning">
                     <AlertTitle>Catálogo sem nome</AlertTitle>
